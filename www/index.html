@@ -216,7 +216,13 @@
   .drawer-item.active .di{color:var(--accent-2);}
   .drawer-item svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
   .drawer-sep{font-size:11px;color:var(--txt-3);font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:14px 14px 8px;}
+  .drawer-sub{font-size:12px;color:var(--txt-2);padding:10px 14px 6px;font-weight:600;}
   .drawer-foot{padding:12px 18px 0;border-top:1px solid var(--line);margin:0 18px;font-size:12px;color:var(--txt-3);line-height:1.5;}
+  /* 方案页侧列表选中态 */
+  .plan-card{display:none;}
+  .plan-card.active{display:block;animation:float-in .35s cubic-bezier(.16,1,.3,1) both;}
+  .plan-card .fold-head{display:none;}
+  .plan-card .fold-body{display:block;}
   .drawer-foot b{color:var(--accent-2);}
   .hamburger{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--surface);
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;flex-shrink:0;}
@@ -411,40 +417,40 @@
     </section>
 
     <section id="tab-plan" class="hide">
-      <div class="card open" id="card-goals">
-        <div class="fold-head" data-fold="card-goals"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m9 12 2 2 4-4"/></svg></span>核心目标（2个月）<span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+      <div class="card plan-card active" data-section="goals" id="card-goals">
+        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m9 12 2 2 4-4"/></svg></span>核心目标（2个月）</h3>
         <div class="fold-body"><div class="goal-grid" id="planGoals"></div></div>
       </div>
-      <div class="card open" id="card-schedule">
-        <div class="fold-head" data-fold="card-schedule"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>每日固定作息<span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+      <div class="card plan-card" data-section="schedule" id="card-schedule">
+        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>每日固定作息</h3>
         <div class="fold-body"><div class="timeline" id="planSchedule"></div></div>
       </div>
-      <div class="card" id="card-alc">
-        <div class="fold-head" data-fold="card-alc"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10l-1 9H8z"/></svg></span>无感戒酒 · 周阶梯<span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+      <div class="card plan-card" data-section="alc" id="card-alc">
+        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10l-1 9H8z"/></svg></span>无感戒酒 · 周阶梯</h3>
         <div class="fold-body"><div class="stairs" id="planAlcohol"></div></div>
       </div>
-      <div class="card" id="card-smoke">
-        <div class="fold-head" data-fold="card-smoke"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2-5 4 10 2-5h6"/></svg></span>无感戒烟 · 周阶梯<span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+      <div class="card plan-card" data-section="smoke" id="card-smoke">
+        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2-5 4 10 2-5h6"/></svg></span>无感戒烟 · 周阶梯</h3>
         <div class="fold-body"><div class="stairs" id="planSmoke"></div></div>
       </div>
-      <div class="card" id="card-skin">
-        <div class="fold-head" data-fold="card-skin"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5S5 9 5 14a7 7 0 0 0 14 0c0-5-7-11.5-7-11.5Z"/></svg></span>美白执行指令<span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+      <div class="card plan-card" data-section="skin" id="card-skin">
+        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5S5 9 5 14a7 7 0 0 0 14 0c0-5-7-11.5-7-11.5Z"/></svg></span>美白执行指令</h3>
         <div class="fold-body"><div class="plan-list" id="planSkin"></div></div>
       </div>
-      <div class="card" id="card-week">
-        <div class="fold-head" data-fold="card-week"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg></span>一周差异化执行<span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+      <div class="card plan-card" data-section="week" id="card-week">
+        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg></span>一周差异化执行</h3>
         <div class="fold-body"><div class="plan-table" id="planWeek"></div></div>
       </div>
-      <div class="card" id="card-track">
-        <div class="fold-head" data-fold="card-track"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 14 4-4 3 3 5-6"/></svg></span>进度追踪<span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+      <div class="card plan-card" data-section="track" id="card-track">
+        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 14 4-4 3 3 5-6"/></svg></span>进度追踪</h3>
         <div class="fold-body"><div class="plan-list" id="planTrack"></div></div>
       </div>
-      <div class="card" id="card-rules">
-        <div class="fold-head" data-fold="card-rules"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></span>三条保命军规<span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+      <div class="card plan-card" data-section="rules" id="card-rules">
+        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></span>三条保命军规</h3>
         <div class="fold-body"><div id="planRules"></div></div>
       </div>
-      <div class="card" id="card-phasetime">
-        <div class="fold-head" data-fold="card-phasetime"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg></span>阶段切换时间表<span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+      <div class="card plan-card" data-section="phasetime" id="card-phasetime">
+        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg></span>阶段切换时间表</h3>
         <div class="fold-body"><div class="plan-table" id="planPhaseTime"></div></div>
       </div>
     </section>
@@ -515,7 +521,7 @@
       <div class="card">
         <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg></span>热更新（免重装）</h3>
         <div class="note">填一次你的 GitHub Token（需 <b>repo</b> 权限），之后点「检查更新」即从私有仓库拉新包热替换，不用卸载重装。Token 只存在本机。</div>
-        <div class="field" style="margin-top:10px"><label>当前版本</label><div id="curVer" class="note" style="margin:0">v1.0.6</div></div>
+        <div class="field" style="margin-top:10px"><label>当前版本</label><div id="curVer" class="note" style="margin:0">v1.0.7</div></div>
         <div class="field"><label>GitHub Token（Private 仓库读取用）</label><input type="password" id="ghToken" placeholder="ghp_xxx 或 github_pat_xxx" autocomplete="off"></div>
         <div class="field"><label>更新仓库 (owner/repo)</label><input type="text" id="ghRepo" placeholder="dkcoinlj/shouyeren-app"></div>
         <button class="btn btn-accent btn-full" id="checkUpd" style="margin-top:4px">检查更新</button>
@@ -532,7 +538,7 @@
           <div class="logo" style="width:60px;height:60px;border-radius:18px"><svg viewBox="0 0 32 32" aria-hidden="true"><defs><radialGradient id="nwMoonB" cx="34%" cy="26%" r="85%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="35%" stop-color="#EAF8F4"/><stop offset="72%" stop-color="#A9DED4"/><stop offset="100%" stop-color="#5AA195"/></radialGradient><linearGradient id="nwHaloB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2DD4BF" stop-opacity="0"/><stop offset="50%" stop-color="#2DD4BF" stop-opacity=".85"/><stop offset="1" stop-color="#2DD4BF" stop-opacity="0"/></linearGradient><filter id="nwFloatB" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="2.2" stdDeviation="2" flood-color="#000" flood-opacity=".5"/></filter><filter id="nwGlowB" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="1.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g filter="url(#nwGlowB)"><circle cx="16" cy="16" r="13.5" fill="none" stroke="url(#nwHaloB)" stroke-width="0.8" opacity=".6"><animateTransform attributeName="transform" type="rotate" from="0 16 16" to="360 16 16" dur="22s" repeatCount="indefinite"/></circle></g><g filter="url(#nwFloatB)"><g><animateTransform attributeName="transform" type="translate" values="0 0;0 -0.8;0 0" dur="3.4s" repeatCount="indefinite" calcMode="spline" keySplines="0.45 0 0.55 1;0.45 0 0.55 1"/><path fill="url(#nwMoonB)" fill-rule="evenodd" d="M16 4.5a11.5 11.5 0 1 0 0 23 11.5 11.5 0 0 0 0-23z M19.2 3a8 8 0 1 1 0 16 8 8 0 0 1 0-16z"/><ellipse cx="13" cy="10.5" rx="2.6" ry="3.4" fill="#FFFFFF" opacity=".55" filter="url(#nwGlowB)"><animate attributeName="opacity" values="0.55;0.22;0.55" dur="3.4s" repeatCount="indefinite"/></ellipse></g></g><path d="M8.6 10.4l.9 2.2L11.7 13.5l-2.2.9L8.6 16.6l-.9-2.2L5.5 13.5l2.2-.9z" fill="#FFD98A" filter="url(#nwGlowB)"><animate attributeName="opacity" values="1;0.4;1" dur="2.6s" repeatCount="indefinite"/></path></svg></div>
           <div><div style="font-size:18px;font-weight:700;letter-spacing:-.02em">守夜人</div><div class="note" style="margin-top:2px">个人作息保命 · Nightwatcher</div></div>
         </div>
-        <div class="note">守夜人 v1.0.6 · 全部数据留在本机，不联网、不上传。更新包走私有 GitHub，仅你本人可拉取。</div>
+        <div class="note">守夜人 v1.0.7 · 全部数据留在本机，不联网、不上传。更新包走私有 GitHub，仅你本人可拉取。</div>
       </div>
     </section>
   </div>
@@ -542,14 +548,23 @@
     <div class="drawer-head">
       <div class="dh-logo">
         <div class="logo"><svg viewBox="0 0 32 32" aria-hidden="true"><defs><radialGradient id="nwMoonC" cx="34%" cy="26%" r="85%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="35%" stop-color="#EAF8F4"/><stop offset="72%" stop-color="#A9DED4"/><stop offset="100%" stop-color="#5AA195"/></radialGradient><linearGradient id="nwHaloC" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2DD4BF" stop-opacity="0"/><stop offset="50%" stop-color="#2DD4BF" stop-opacity=".85"/><stop offset="1" stop-color="#2DD4BF" stop-opacity="0"/></linearGradient><filter id="nwFloatC" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="2.2" stdDeviation="2" flood-color="#000" flood-opacity=".5"/></filter><filter id="nwGlowC" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="1.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g filter="url(#nwGlowC)"><circle cx="16" cy="16" r="13.5" fill="none" stroke="url(#nwHaloC)" stroke-width="0.8" opacity=".6"><animateTransform attributeName="transform" type="rotate" from="0 16 16" to="360 16 16" dur="22s" repeatCount="indefinite"/></circle></g><g filter="url(#nwFloatC)"><g><animateTransform attributeName="transform" type="translate" values="0 0;0 -0.8;0 0" dur="3.4s" repeatCount="indefinite" calcMode="spline" keySplines="0.45 0 0.55 1;0.45 0 0.55 1"/><path fill="url(#nwMoonC)" fill-rule="evenodd" d="M16 4.5a11.5 11.5 0 1 0 0 23 11.5 11.5 0 0 0 0-23z M19.2 3a8 8 0 1 1 0 16 8 8 0 0 1 0-16z"/><ellipse cx="13" cy="10.5" rx="2.6" ry="3.4" fill="#FFFFFF" opacity=".55" filter="url(#nwGlowC)"><animate attributeName="opacity" values="0.55;0.22;0.55" dur="3.4s" repeatCount="indefinite"/></ellipse></g></g><path d="M8.6 10.4l.9 2.2L11.7 13.5l-2.2.9L8.6 16.6l-.9-2.2L5.5 13.5l2.2-.9z" fill="#FFD98A" filter="url(#nwGlowC)"><animate attributeName="opacity" values="1;0.4;1" dur="2.6s" repeatCount="indefinite"/></path></svg></div>
-        <div><div class="dh-title">守夜人</div><div class="dh-sub">v1.0.6 · 个人作息保命</div></div>
+        <div><div class="dh-title">守夜人</div><div class="dh-sub">v1.0.7 · 个人作息保命</div></div>
       </div>
     </div>
     <div class="drawer-nav">
       <div class="drawer-item active" data-drawer="today"><div class="di"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></div>今日</div>
-      <div class="drawer-item" data-drawer="plan"><div class="di"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>方案</div>
       <div class="drawer-item" data-drawer="data"><div class="di"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>数据</div>
       <div class="drawer-item" data-drawer="settings"><div class="di"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 13a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.5 1z"/></svg></div>设置</div>
+      <div class="drawer-sep">方案</div>
+      <div class="drawer-item" data-drawer="plan" data-plan-section="goals"><div class="di"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m9 12 2 2 4-4"/></svg></div>核心目标</div>
+      <div class="drawer-item" data-drawer="plan" data-plan-section="schedule"><div class="di"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>每日固定作息</div>
+      <div class="drawer-item" data-drawer="plan" data-plan-section="alc"><div class="di"><svg viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M7 4h10l-1 9H8z"/></svg></div>无感戒酒阶梯</div>
+      <div class="drawer-item" data-drawer="plan" data-plan-section="smoke"><div class="di"><svg viewBox="0 0 24 24"><path d="M3 12h4l2-5 4 10 2-5h6"/></svg></div>无感戒烟阶梯</div>
+      <div class="drawer-item" data-drawer="plan" data-plan-section="skin"><div class="di"><svg viewBox="0 0 24 24"><path d="M12 2.5S5 9 5 14a7 7 0 0 0 14 0c0-5-7-11.5-7-11.5Z"/></svg></div>美白执行</div>
+      <div class="drawer-item" data-drawer="plan" data-plan-section="week"><div class="di"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg></div>一周差异化</div>
+      <div class="drawer-item" data-drawer="plan" data-plan-section="track"><div class="di"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m7 14 4-4 3 3 5-6"/></svg></div>进度追踪</div>
+      <div class="drawer-item" data-drawer="plan" data-plan-section="rules"><div class="di"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></div>保命军规</div>
+      <div class="drawer-item" data-drawer="plan" data-plan-section="phasetime"><div class="di"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg></div>阶段时间表</div>
       <div class="drawer-sep">快捷操作</div>
       <div class="drawer-item" data-action="timer"><div class="di"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M9 2h6"/></svg></div>静蹲计时</div>
       <div class="drawer-item" data-action="focus"><div class="di"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>专注计时</div>
@@ -891,7 +906,7 @@ function icsItem(id,title,body,h,m,wd){let r=['BEGIN:VEVENT','UID:sy'+id+'@shouy
   if(wd.length)r.push('RRULE:FREQ=WEEKLY;BYDAY='+wd.map(x=>['SU','MO','TU','WE','TH','FR','SA'][x-1]).join(','));else r.push('RRULE:FREQ=DAILY');
   r.push('TRIGGER:-PT0M','BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:'+body,'END:VALARM','END:VEVENT');return r.join('\r\n');}
 
-const APP_VERSION='1.0.5';
+const APP_VERSION='1.0.7';
 const GH_DEFAULT_REPO='dkcoinlj/shouyeren-app';
 const CU=(window.Capacitor&&Capacitor.Plugins)?Capacitor.Plugins.CapacitorUpdater:null;
 const NOTIF=(window.Capacitor&&Capacitor.isPluginAvailable&&Capacitor.isPluginAvailable('LocalNotifications'))?Capacitor.Plugins.LocalNotifications:null;
@@ -1202,9 +1217,12 @@ function renderPlan(){
 
   const phaseRows=PHASES.map(p=>`<tr><td>${p.name}</td><td>${p.start}${p.end?' ~ '+p.end:''}</td><td>${p.alc}ml</td><td>${p.cig}支</td><td>${p.noAlcohol.length?p.noAlcohol.map(x=>WD_CN[WD.indexOf(x)]).join('、'):'无'}</td></tr>`).join('');
   document.getElementById('planPhaseTime').innerHTML=`<table class="plan-table"><thead><tr><th>阶段</th><th>日期</th><th>饮酒</th><th>吸烟</th><th>无酒日</th></tr></thead><tbody>${phaseRows}</tbody></table>`;
+  document.querySelectorAll('.plan-card').forEach(c=>c.classList.toggle('active',c.dataset.section===currentPlanSection));
 }
 
-function switchTab(name){
+let currentPlanSection='goals';
+function switchTab(name,section){
+  if(name==='plan'&&section)currentPlanSection=section;
   document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===name));
   ['today','plan','data','settings'].forEach(n=>{const sec=document.getElementById('tab-'+n);sec.classList.toggle('hide',n!==name);
     if(n===name){sec.classList.remove('float-in');void sec.offsetWidth;sec.classList.add('float-in');}});
@@ -1214,13 +1232,17 @@ function switchTab(name){
     document.getElementById('curVer').textContent='v'+APP_VERSION;
     document.getElementById('ghToken').value=DB.ghToken||'';
     document.getElementById('ghRepo').value=DB.ghRepo||GH_DEFAULT_REPO;}
-  document.querySelectorAll('.drawer-item[data-drawer]').forEach(d=>d.classList.toggle('active',d.dataset.drawer===name));
+  document.querySelectorAll('.drawer-item[data-drawer]').forEach(d=>{
+    const isPlan=d.dataset.planSection;
+    const active=isPlan?(name==='plan'&&d.dataset.planSection===currentPlanSection):(d.dataset.drawer===name);
+    d.classList.toggle('active',active);
+  });
 }
 function openDrawer(){document.getElementById('drawer').classList.add('show');document.getElementById('drawerBack').classList.add('show');}
 function closeDrawer(){document.getElementById('drawer').classList.remove('show');document.getElementById('drawerBack').classList.remove('show');}
 document.getElementById('menuBtn').onclick=openDrawer;
 document.getElementById('drawerBack').onclick=closeDrawer;
-document.querySelectorAll('.drawer-item[data-drawer]').forEach(d=>d.onclick=()=>{switchTab(d.dataset.drawer);closeDrawer();});
+document.querySelectorAll('.drawer-item[data-drawer]').forEach(d=>d.onclick=()=>{switchTab(d.dataset.drawer,d.dataset.planSection);closeDrawer();});
 document.querySelectorAll('.drawer-item[data-action]').forEach(d=>d.onclick=()=>{
   const a=d.dataset.action;closeDrawer();
   if(a==='timer')openTimer(5,'静蹲');
