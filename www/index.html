@@ -114,6 +114,35 @@
   .tool .tl{font-size:12px;color:var(--txt-2);font-weight:600;}
   .tool.gold .ti{background:var(--gold-bg);color:var(--gold);border-color:var(--gold-line);}
 
+  /* ===== AI 助手 · 小守 ===== */
+  .ai-card{background:linear-gradient(135deg,#1a2730 0%,#1c2028 100%);border:1px solid var(--accent-line);border-radius:var(--r-lg);padding:14px;margin-bottom:12px;box-shadow:var(--shadow-accent);position:relative;overflow:hidden;}
+  .ai-card::before{content:"";position:absolute;right:-40px;top:-30px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(45,212,191,.14),transparent 70%);pointer-events:none;}
+  .ai-head{display:flex;align-items:center;gap:11px;margin-bottom:10px;position:relative;}
+  .ai-avatar{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--accent),#1a4e46);border:1px solid var(--accent-line);box-shadow:0 0 14px var(--accent-soft);position:relative;}
+  .ai-avatar svg{width:22px;height:22px;color:#fff;}
+  .ai-avatar::after{content:"";position:absolute;bottom:-2px;right:-2px;width:10px;height:10px;border-radius:50%;background:var(--success);border:2px solid var(--surface);}
+  .ai-info{flex:1;min-width:0;}
+  .ai-name{font-size:14px;font-weight:700;color:var(--txt);}
+  .ai-hint{font-size:12px;color:var(--txt-2);margin-top:1px;}
+  .ai-input-wrap{display:flex;gap:8px;position:relative;}
+  .ai-input-wrap input{flex:1;min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-full);padding:11px 15px;font-size:14px;color:var(--txt);outline:none;font-family:inherit;transition:.2s;}
+  .ai-input-wrap input:focus{border-color:var(--accent);box-shadow:0 0 0 4px var(--ring);}
+  .ai-input-wrap button{width:40px;height:40px;border-radius:50%;border:none;background:var(--accent);color:var(--txt-inv);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.18s;box-shadow:0 4px 14px rgba(56,214,191,.28);flex-shrink:0;}
+  .ai-input-wrap button:active{transform:scale(.92);}
+  .ai-input-wrap button svg{width:18px;height:18px;}
+  .ai-chips{display:flex;gap:8px;overflow-x:auto;padding:2px 0;margin-top:10px;-ms-overflow-style:none;scrollbar-width:none;white-space:nowrap;}
+  .ai-chips::-webkit-scrollbar{display:none;}
+  .ai-chips button{height:30px;padding:0 12px;border-radius:var(--r-full);border:1px solid var(--line);background:var(--card);color:var(--txt-2);font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer;transition:.18s;}
+  .ai-chips button:active{background:var(--accent-bg);border-color:var(--accent-line);color:var(--txt);transform:scale(.95);}
+  .ai-result{margin-top:12px;padding:13px;border-radius:var(--r-md);background:var(--surface);border:1px solid var(--line);position:relative;}
+  .ai-result.hide{display:none;}
+  .ai-reply{font-size:13px;line-height:1.55;color:var(--txt);}
+  .ai-items{display:flex;flex-direction:column;gap:8px;margin:10px 0;}
+  .ai-item{font-size:13px;padding:9px 11px;border-radius:10px;background:var(--card);border:1px solid var(--line);display:flex;align-items:flex-start;gap:8px;color:var(--txt-2);}
+  .ai-item svg{width:16px;height:16px;color:var(--accent);flex-shrink:0;margin-top:1px;}
+  .ai-actions{display:flex;gap:9px;margin-top:10px;}
+  .ai-actions .btn{flex:1;padding:10px 12px;font-size:13px;}
+
   /* 进度条 */
   .progress-track{height:8px;border-radius:var(--r-full);background:rgba(255,255,255,.07);overflow:hidden;margin-top:11px;}
   .progress-fill{height:100%;border-radius:var(--r-full);background:linear-gradient(90deg,var(--accent),var(--accent-2));
@@ -391,6 +420,27 @@
   <div class="wrap">
     <section id="tab-today">
       <div class="hero" id="heroCard"></div>
+      <div class="card ai-card" id="aiCard">
+        <div class="ai-head">
+          <div class="ai-avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9Z"/><circle cx="9" cy="10" r="1.2" fill="currentColor" stroke="none"/><circle cx="14" cy="13" r="1.2" fill="currentColor" stroke="none"/></svg></div>
+          <div class="ai-info">
+            <div class="ai-name">小守 · AI 助手</div>
+            <div class="ai-hint" id="aiHint">跟我说句话，帮你生成任务 / 目标 / 记录</div>
+          </div>
+        </div>
+        <div class="ai-input-wrap">
+          <input type="text" id="aiInput" placeholder="例如：生成今日任务 / 我喝了150ml / 定目标减20斤" enterkeyhint="send" autocomplete="off">
+          <button id="aiSend" title="发送"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+        </div>
+        <div class="ai-chips" id="aiChips">
+          <button data-cmd="gen">生成今日任务</button>
+          <button data-cmd="water">喝水提醒</button>
+          <button data-cmd="weight">记录体重</button>
+          <button data-cmd="cig">记录抽烟</button>
+          <button data-cmd="goal">定目标</button>
+        </div>
+        <div class="ai-result hide" id="aiResult"></div>
+      </div>
       <div class="tools">
         <div class="tool" id="toolSquat"><div class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5 17.5 17.5"/><path d="M3 9v6M6 7v10M18 7v10M21 9v6"/></svg></div><div class="tl">静蹲计时</div></div>
         <div class="tool" id="toolFocus"><div class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><div class="tl">专注计时</div></div>
@@ -703,12 +753,13 @@ const SCHEDULE=[
   {key:'shutdown',h:2,m:0,icon:'moon',title:'强制关机',sub:'关手机睡觉。回顾今日烟酒量。',notif:'强制关机',review:true}
 ];
 
-const APP_VERSION='1.0.8';
+const APP_VERSION='1.0.9';
 const GH_DEFAULT_REPO='dkcoinlj/shouyeren-app';
 let DB;
 function load(){try{DB=JSON.parse(localStorage.getItem(KEY))||{};}catch(e){DB={};}
   DB.records=DB.records||{}; DB.target=DB.target||72; DB.tomorrow=DB.tomorrow||''; DB.tasks=DB.tasks||[];
   DB.hiddenSchedule=DB.hiddenSchedule||[]; DB.scheduleOverride=DB.scheduleOverride||{};
+  DB.userGoals=DB.userGoals||[]; DB.aiDraft=DB.aiDraft||null;
   DB.ghToken=DB.ghToken||''; DB.ghRepo=DB.ghRepo||GH_DEFAULT_REPO;
   if(!DB.records[todayStr])DB.records[todayStr]={checkins:{}};}
 function save(){localStorage.setItem(KEY,JSON.stringify(DB));}
@@ -1100,6 +1151,111 @@ document.getElementById('taskSave').onclick=async()=>{
   document.getElementById('mTask').classList.remove('show');renderTasks();renderOverview();toast('任务已添加'+(task.time&&taskTargetStatus==='todo'?' · 已设提醒':''));
 };
 
+/* ===== AI 助手 · 小守（本地规则引擎，零依赖，可离线） ===== */
+function numIn(s){const m=s.match(/-?\d+(?:\.\d+)?/);return m?parseFloat(m[0]):null;}
+function genTodayTasks(){
+  const d=new Date();
+  const out=[];
+  getSystemTasks().forEach(t=>{if(t.status==='done')return;out.push({icon:t.icon,title:t.title,sub:t.sub,time:t.time});});
+  if(out.length>9)out.length=9;
+  if(noAlcoholToday(d))out.unshift({icon:'ban',title:'今日无酒日',sub:'用茶/苏打水替代，守住'+getPhase(d).name,time:''});
+  out.push({icon:'dumbbell',title:'静蹲 3×40秒',sub:'无酒日多做1组，保肌',time:''});
+  return out;
+}
+function parseAICommand(raw){
+  const s=(raw||'').trim();
+  if(!s)return{type:'text',reply:'说点啥吧～比如「生成今日任务」「我喝了150ml酒」「定目标减20斤」「提醒我喝水」。'};
+  const has=(...kw)=>kw.some(k=>s.includes(k));
+  const p=getPhase(new Date());
+  let n;
+  // 生成今日任务
+  if(has('生成','今日','任务')&&(has('任务','今日','生成')))return{type:'tasks',reply:'已根据你的阶段「'+p.name+'」和今日状态整理出今日清单，确认后一键填入「未完成」：',payload:genTodayTasks()};
+  // 目标（优先于体重/饮酒，避免“定目标减20斤”被误判）
+  if(has('目标','goal'))return{type:'goal',payload:{text:s.replace(/^定目标\s*[:：]?/,'')},reply:'已为你立下目标，确认后存入「核心目标（2个月）」：'};
+  // 喝水提醒
+  if(has('喝水','水')&&!has('酒','抽','烟'))return{type:'water',reply:'已为你安排一次喝水提醒（300ml 温水，1.5 分钟后）。需要每天固定提醒可填为任务。',payload:{}};
+  // 饮酒记录
+  if((n=numIn(s))!==null&&has('酒','喝'))return{type:'record',payload:{alcohol_ml:n},reply:'记录：今日饮酒 '+n+'ml（当前阶段上限 '+p.alc+'ml'+(n>p.alc?'，已超上限⚠':'')+'）。'};
+  // 抽烟记录
+  if((n=numIn(s))!==null&&has('烟','抽'))return{type:'record',payload:{cigarettes:n},reply:'记录：今日吸烟 '+n+'支（当前阶段上限 '+p.cig+'支'+(n>p.cig?'，已超上限⚠':'')+'）。'};
+  // 静蹲/运动
+  if((n=numIn(s))!==null&&has('蹲','运动','组')){const sec=Math.round(n*40);return{type:'record',payload:{squat_sec:sec},reply:'记录：静蹲 '+n+' 组（约 '+sec+' 秒）。'};}
+  // 体重
+  if((n=numIn(s))!==null&&has('体重','斤','kg','公斤','重'))return{type:'record',payload:{weight:n},reply:'记录：体重 '+n+' kg。'};
+  // 计时器
+  if(has('专注','计时','番茄'))return{type:'timer',payload:{min:25,label:'专注'},reply:'打开 25 分钟专注计时器。'};
+  if(has('静蹲','计时'))return{type:'timer',payload:{min:5,label:'静蹲'},reply:'打开 5 分钟静蹲计时器。'};
+  // 默认
+  return{type:'text',reply:'收到～你可以试着说：「生成今日任务」「我喝了150ml酒」「我抽了5支烟」「记录体重78.5」「定目标减20斤」「提醒我喝水」。'};
+}
+function renderAI(){
+  const box=document.getElementById('aiResult');
+  const d=DB.aiDraft;
+  if(!d){box.classList.add('hide');box.innerHTML='';return;}
+  let items='';
+  if(d.type==='tasks'){
+    items=d.payload.map(t=>`<div class="ai-item">${icon(t.icon||'star',16)}<span><b>${esc(t.title)}</b>${t.time?' · '+esc(t.time):''}${t.sub?' — '+esc(t.sub):''}</span></div>`).join('');
+  }else if(d.type==='goal'){
+    items=`<div class="ai-item">${icon('star',16)}<span><b>${esc(d.payload.text)}</b></span></div>`;
+  }else if(d.type==='record'){
+    items=`<div class="ai-item">${icon('check',16)}<span>${esc(d.reply)}</span></div>`;
+  }else if(d.type==='water'){
+    items=`<div class="ai-item">${icon('drop',16)}<span>${esc(d.reply)}</span></div>`;
+  }else if(d.type==='timer'){
+    items=`<div class="ai-item">${icon('cup',16)}<span>${esc(d.reply)}</span></div>`;
+  }else{
+    items=`<div class="ai-item">${icon('spark',16)}<span>${esc(d.reply)}</span></div>`;
+  }
+  const lbl={tasks:'一键填入任务',goal:'设为2个月目标',record:'确认记录',water:'安排喝水提醒',timer:'打开计时器',text:'好的'}[d.type]||'确定';
+  box.innerHTML=`<div class="ai-reply">${d.reply||''}</div>${items?`<div class="ai-items">${items}</div>`:''}
+    <div class="ai-actions"><button class="btn btn-sm btn-accent" id="aiApply">${lbl}</button>
+    <button class="btn btn-sm btn-ghost" id="aiDel">删除</button></div>`;
+  box.classList.remove('hide');
+  document.getElementById('aiApply').onclick=aiApply;
+  document.getElementById('aiDel').onclick=()=>{DB.aiDraft=null;save();renderAI();toast('已删除');};
+  box.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function aiApply(){
+  const d=DB.aiDraft;if(!d)return;
+  if(d.type==='tasks'){
+    let added=0;
+    d.payload.forEach(it=>{
+      if(DB.tasks.some(t=>t.title===it.title))return;
+      DB.tasks.push({id:'t'+Date.now()+Math.random().toString(36).slice(2,5),type:'custom',icon:it.icon||'star',title:it.title,text:it.title,sub:it.sub||'',status:'todo',created:todayStr,time:it.time||null});added++;
+    });
+    save();renderTasks();renderOverview();toast('已填入 '+added+' 个任务');
+  }else if(d.type==='goal'){
+    const g=d.payload.text.trim();
+    if(g&&!DB.userGoals.includes(g)){DB.userGoals.push(g);save();renderPlan();toast('目标已存入「核心目标」');}
+    else toast('目标已存在');
+  }else if(d.type==='record'){
+    Object.assign(todayRec,d.payload);save();renderData();renderOverview();toast('已记录');
+  }else if(d.type==='water'){
+    document.getElementById('toolWater').click();
+  }else if(d.type==='timer'){
+    openTimer(d.payload.min,d.payload.label);
+  }else if(d.type==='text'){
+    toast('好哒');
+  }
+  DB.aiDraft=null;save();renderAI();
+}
+function sendAI(text){
+  const t=(text!=null?text:document.getElementById('aiInput').value).trim();
+  if(!t){toast('写点啥');return;}
+  const inp=document.getElementById('aiInput');if(inp)inp.value='';
+  DB.aiDraft=parseAICommand(t);save();renderAI();
+}
+document.getElementById('aiSend').onclick=()=>sendAI();
+document.getElementById('aiInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();sendAI();}});
+document.querySelectorAll('#aiChips button').forEach(b=>b.onclick=()=>{
+  const c=b.dataset.cmd;
+  if(c==='gen')return sendAI('生成今日任务');
+  if(c==='water')return sendAI('提醒我喝水');
+  if(c==='weight')return openWeight();
+  if(c==='cig')return sendAI('我抽了5支烟');
+  if(c==='goal'){const i=document.getElementById('aiInput');i.value='定目标 ';i.focus();return;}
+});
+
 /* ===== 执行工具：计时器 + 喝水 ===== */
 let timer={total:300,left:300,running:false,intv:null,label:'静蹲'};
 function fmtMMSS(s){const m=Math.floor(s/60),ss=s%60;return String(m).padStart(2,'0')+':'+String(ss).padStart(2,'0');}
@@ -1149,10 +1305,14 @@ document.getElementById('toolWater').onclick=async()=>{
 
 /* ===== 方案页可视化 ===== */
 function renderPlan(){
-  document.getElementById('planGoals').innerHTML=[
+  let goalsHTML=[
     {v:'-20斤',k:'减重 190→170'},{v:'+3度',k:'美白提亮'},{v:'≤3支',k:'无感戒烟'},
     {v:'≤50ml',k:'无感戒酒'},{v:'保肌',k:'增肌保肌'},{v:'本能',k:'形成自律'}
   ].map(x=>`<div class="goal"><div class="gv">${x.v}</div><div class="gk">${x.k}</div><div class="gb">${x.k[0]}</div></div>`).join('');
+  if(DB.userGoals&&DB.userGoals.length){
+    goalsHTML+=DB.userGoals.map(g=>`<div class="goal" style="border-color:var(--gold-line);background:var(--gold-bg)"><div class="gv" style="color:var(--gold)">★</div><div class="gk">${esc(g)}</div><div class="gb" style="color:rgba(244,204,102,.12)">标</div></div>`).join('');
+  }
+  document.getElementById('planGoals').innerHTML=goalsHTML;
 
   document.getElementById('planSchedule').innerHTML=SCHEDULE.map(s=>{
     const time=`${String(s.h).padStart(2,'0')}:${String(s.m).padStart(2,'0')}`;
@@ -1274,7 +1434,7 @@ document.getElementById('phaseList').innerHTML=PHASES.map(p=>
     <div style="font-size:12px;color:var(--txt-2);margin-top:6px;line-height:1.6">无酒日：${p.noAlcohol.length?p.noAlcohol.map(x=>WD_CN[WD.indexOf(x)]).join('、'):'无'} · 酒≤${p.alc}ml · 烟≤${p.cig}支</div>
     <div style="font-size:12px;color:var(--accent-2);margin-top:3px">${p.tip}</div></div>`).join('');
 
-function renderAll(){renderPhase();renderToday();renderTasks();renderOverview();}
+function renderAll(){renderPhase();renderToday();renderTasks();renderOverview();renderAI();}
 renderAll();setTimeout(refreshNotifState,300);
 window.addEventListener('resize',()=>{if(!document.getElementById('tab-data').classList.contains('hide'))renderData();});
 
