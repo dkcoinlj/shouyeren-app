@@ -1,0 +1,19 @@
+{
+  "name": "shouyeren-app",
+  "version": "1.0.0",
+  "description": "守夜人 · 个人保命作息 App（Capacitor 原生封装，数据本地）",
+  "private": true,
+  "scripts": {
+    "sync": "cap sync",
+    "android": "cap open android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^5.7.8",
+    "@capacitor/core": "^5.7.0",
+    "@capacitor/local-notifications": "^5.0.7",
+    "@capacitor/splash-screen": "^5.0.7"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^5.7.0"
+  }
+}

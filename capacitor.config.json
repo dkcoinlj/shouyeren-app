@@ -1,0 +1,8 @@
+{
+  "appId": "com.nightwatcher.app",
+  "appName": "守夜人",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  }
+}
