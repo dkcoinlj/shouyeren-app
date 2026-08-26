@@ -28,7 +28,7 @@
   html,body{margin:0;padding:0;background:var(--bg);color:var(--text-primary);
     font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
     font-size:15px;letter-spacing:-.01em;overscroll-behavior:none;}
-  body{padding-top:calc(56px + var(--safe-t));padding-bottom:calc(74px + var(--safe-b));min-height:100vh;}
+  body{padding-top:calc(56px + var(--safe-t));padding-bottom:calc(74px + var(--safe-b));min-height:100vh;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 
   /* 顶栏（参照顾问链聘移动顶栏） */
   .appbar{position:fixed;top:0;left:0;right:0;z-index:30;height:calc(56px + var(--safe-t));
@@ -126,7 +126,7 @@
   .board{display:flex;gap:10px;}
   .board .lane{flex:1;background:var(--bg-secondary);border:1px solid var(--card-border);border-radius:var(--radius-lg);padding:10px;margin:0;
     transition:border-color .2s,box-shadow .2s;display:flex;flex-direction:column;}
-  .board .lane-body{min-height:120px;max-height:min(420px,52vh);overflow-y:auto;}
+  .board .lane-body{min-height:120px;max-height:min(420px,52vh);overflow-y:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin;}
   .lane{background:var(--bg-secondary);border:1px solid var(--card-border);border-radius:var(--radius-lg);padding:12px;margin-bottom:12px;
     transition:border-color .2s,box-shadow .2s;}
   .lane.drag-over{border-color:var(--accent-border);box-shadow:0 0 0 1px var(--accent-border),var(--shadow-accent);}
@@ -143,7 +143,7 @@
   .lane-body:empty::after{content:'把任务卡拖到这里';display:block;text-align:center;color:var(--text-tertiary);font-size:12px;
     padding:16px 0;border:1px dashed var(--card-border);border-radius:var(--radius-md);}
   .tcard{position:relative;background:var(--card);border:1px solid var(--card-border);border-radius:var(--radius-md);
-    padding:11px 56px 11px 11px;margin-bottom:9px;box-shadow:var(--shadow);touch-action:none;cursor:grab;
+    padding:11px 56px 11px 11px;margin-bottom:9px;box-shadow:var(--shadow);touch-action:pan-y;cursor:grab;
     transition:transform .18s cubic-bezier(.16,1,.3,1),border-color .2s,box-shadow .2s,opacity .2s;}
   .tcard:active{cursor:grabbing;}
   .tcard.dragging{opacity:.25;}
@@ -193,6 +193,17 @@
 
   .float-in{animation:float-in .5s cubic-bezier(.16,1,.3,1) both;}
   @keyframes float-in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+  /* 方案页 */
+  .plan-list{display:flex;flex-direction:column;gap:10px;}
+  .plan-item{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.5;color:var(--text-secondary);}
+  .plan-item b{color:var(--text-primary);font-weight:600;}
+  .plan-item .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);margin-top:6px;flex-shrink:0;box-shadow:0 0 6px var(--accent);}
+  .plan-table{width:100%;font-size:12px;border-collapse:separate;border-spacing:0;}
+  .plan-table th,.plan-table td{padding:10px 6px;text-align:left;border-bottom:1px solid var(--card-border);vertical-align:top;color:var(--text-secondary);}
+  .plan-table th{color:var(--text-tertiary);font-weight:600;font-size:11px;text-transform:uppercase;}
+  .plan-table tr:last-child td{border-bottom:none;}
+  .plan-table td:first-child{white-space:nowrap;color:var(--text-primary);font-weight:600;}
 </style>
 </head>
 <body>
@@ -226,6 +237,45 @@
         <h3 class="card-title"><span class="em">📆</span>日历闹钟兜底</h3>
         <div class="note">系统通知已启用时无需此步。若某手机厂商限制后台通知，可导出 .ics 导入系统日历，作为原生闹钟兜底。</div>
         <button class="btn btn-secondary btn-full" id="icsBtn" style="margin-top:10px">⬇️ 导出日历提醒 (.ics)</button>
+      </div>
+    </section>
+
+    <section id="tab-plan" class="hide">
+      <div class="card">
+        <h3 class="card-title"><span class="em">🎯</span>核心目标（2个月）</h3>
+        <div class="plan-list" id="planGoals"></div>
+      </div>
+      <div class="card">
+        <h3 class="card-title"><span class="em">⏰</span>每日固定作息</h3>
+        <div class="plan-table" id="planSchedule"></div>
+      </div>
+      <div class="card">
+        <h3 class="card-title"><span class="em">🍶</span>无感戒酒·周阶段</h3>
+        <div class="plan-table" id="planAlcohol"></div>
+      </div>
+      <div class="card">
+        <h3 class="card-title"><span class="em">🚬</span>无感戒烟·周阶段</h3>
+        <div class="plan-table" id="planSmoke"></div>
+      </div>
+      <div class="card">
+        <h3 class="card-title"><span class="em">✨</span>美白执行指令</h3>
+        <div class="plan-list" id="planSkin"></div>
+      </div>
+      <div class="card">
+        <h3 class="card-title"><span class="em">📅</span>一周差异化执行</h3>
+        <div class="plan-table" id="planWeek"></div>
+      </div>
+      <div class="card">
+        <h3 class="card-title"><span class="em">📊</span>进度追踪</h3>
+        <div class="plan-list" id="planTrack"></div>
+      </div>
+      <div class="card">
+        <h3 class="card-title"><span class="em">⚠️</span>三条保命军规</h3>
+        <div class="plan-list" id="planRules"></div>
+      </div>
+      <div class="card">
+        <h3 class="card-title"><span class="em">🗓️</span>阶段切换时间表</h3>
+        <div class="plan-table" id="planPhaseTime"></div>
       </div>
     </section>
 
@@ -292,6 +342,9 @@
     <div class="tab active" data-tab="today">
       <span class="ic-wrap"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span>今日
     </div>
+    <div class="tab" data-tab="plan">
+      <span class="ic-wrap"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span>方案
+    </div>
     <div class="tab" data-tab="data">
       <span class="ic-wrap"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>数据
     </div>
@@ -340,27 +393,26 @@ const todayStr=fmt(new Date());
 
 const PHASES=[
   {key:'adaptation', name:'适应期', start:'2026-08-26', end:'2026-09-08', noAlcohol:['Tue','Thu'], alc:250, cig:18, tip:'先稳住节律，酒≤250ml/烟≤18支'},
-  {key:'reduce', name:'微降期', start:'2026-09-09', end:'2026-09-22', noAlcohol:['Tue','Thu'], alc:200, cig:14, tip:'饮酒日减到≤200ml，烟≤14支'},
-  {key:'replace', name:'替换期', start:'2026-09-23', end:'2026-10-06', noAlcohol:['Tue','Thu','Sat'], alc:180, cig:10, tip:'增加无酒日(周六)，用茶/运动替代'},
-  {key:'consolidate', name:'巩固期', start:'2026-10-07', end:'2026-10-20', noAlcohol:['Tue','Thu','Sat','Sun'], alc:150, cig:8, tip:'仅周三五可微醺，其余全无酒'},
-  {key:'free', name:'自由态', start:'2026-10-21', end:'', noAlcohol:[], alc:250, cig:18, tip:'形成本能，偶尔放松不破底'}
+  {key:'reduce', name:'微降期', start:'2026-09-09', end:'2026-09-22', noAlcohol:['Tue','Thu'], alc:200, cig:15, tip:'饮酒日≤200ml（可掺20%白水），烟≤15支'},
+  {key:'replace', name:'替换期', start:'2026-09-23', end:'2026-10-06', noAlcohol:['Tue','Thu','Sat'], alc:150, cig:10, tip:'增加无酒日(周六)，用茶/运动替代'},
+  {key:'consolidate', name:'巩固期', start:'2026-10-07', end:'2026-10-20', noAlcohol:['Tue','Thu','Sat','Sun'], alc:100, cig:6, tip:'仅周三五可微醺，其余全无酒'},
+  {key:'free', name:'自由态', start:'2026-10-21', end:'', noAlcohol:[], alc:50, cig:3, tip:'形成本能，偶尔放松不破底'}
 ];
 function getPhase(d){let cur=PHASES[0];for(const p of PHASES){if(parseD(p.start)<=d)cur=p;}return cur;}
 const noAlcoholToday=d=>getPhase(d).noAlcohol.includes(WD[d.getDay()]);
 
 const SCHEDULE=[
-  {key:'wake',h:6,m:20,em:'🌅',title:'起床',sub:'该起了，新的一天',notif:'🌅 起床｜该起了，新的一天'},
-  {key:'wash',h:6,m:40,em:'🪥',title:'洗漱',sub:'刷牙洗脸，清醒一下',notif:'🪥 洗漱时间'},
-  {key:'breakfast',h:7,m:0,em:'🍳',title:'早餐',sub:'吃好早餐，稳住血糖',notif:'🍳 早餐时间'},
-  {key:'focus',h:11,m:30,em:'☕',title:'摸鱼专注',sub:'上班摸鱼也要专注做一件正事',notif:'☕ 摸鱼时间：专注做一件正事'},
-  {key:'lunch',h:12,m:0,em:'🍚',title:'午餐',sub:'好好吃饭',notif:'🍚 午餐时间'},
-  {key:'nap',h:14,m:0,em:'😴',title:'午休起身',sub:'午休结束，起来动动',notif:'😴 午休结束，起来动动'},
-  {key:'work',h:18,m:0,em:'💼',title:'工作收尾',sub:'工作收尾，准备回家',notif:'💼 工作收尾'},
-  {key:'dinner',h:18,m:30,em:'🍷',title:'晚餐',sub:'',notif:'🍷 晚餐时间', dyn:true},
-  {key:'skin',h:21,m:0,em:'🧴',title:'护肤 / 去角质',sub:'',notif:'', dyn:true},
-  {key:'review',h:22,m:0,em:'📝',title:'复盘 + 明日任务',sub:'写一下明天要做什么',notif:'📝 复盘 + 写明日任务'},
-  {key:'squat',h:23,m:30,em:'🦵',title:'静蹲',sub:'5–15 分钟，护膝',notif:'🦵 静蹲 5–15 分钟'},
-  {key:'shutdown',h:2,m:0,em:'🌙',title:'关机睡觉',sub:'理想 02:00，实际渐进',notif:'🌙 关机睡觉', review:true}
+  {key:'wake',h:10,m:0,em:'🌅',title:'起床·清肺',sub:'300ml温水+半个柠檬汁，开窗深呼吸5次。仅周日称空腹体重。',notif:'起床·清肺'},
+  {key:'breakfast',h:10,m:30,em:'🍳',title:'早餐·护胃抗氧',sub:'2水煮蛋+1盒牛奶。早餐后10分钟再抽烟。随餐1粒维C+1粒维E。',notif:'早餐·护胃抗氧'},
+  {key:'snack',h:15,m:0,em:'🍊',title:'加餐·美白炸弹',sub:'1个猕猴桃或圣女果+300ml水。允许抽1根解瘾。',notif:'加餐·美白炸弹'},
+  {key:'lunch',h:15,m:30,em:'🍗',title:'午餐·供能',sub:'去皮鸡腿饭（鸡腿+蔬菜+150克米饭）+凉拌西红柿。',notif:'午餐·供能'},
+  {key:'noSmoke',h:16,m:0,em:'🚫',title:'运动禁烟令',sub:'到18:00前一根不抽！增肌窗口，违者肌肉充血打七折。',notif:'运动禁烟令'},
+  {key:'exercise',h:17,m:0,em:'🏋️',title:'微运动',sub:'靠墙静蹲3组×40秒 + 坐姿抬腿3组×20次。无酒日多做1组。',notif:'微运动'},
+  {key:'dinner',h:17,m:30,em:'🥗',title:'晚餐·分情况',sub:'',notif:'晚餐时间',dyn:true},
+  {key:'skin',h:21,m:0,em:'🧴',title:'去角质护肤',sub:'',notif:'去角质护肤',dyn:true},
+  {key:'stomach',h:21,m:30,em:'🛡️',title:'护胃生死线',sub:'1盒纯牛奶+2个水煮蛋清（蛋黄不吃）+1粒维C（晚）。雷打不动。',notif:'护胃生死线'},
+  {key:'drink',h:22,m:0,em:'🍶',title:'饮酒窗口',sub:'',notif:'饮酒窗口',dyn:true},
+  {key:'shutdown',h:2,m:0,em:'🌙',title:'强制关机',sub:'关手机睡觉。回顾今日烟酒量。',notif:'强制关机',review:true}
 ];
 
 let DB;
@@ -413,9 +465,10 @@ function getSystemTasks(){
     let sub=(o.sub!==undefined)?o.sub:s.sub;
     if(o.sub===undefined){
       if(s.dyn&&s.key==='dinner'){
-        if(noAlcoholToday(d))sub='今天无酒日，喝水 / 茶';
-        else if(d.getDay()===0)sub='周日报复性微醺，≤'+getPhase(d).alc+'ml';
-        else sub='饮酒 ≤'+getPhase(d).alc+'ml，慢饮';
+        sub=noAlcoholToday(d)?'无酒日：加回150克米饭+1盒无糖酸奶':'饮酒日：只吃鸡腿+蔬菜，米饭倒掉';
+      }
+      if(s.dyn&&s.key==='drink'){
+        sub=noAlcoholToday(d)?'今日无酒日，用茶/苏打水替代':'饮酒 ≤'+getPhase(d).alc+'ml（43度白酒），刻度杯量，配等量白水。烟酒后间隔半小时';
       }
       if(s.dyn&&s.key==='skin'){const wd=WD[d.getDay()];sub=(wd==='Tue'||wd==='Thu'||wd==='Sat')?'去角质日，认真搓':'基础护肤';}
     }
@@ -655,10 +708,81 @@ document.getElementById('taskSave').onclick=async()=>{
   document.getElementById('mTask').classList.remove('show');renderTasks();toast('任务已添加 ✓'+(task.time&&taskTargetStatus==='todo'?' · 已设提醒':''));
 };
 
+function renderPlan(){
+  document.getElementById('planGoals').innerHTML=[
+    {t:'减重20斤',d:'190斤 → 170斤'},
+    {t:'美白3度',d:'面部及手臂肤色提亮 ≥ 3个度'},
+    {t:'无感戒烟',d:'20支/天 → ≤3支/天或全戒'},
+    {t:'无感戒酒',d:'半斤/天 → ≤50ml/天或全戒'},
+    {t:'增肌保肌',d:'最大化肌肉保留'}
+  ].map(x=>`<div class="plan-item"><span class="dot"></span><div><b>${x.t}</b>：${x.d}</div></div>`).join('');
+
+  const schedRows=SCHEDULE.map(s=>{
+    const time=`${String(s.h).padStart(2,'0')}:${String(s.m).padStart(2,'0')}`;
+    const sub=s.dyn?'（根据当日状态动态显示）':s.sub;
+    return `<tr><td>${time}</td><td>${s.em} ${esc(s.title)}</td><td>${esc(sub)}</td></tr>`;
+  }).join('');
+  document.getElementById('planSchedule').innerHTML=`<table class="plan-table"><thead><tr><th>时间</th><th>标签</th><th>操作</th></tr></thead><tbody>${schedRows}</tbody></table>`;
+
+  const alcRows=[
+    {c:'第1-2周',l:'250ml（半斤）',no:'周二、四',tip:'刻度杯倒，喝完即止'},
+    {c:'第3-4周',l:'200ml（四两）',no:'周二、四',tip:'掺20%白水'},
+    {c:'第5-6周',l:'150ml（三两）',no:'周二、四、六',tip:'无酒日晚餐加1个鸡腿'},
+    {c:'第7-8周',l:'100ml（二两）',no:'周二、四、六、日',tip:'无酒日用无糖苏打水替代'},
+    {c:'第9周+',l:'≤50ml或全戒',no:'—',tip:'只在社交/情绪极差时喝，热茶替代仪式感'}
+  ].map(x=>`<tr><td>${x.c}</td><td>${x.l}</td><td>${x.no}</td><td>${x.tip}</td></tr>`).join('');
+  document.getElementById('planAlcohol').innerHTML=`<table class="plan-table"><thead><tr><th>周期</th><th>每日上限</th><th>无酒日</th><th>执行技巧</th></tr></thead><tbody>${alcRows}</tbody></table>`;
+
+  const cigRows=[
+    {c:'第1-2周',l:'≤18支',tip:'拆包先扔2支，晨起第一根延迟20分钟'},
+    {c:'第3-4周',l:'≤15支',tip:'每根只抽2/3就掐灭，16-18点禁烟令严格'},
+    {c:'第5-6周',l:'≤10支',tip:'薄荷糖/口香糖替代4个抽烟时刻'},
+    {c:'第7-8周',l:'≤6支',tip:'只保留饭后3支+睡前1支+早起1支+运动后1支'},
+    {c:'第9周+',l:'≤3支或全戒',tip:'瘾上来深呼吸10次，"等半小时再抽"'}
+  ].map(x=>`<tr><td>${x.c}</td><td>${x.l}</td><td>${x.tip}</td></tr>`).join('');
+  document.getElementById('planSmoke').innerHTML=`<table class="plan-table"><thead><tr><th>周期</th><th>每日上限</th><th>执行技巧</th></tr></thead><tbody>${cigRows}</tbody></table>`;
+
+  document.getElementById('planSkin').innerHTML=[
+    '每天随餐：维C片早晚各1粒 + 维E软胶囊1粒（早上）',
+    '15:00加餐：猕猴桃或圣女果（维C之王）',
+    '每周二四六洗澡：搓澡巾轻搓手臂、脖子、胸口去角质，洗后涂烟酰胺身体乳（或橄榄油+维E混合）',
+    '晨起柠檬水必须在抽烟前喝',
+    '烟酒不同频（间隔半小时以上）',
+    '白天拉严窗帘不出门，拿外卖穿长袖'
+  ].map(s=>`<div class="plan-item"><span class="dot"></span><div>${s}</div></div>`).join('');
+
+  const weekRows=[
+    {w:'周一',a:'阶段上限',c:'阶段上限',d:'标准日（米饭150g）',e:'标准组'},
+    {w:'周二',a:'无酒日',c:'阶段上限',d:'晚餐加回150g米饭+酸奶',e:'标准组'},
+    {w:'周三',a:'阶段上限',c:'阶段上限',d:'标准日',e:'标准组'},
+    {w:'周四',a:'无酒日',c:'阶段上限',d:'晚餐加回150g米饭+酸奶',e:'标准组'},
+    {w:'周五',a:'阶段上限',c:'阶段上限',d:'标准日',e:'标准组'},
+    {w:'周六',a:'无酒日（第5周起）',c:'阶段上限',d:'晚餐加回米饭+酸奶',e:'多做1组静蹲'},
+    {w:'周日',a:'允许到上限',c:'阶段上限+2支',d:'午餐米饭加到300g（吃爽）',e:'标准组'}
+  ].map(x=>`<tr><td>${x.w}</td><td>${x.a}</td><td>${x.c}</td><td>${x.d}</td><td>${x.e}</td></tr>`).join('');
+  document.getElementById('planWeek').innerHTML=`<table class="plan-table"><thead><tr><th>星期</th><th>饮酒</th><th>吸烟</th><th>饮食差异</th><th>运动差异</th></tr></thead><tbody>${weekRows}</tbody></table>`;
+
+  document.getElementById('planTrack').innerHTML=[
+    '减脂：190→170斤（减20斤），每周0.8-1.2斤纯脂肪，预计4-5个月',
+    '变白：第1个月皮肤透亮度提升，第2个月手臂内侧肤色接近天生最白色号，白≥3度',
+    '每周日10:00：唯一称重日，记录体重，对比上周，忽略日波动'
+  ].map(s=>`<div class="plan-item"><span class="dot"></span><div>${s}</div></div>`).join('');
+
+  document.getElementById('planRules').innerHTML=[
+    '21:30护胃餐是死命令：不饿也必须闭眼灌下去，牛奶+蛋清是第二天不胃疼、不掉肌肉的防火墙',
+    '16:00-18:00运动禁烟令：违者当日增肌效果打七折',
+    '每周日只对比周体重：喝酒后体重虚低是水分，别被骗，别额外加餐补偿'
+  ].map(s=>`<div class="plan-item"><span class="dot"></span><div>${s}</div></div>`).join('');
+
+  const phaseRows=PHASES.map(p=>`<tr><td>${p.name}</td><td>${p.start}${p.end?' ~ '+p.end:''}</td><td>${p.alc}ml</td><td>${p.cig}支</td><td>${p.noAlcohol.length?p.noAlcohol.map(x=>WD_CN[WD.indexOf(x)]).join('、'):'无'}</td></tr>`).join('');
+  document.getElementById('planPhaseTime').innerHTML=`<table class="plan-table"><thead><tr><th>阶段</th><th>日期</th><th>饮酒</th><th>吸烟</th><th>无酒日</th></tr></thead><tbody>${phaseRows}</tbody></table>`;
+}
+
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
   document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');
-  ['today','data','settings'].forEach(n=>{const sec=document.getElementById('tab-'+n);sec.classList.toggle('hide',n!==t.dataset.tab);
+  ['today','plan','data','settings'].forEach(n=>{const sec=document.getElementById('tab-'+n);sec.classList.toggle('hide',n!==t.dataset.tab);
     if(n===t.dataset.tab){sec.classList.remove('float-in');void sec.offsetWidth;sec.classList.add('float-in');}});
+  if(t.dataset.tab==='plan')renderPlan();
   if(t.dataset.tab==='data')renderData();
   if(t.dataset.tab==='settings'){document.getElementById('targetW').value=DB.target;refreshNotifState();}});
 document.getElementById('targetW').onchange=e=>{DB.target=+e.target.value||72;save();renderData();};
