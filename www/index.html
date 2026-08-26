@@ -592,9 +592,10 @@
         <div class="note" id="updStatus" style="margin-top:8px">未检查</div>
       </div>
       <div class="card">
-        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="m8 2 0 4M16 2v4M3 10h18"/></svg></span>日历闹钟兜底</h3>
-        <div class="note">系统通知已启用时无需此步。若某手机厂商限制后台通知，可导出 .ics 导入系统日历，作为原生闹钟兜底。</div>
-        <button class="btn btn-secondary btn-full" id="icsBtn" style="margin-top:10px">导出日历提醒 (.ics)</button>
+        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8M21 12v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h11"/></svg></span>通知测试与保活</h3>
+        <div class="note">提醒已改用 App 自身的系统通知直接下发（不依赖外部日历）。点下面按钮可当场验证；若仍收不到，多半是手机把本 App 的后台进程限制了。</div>
+        <button class="btn btn-accent btn-full" id="testNotif" style="margin-top:10px">发送测试通知（3 秒后）</button>
+        <div class="note" style="margin-top:10px"><b>收不到时这样处理：</b><br>① 系统设置里给「守夜人」开启「允许通知」与「锁屏显示」。<br>② 电池/省电里设为「不受限制」或加入自启动/白名单。<br>③ 部分国产手机（小米/华为/OPPO）需额外开启「允许后台弹出界面」。</div>
       </div>
       <div class="card">
         <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v.01M11 12h1v4h1"/></svg></span>关于</h3>
@@ -767,7 +768,7 @@ const SCHEDULE=[
   {key:'shutdown',h:2,m:0,icon:'moon',title:'强制关机',sub:'关手机睡觉。回顾今日烟酒量。',notif:'强制关机',review:true}
 ];
 
-const APP_VERSION='1.1.0';
+const APP_VERSION='1.1.1';
 const GH_DEFAULT_REPO='dkcoinlj/shouyeren-app';
 const AI_DEFAULT_ENDPOINT='https://tokenhub.tencentmaas.com/v1/chat/completions';
 const AI_DEFAULT_KEY='sk-WzI92BSrRAC3RvPbsihLsWH7QWepZfgnQthdPRCbkIhKkISg';
@@ -779,6 +780,7 @@ function load(){try{DB=JSON.parse(localStorage.getItem(KEY))||{};}catch(e){DB={}
   DB.userGoals=DB.userGoals||[]; DB.aiDraft=DB.aiDraft||null;
   DB.ghToken=DB.ghToken||''; DB.ghRepo=DB.ghRepo||GH_DEFAULT_REPO;
   DB.aiKey=DB.aiKey||''; DB.aiEndpoint=DB.aiEndpoint||AI_DEFAULT_ENDPOINT; DB.aiModel=DB.aiModel||AI_DEFAULT_MODEL;
+  DB.notifAsked=DB.notifAsked||false;
   if(!DB.records[todayStr])DB.records[todayStr]={checkins:{}};}
 function save(){localStorage.setItem(KEY,JSON.stringify(DB));}
 load();
@@ -967,15 +969,10 @@ document.getElementById('impBtn').onclick=()=>document.getElementById('impFile')
 document.getElementById('impFile').onchange=e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();
   rd.onload=()=>{try{const data=JSON.parse(rd.result);DB=Object.assign({records:{},target:72,tomorrow:''},data);save();load();renderAll();toast('备份已恢复');}catch(err){toast('文件解析失败');}};rd.readAsText(f);};
 
-document.getElementById('icsBtn').onclick=()=>{
-  const lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//shouyeren//CN'];
-  SCHEDULE.forEach((s,i)=>{if(s.key==='skin'){lines.push(icsItem(121,'守夜人·护肤','基础护肤时间',s.h,s.m,[]),icsItem(122,'守夜人·去角质','周二/四/六去角质',s.h,s.m+2,[3,5,7]));return;}
-    lines.push(icsItem(100+i,'守夜人·'+s.title,s.notif,s.h,s.m,[]));});
-  lines.push('END:VCALENDAR');const blob=new Blob([lines.join('\r\n')],{type:'text/calendar'});
-  const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='守夜人作息.ics';a.click();URL.revokeObjectURL(url);toast('日历文件已导出，导入系统日历');};
-function icsItem(id,title,body,h,m,wd){let r=['BEGIN:VEVENT','UID:sy'+id+'@shouyeren','SUMMARY:'+title,'DESCRIPTION:'+body];
-  if(wd.length)r.push('RRULE:FREQ=WEEKLY;BYDAY='+wd.map(x=>['SU','MO','TU','WE','TH','FR','SA'][x-1]).join(','));else r.push('RRULE:FREQ=DAILY');
-  r.push('TRIGGER:-PT0M','BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:'+body,'END:VALARM','END:VEVENT');return r.join('\r\n');}
+document.getElementById('testNotif').onclick=sendTestNotif;
+async function sendTestNotif(){if(!NOTIF){toast('请在 App 内操作');return;}
+  if(!notifGranted){try{const p=await NOTIF.requestPermissions();if(p.display!=='granted'){toast('请先在系统设置允许通知');return;}notifGranted=true;refreshNotifState();}catch(e){toast('授权失败');return;}}
+  try{await NOTIF.schedule({notifications:[{id:777,title:'守夜人 · 测试',body:'如果这条弹出来了，说明通知已正常',schedule:{at:Date.now()+3000}}]});toast('测试通知已安排，3 秒后弹出');}catch(e){toast('测试失败：'+(e.message||e));}}
 
 const CU=(window.Capacitor&&Capacitor.Plugins)?Capacitor.Plugins.CapacitorUpdater:null;
 const NOTIF=(window.Capacitor&&Capacitor.isPluginAvailable&&Capacitor.isPluginAvailable('LocalNotifications'))?Capacitor.Plugins.LocalNotifications:null;
@@ -988,6 +985,19 @@ async function refreshNotifState(){const el=document.getElementById('notifState'
     if(bell){bell.classList.toggle('on',notifGranted);if(dot)dot.style.display=notifGranted?'none':'block';}
   }catch(e){el.textContent='状态检测失败';}}
 document.getElementById('notifBtn').onclick=enableNotifications;
+// 首次启动自动申请通知权限并排程，免去手动开启
+async function autoEnableNotif(){
+  if(!NOTIF)return;
+  try{
+    const s=await NOTIF.checkPermissions();
+    if(s.display==='granted'){notifGranted=true;refreshNotifState();return;}
+    if(!DB.notifAsked){DB.notifAsked=true;save();
+      const p=await NOTIF.requestPermissions();
+      if(p.display==='granted'){await enableNotifications();}
+      else toast('通知未授权，可在「设置」里开启');
+    }
+  }catch(e){}
+}
 document.getElementById('bellBtn').onclick=()=>{if(document.getElementById('tab-settings').classList.contains('hide')){
   document.querySelector('.tab[data-tab="settings"]').click();}};
 function taskNotifId(id){return Number(id.replace(/\D/g,'').slice(-8))||0;}
@@ -1519,7 +1529,7 @@ document.getElementById('phaseList').innerHTML=PHASES.map(p=>
     <div style="font-size:12px;color:var(--accent-2);margin-top:3px">${p.tip}</div></div>`).join('');
 
 function renderAll(){renderPhase();renderToday();renderTasks();renderOverview();renderAI();}
-renderAll();setTimeout(refreshNotifState,300);
+renderAll();setTimeout(refreshNotifState,300);setTimeout(autoEnableNotif,600);
 window.addEventListener('resize',()=>{if(!document.getElementById('tab-data').classList.contains('hide'))renderData();});
 
 /* 热更新：标记当前包就绪，并在有 Token 时启动后自动检查一次 */
