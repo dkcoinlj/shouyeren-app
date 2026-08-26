@@ -328,12 +328,21 @@
         <button class="btn btn-secondary btn-full" id="resetSched" style="margin-top:10px">↺ 恢复默认作息任务</button>
       </div>
       <div class="card">
+        <h3 class="card-title"><span class="em">🛰️</span>热更新（免重装）</h3>
+        <div class="note">填一次你的 GitHub Token（需 <b>repo</b> 权限），之后点「检查更新」即从私有仓库拉新包热替换，不用卸载重装。Token 只存在本机。</div>
+        <div class="field" style="margin-top:10px"><label>当前版本</label><div id="curVer" class="note" style="margin:0">v1.0.3</div></div>
+        <div class="field"><label>GitHub Token（Private 仓库读取用）</label><input type="password" id="ghToken" placeholder="ghp_xxx 或 github_pat_xxx" autocomplete="off"></div>
+        <div class="field"><label>更新仓库 (owner/repo)</label><input type="text" id="ghRepo" placeholder="dkcoinlj/shouyeren-app"></div>
+        <button class="btn btn-accent btn-full" id="checkUpd" style="margin-top:4px">检查更新</button>
+        <div class="note" id="updStatus" style="margin-top:8px">未检查</div>
+      </div>
+      <div class="card">
         <h3 class="card-title"><span class="em">ℹ️</span>关于</h3>
         <div style="display:flex;align-items:center;gap:14px;margin:4px 0 12px">
           <div class="logo-lg"><svg viewBox="0 0 32 32" aria-hidden="true"><defs><radialGradient id="nwMoonB" cx="34%" cy="26%" r="85%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="35%" stop-color="#EAF8F4"/><stop offset="72%" stop-color="#A9DED4"/><stop offset="100%" stop-color="#5AA195"/></radialGradient><linearGradient id="nwHaloB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2DD4BF" stop-opacity="0"/><stop offset="50%" stop-color="#2DD4BF" stop-opacity=".85"/><stop offset="1" stop-color="#2DD4BF" stop-opacity="0"/></linearGradient><filter id="nwFloatB" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="2.2" stdDeviation="2" flood-color="#000" flood-opacity=".5"/></filter><filter id="nwGlowB" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="1.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g filter="url(#nwGlowB)"><circle cx="16" cy="16" r="13.5" fill="none" stroke="url(#nwHaloB)" stroke-width="0.8" opacity=".6"><animateTransform attributeName="transform" type="rotate" from="0 16 16" to="360 16 16" dur="22s" repeatCount="indefinite"/></circle></g><g filter="url(#nwFloatB)"><g><animateTransform attributeName="transform" type="translate" values="0 0;0 -0.8;0 0" dur="3.4s" repeatCount="indefinite" calcMode="spline" keySplines="0.45 0 0.55 1;0.45 0 0.55 1"/><path fill="url(#nwMoonB)" fill-rule="evenodd" d="M16 4.5a11.5 11.5 0 1 0 0 23 11.5 11.5 0 0 0 0-23z M19.2 3a8 8 0 1 1 0 16 8 8 0 0 1 0-16z"/><ellipse cx="13" cy="10.5" rx="2.6" ry="3.4" fill="#FFFFFF" opacity=".55" filter="url(#nwGlowB)"><animate attributeName="opacity" values="0.55;0.22;0.55" dur="3.4s" repeatCount="indefinite"/></ellipse></g></g><path d="M8.6 10.4l.9 2.2L11.7 13.5l-2.2.9L8.6 16.6l-.9-2.2L5.5 13.5l2.2-.9z" fill="#FFD98A" filter="url(#nwGlowB)"><animate attributeName="opacity" values="1;0.4;1" dur="2.6s" repeatCount="indefinite"/></path></svg></div>
           <div><div style="font-size:18px;font-weight:700;letter-spacing:-.02em">守夜人</div><div class="note" style="margin-top:2px">个人作息保命 · Nightwatcher</div></div>
         </div>
-        <div class="note">守夜人 v1.0 · 全部数据留在本机，不联网、不上传。</div>
+        <div class="note">守夜人 v1.0.3 · 全部数据留在本机，不联网、不上传。更新包走私有 GitHub，仅你本人可拉取。</div>
       </div>
     </section>
   </div>
@@ -419,6 +428,7 @@ let DB;
 function load(){try{DB=JSON.parse(localStorage.getItem(KEY))||{};}catch(e){DB={};}
   DB.records=DB.records||{}; DB.target=DB.target||72; DB.tomorrow=DB.tomorrow||''; DB.tasks=DB.tasks||[];
   DB.hiddenSchedule=DB.hiddenSchedule||[]; DB.scheduleOverride=DB.scheduleOverride||{};
+  DB.ghToken=DB.ghToken||''; DB.ghRepo=DB.ghRepo||GH_DEFAULT_REPO;
   if(!DB.records[todayStr])DB.records[todayStr]={checkins:{}};}
 function save(){localStorage.setItem(KEY,JSON.stringify(DB));}
 load();
@@ -560,6 +570,9 @@ function icsItem(id,title,body,h,m,wd){let r=['BEGIN:VEVENT','UID:sy'+id+'@shouy
   if(wd.length)r.push('RRULE:FREQ=WEEKLY;BYDAY='+wd.map(x=>['SU','MO','TU','WE','TH','FR','SA'][x-1]).join(','));else r.push('RRULE:FREQ=DAILY');
   r.push('TRIGGER:-PT0M','BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:'+body,'END:VALARM','END:VEVENT');return r.join('\r\n');}
 
+const APP_VERSION='1.0.3';
+const GH_DEFAULT_REPO='dkcoinlj/shouyeren-app';
+const CU=(window.Capacitor&&Capacitor.Plugins)?Capacitor.Plugins.CapacitorUpdater:null;
 const NOTIF=(window.Capacitor&&Capacitor.isPluginAvailable&&Capacitor.isPluginAvailable('LocalNotifications'))?Capacitor.Plugins.LocalNotifications:null;
 let notifGranted=false;
 async function refreshNotifState(){const el=document.getElementById('notifState');const btn=document.getElementById('notifBtn');
@@ -572,6 +585,28 @@ function taskNotifId(id){return Number(id.replace(/\D/g,'').slice(-8))||0;}
 async function scheduleTaskNotif(task){if(!NOTIF||!notifGranted||!task.time)return;const[h,m]=task.time.split(':').map(Number);const id=taskNotifId(task.id);if(!id)return;
   try{await NOTIF.schedule({notifications:[{id,title:'🌙 守夜人 · 任务提醒',body:task.text,schedule:{on:{hour:h,minute:m},repeats:false}}]});}catch(e){}}
 async function cancelTaskNotif(id){if(!NOTIF)return;const nid=taskNotifId(id);if(!nid)return;try{await NOTIF.cancel({notifications:[{id:nid}]});}catch(e){}}
+
+/* ===== 热更新（Capacitor Updater，私有仓库） ===== */
+function setUpdateStatus(t){const el=document.getElementById('updStatus');if(el)el.innerHTML=t;}
+async function checkUpdate(silent){
+  if(!CU){if(!silent)setUpdateStatus('⚠️ 热更新组件未就绪，请重新安装最新版');return;}
+  const token=(DB.ghToken||'').trim(), repo=(DB.ghRepo||GH_DEFAULT_REPO).trim();
+  if(!token){if(!silent)setUpdateStatus('⚠️ 请先填写 GitHub Token');toast('请先填写 GitHub Token');return;}
+  if(!silent)setUpdateStatus('检查中…');
+  try{
+    const q='?token='+encodeURIComponent(token);
+    const manifestUrl=`https://raw.githubusercontent.com/${repo}/main/update/update.json`+q;
+    const info=await CU.checkForUpdate({url:manifestUrl, headers:{'Authorization':'Bearer '+token}});
+    const latest=info&&info.version;
+    if(!latest){if(!silent)setUpdateStatus('⚠️ 读取版本失败');return;}
+    if(latest===APP_VERSION){if(!silent){setUpdateStatus('✅ 已是最新 v'+APP_VERSION);toast('已是最新版本');}return;}
+    if(!silent)setUpdateStatus('发现 v'+latest+'，下载中…');
+    const d=await CU.download({url:(info.url||'')+q, version:latest, headers:{'Authorization':'Bearer '+token}});
+    await CU.set({id:d.id});
+    if(!silent)setUpdateStatus('✅ 已更新到 v'+latest+'，正在重启…');
+    setTimeout(()=>{if(window.Capacitor&&Capacitor.Plugins&&Capacitor.Plugins.App)Capacitor.Plugins.App.reload();else location.reload();},300);
+  }catch(e){const msg=(e&&e.message)?e.message:(''+e);if(!silent)setUpdateStatus('❌ 更新失败：'+msg);if(!silent)console.error(e);}
+}
 async function enableNotifications(){if(!NOTIF){toast('请在 App 内操作');return;}
   try{const p=await NOTIF.requestPermissions();if(p.display!=='granted'){toast('通知权限被拒绝，请在系统设置开启');return;}
     await NOTIF.cancelAll();const sched=[];const hidden=DB.hiddenSchedule||[];const ov=DB.scheduleOverride||{};
@@ -801,7 +836,13 @@ document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
     if(n===t.dataset.tab){sec.classList.remove('float-in');void sec.offsetWidth;sec.classList.add('float-in');}});
   if(t.dataset.tab==='plan')renderPlan();
   if(t.dataset.tab==='data')renderData();
-  if(t.dataset.tab==='settings'){document.getElementById('targetW').value=DB.target;refreshNotifState();}});
+  if(t.dataset.tab==='settings'){document.getElementById('targetW').value=DB.target;refreshNotifState();
+    document.getElementById('curVer').textContent='v'+APP_VERSION;
+    document.getElementById('ghToken').value=DB.ghToken||'';
+    document.getElementById('ghRepo').value=DB.ghRepo||GH_DEFAULT_REPO;}});
+document.getElementById('ghToken').oninput=e=>{DB.ghToken=e.target.value.trim();save();};
+document.getElementById('ghRepo').oninput=e=>{DB.ghRepo=e.target.value.trim()||GH_DEFAULT_REPO;save();};
+document.getElementById('checkUpd').onclick=()=>checkUpdate(false);
 document.getElementById('targetW').onchange=e=>{DB.target=+e.target.value||72;save();renderData();};
 document.getElementById('resetSched').onclick=()=>{
   if(DB.hiddenSchedule.length||Object.keys(DB.scheduleOverride).length){DB.hiddenSchedule=[];DB.scheduleOverride={};save();renderTasks();toast('已恢复默认作息 ✓');}
@@ -816,6 +857,10 @@ document.getElementById('phaseList').innerHTML=PHASES.map(p=>
 function renderAll(){renderPhase();renderToday();renderTasks();}
 renderAll();setTimeout(refreshNotifState,300);
 window.addEventListener('resize',()=>{if(!document.getElementById('tab-data').classList.contains('hide'))renderData();});
+
+/* 热更新：标记当前包就绪，并在有 Token 时启动后自动检查一次 */
+if(CU){try{CU.notifyAppReady();}catch(e){}}
+setTimeout(()=>{if(CU&&DB.ghToken&&DB.ghToken.trim())checkUpdate(true);},1200);
 </script>
 </body>
 </html>
