@@ -8,26 +8,28 @@
 <style>
   :root{
     color-scheme:dark;
-    --bg:#0c0e10;
-    --bg-grad:radial-gradient(120% 80% at 50% -10%, #15211f 0%, #0c0e10 55%);
-    --surface:#16181b;
-    --surface-2:#1b1e22;
-    --card:#181a1d;
-    --card-top:#202326;
-    --line:rgba(255,255,255,.07);
-    --line-strong:rgba(255,255,255,.13);
-    --txt:#f4f6f7; --txt-2:#a7adb4; --txt-3:#6b7178; --txt-inv:#0c0e10;
-    --accent:#2dd4bf; --accent-2:#5eead4; --accent-deep:#0f3b36;
-    --accent-bg:rgba(45,212,191,.14); --accent-bg-2:rgba(45,212,191,.08);
-    --accent-line:rgba(45,212,191,.32); --accent-soft:rgba(45,212,191,.10);
-    --gold:#e9c46a; --gold-bg:rgba(233,196,106,.14); --gold-line:rgba(233,196,106,.30);
-    --purple:#c084fc; --purple-bg:rgba(192,132,252,.15);
-    --warn:#f4a261; --warn-bg:rgba(244,162,97,.15); --warn-line:rgba(244,162,97,.28);
-    --danger:#f87171; --danger-bg:rgba(248,113,113,.15);
-    --success:#34d399;
-    --ring:rgba(45,212,191,.30);
-    --shadow:0 1px 0 rgba(255,255,255,.04) inset,0 10px 30px rgba(0,0,0,.45);
-    --shadow-accent:0 6px 18px rgba(45,212,191,.20),0 14px 34px rgba(45,212,191,.14);
+    --bg:#12151a;
+    --bg-grad:radial-gradient(140% 90% at 50% -20%, #1a2e33 0%, #161b24 40%, #12151a 75%);
+    --surface:#1c2028;
+    --surface-2:#222831;
+    --card:#1e232b;
+    --card-top:#273038;
+    --line:rgba(255,255,255,.09);
+    --line-strong:rgba(255,255,255,.16);
+    --txt:#f6f8fa; --txt-2:#b0b8c2; --txt-3:#7e8792; --txt-inv:#0c0e10;
+    --accent:#38d6bf; --accent-2:#6af0da; --accent-deep:#0f3b36;
+    --accent-bg:rgba(56,214,191,.16); --accent-bg-2:rgba(56,214,191,.10);
+    --accent-line:rgba(56,214,191,.38); --accent-soft:rgba(56,214,191,.12);
+    --gold:#f4cc66; --gold-bg:rgba(244,204,102,.18); --gold-line:rgba(244,204,102,.38);
+    --purple:#d8a5ff; --purple-bg:rgba(216,165,255,.16); --purple-line:rgba(216,165,255,.35);
+    --warn:#ffa86b; --warn-bg:rgba(255,168,107,.18); --warn-line:rgba(255,168,107,.35);
+    --danger:#ff7a7a; --danger-bg:rgba(255,122,122,.18);
+    --success:#48e3a6;
+    --ring:rgba(56,214,191,.32);
+    --shadow:0 1px 0 rgba(255,255,255,.05) inset,0 10px 34px rgba(0,0,0,.42);
+    --shadow-accent:0 6px 20px rgba(56,214,191,.22),0 14px 38px rgba(56,214,191,.14);
+    --shadow-gold:0 6px 20px rgba(244,204,102,.18),0 14px 34px rgba(244,204,102,.12);
+    --shadow-purple:0 6px 20px rgba(216,165,255,.18),0 14px 34px rgba(216,165,255,.12);
     --r-sm:12px; --r-md:16px; --r-lg:22px; --r-xl:28px; --r-full:999px;
     --safe-t:env(safe-area-inset-top,0px); --safe-b:env(safe-area-inset-bottom,0px);
   }
@@ -41,7 +43,7 @@
   /* ===== 顶栏 ===== */
   .appbar{position:fixed;top:0;left:0;right:0;z-index:30;height:calc(60px + var(--safe-t));
     padding:var(--safe-t) 16px 0;display:flex;align-items:center;gap:11px;
-    background:rgba(12,14,16,.82);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+    background:rgba(18,21,26,.82);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
     border-bottom:1px solid var(--line);}
   .logo{width:34px;height:34px;border-radius:11px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
     background:radial-gradient(130% 130% at 30% 18%,#16302f,#0a1012);
@@ -67,7 +69,7 @@
 
   /* ===== 今日总览 hero ===== */
   .hero{position:relative;overflow:hidden;border-radius:var(--r-xl);padding:18px 18px 16px;margin-bottom:12px;
-    background:linear-gradient(135deg,#13302c 0%,#15211f 45%,#1a1622 100%);
+    background:linear-gradient(135deg,#173b35 0%,#1d4a42 35%,#243447 70%,#2a2a3e 100%);
     border:1px solid var(--accent-line);box-shadow:var(--shadow-accent);}
   .hero::after{content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;
     background:radial-gradient(circle,rgba(45,212,191,.22),transparent 70%);pointer-events:none;}
@@ -165,9 +167,47 @@
   .legend{display:flex;gap:16px;font-size:11px;color:var(--txt-2);margin:8px 2px 0;}
   .legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px;vertical-align:middle;}
 
+  /* 彩色卡片变体 */
+  .card.gold{border-color:var(--gold-line);background:linear-gradient(180deg,#2d2a1f 0%,#1e232b 55%);box-shadow:var(--shadow-gold);}
+  .card.gold .card-title{color:var(--gold);}
+  .card.gold .card-title .icn{color:var(--gold);}
+  .card.purple{border-color:var(--purple-line);background:linear-gradient(180deg,#2a2535 0%,#1e232b 55%);box-shadow:var(--shadow-purple);}
+  .card.purple .card-title{color:var(--purple);}
+  .card.purple .card-title .icn{color:var(--purple);}
+  .card.warn{border-color:var(--warn-line);background:linear-gradient(180deg,#33271f 0%,#1e232b 55%);}
+  .card.warn .card-title{color:var(--warn);}
+
+  /* 左侧抽屉 */
+  .drawer-back{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.5);backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity .25s;}
+  .drawer-back.show{opacity:1;pointer-events:auto;}
+  .drawer{position:fixed;left:0;top:0;bottom:0;z-index:41;width:min(78vw,300px);
+    background:linear-gradient(180deg,#1a222c 0%,#151b24 100%);border-right:1px solid var(--line);
+    transform:translateX(-100%);transition:transform .28s cubic-bezier(.16,1,.3,1);
+    display:flex;flex-direction:column;padding:calc(18px + var(--safe-t)) 0 calc(18px + var(--safe-b));}
+  .drawer.show{transform:translateX(0);}
+  .drawer-head{padding:0 18px 16px;border-bottom:1px solid var(--line);margin:0 18px 12px;}
+  .drawer-head .dh-logo{display:flex;align-items:center;gap:11px;}
+  .drawer-head .dh-logo .logo{width:42px;height:42px;}
+  .drawer-head .dh-title{font-size:17px;font-weight:700;letter-spacing:-.02em;}
+  .drawer-head .dh-sub{font-size:12px;color:var(--txt-3);margin-top:3px;}
+  .drawer-nav{flex:1;overflow-y:auto;padding:0 18px;}
+  .drawer-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:var(--r-md);margin-bottom:6px;
+    color:var(--txt-2);font-size:14px;font-weight:600;cursor:pointer;transition:.18s;border:1px solid transparent;}
+  .drawer-item:active{transform:scale(.98);}
+  .drawer-item.active{background:var(--accent-bg);color:var(--accent-2);border-color:var(--accent-line);}
+  .drawer-item .di{width:22px;height:22px;color:var(--txt-3);display:flex;align-items:center;justify-content:center;}
+  .drawer-item.active .di{color:var(--accent-2);}
+  .drawer-item svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+  .drawer-sep{font-size:11px;color:var(--txt-3);font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:14px 14px 8px;}
+  .drawer-foot{padding:12px 18px 0;border-top:1px solid var(--line);margin:0 18px;font-size:12px;color:var(--txt-3);line-height:1.5;}
+  .drawer-foot b{color:var(--accent-2);}
+  .hamburger{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--surface);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;flex-shrink:0;}
+  .hamburger span{display:block;width:18px;height:2px;background:var(--txt-2);border-radius:2px;}
+
   /* 底部 tab */
   .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;
-    background:rgba(12,14,16,.86);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+    background:rgba(18,21,26,.86);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
     border-top:1px solid var(--line);padding:7px 0 calc(7px + var(--safe-b));}
   .tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 0;
     color:var(--txt-3);font-size:11px;font-weight:600;cursor:pointer;}
@@ -319,6 +359,7 @@
 </head>
 <body>
   <div class="appbar">
+    <div class="hamburger" id="menuBtn" title="打开侧列表"><span></span><span></span><span></span></div>
     <div class="logo"><svg viewBox="0 0 32 32" aria-hidden="true"><defs><radialGradient id="nwMoonA" cx="34%" cy="26%" r="85%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="35%" stop-color="#EAF8F4"/><stop offset="72%" stop-color="#A9DED4"/><stop offset="100%" stop-color="#5AA195"/></radialGradient><linearGradient id="nwHaloA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2DD4BF" stop-opacity="0"/><stop offset="50%" stop-color="#2DD4BF" stop-opacity=".85"/><stop offset="1" stop-color="#2DD4BF" stop-opacity="0"/></linearGradient><filter id="nwFloatA" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="2.2" stdDeviation="2" flood-color="#000" flood-opacity=".5"/></filter><filter id="nwGlowA" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="1.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g filter="url(#nwGlowA)"><circle cx="16" cy="16" r="13.5" fill="none" stroke="url(#nwHaloA)" stroke-width="0.8" opacity=".6"><animateTransform attributeName="transform" type="rotate" from="0 16 16" to="360 16 16" dur="22s" repeatCount="indefinite"/></circle></g><g filter="url(#nwFloatA)"><g><animateTransform attributeName="transform" type="translate" values="0 0;0 -0.8;0 0" dur="3.4s" repeatCount="indefinite" calcMode="spline" keySplines="0.45 0 0.55 1;0.45 0 0.55 1"/><path fill="url(#nwMoonA)" fill-rule="evenodd" d="M16 4.5a11.5 11.5 0 1 0 0 23 11.5 11.5 0 0 0 0-23z M19.2 3a8 8 0 1 1 0 16 8 8 0 0 1 0-16z"/><ellipse cx="13" cy="10.5" rx="2.6" ry="3.4" fill="#FFFFFF" opacity=".55" filter="url(#nwGlowA)"><animate attributeName="opacity" values="0.55;0.22;0.55" dur="3.4s" repeatCount="indefinite"/></ellipse></g></g><path d="M8.6 10.4l.9 2.2L11.7 13.5l-2.2.9L8.6 16.6l-.9-2.2L5.5 13.5l2.2-.9z" fill="#FFD98A" filter="url(#nwGlowA)"><animate attributeName="opacity" values="1;0.4;1" dur="2.6s" repeatCount="indefinite"/></path></svg></div>
     <div class="brand">守夜人<span class="sub">个人作息保命</span></div>
     <div class="bell" id="bellBtn" title="系统通知"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="dot" id="bellDot" style="display:none"></span></div>
@@ -338,7 +379,7 @@
         <div class="board-head">
           <h3 class="card-title" style="margin:0"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg></span>我的任务 <span class="tag" id="datePill"></span></h3>
         </div>
-        <div class="note" style="margin-bottom:12px">今日作息已作为任务卡，长按拖到「已完成」即打卡；两栏右上角 ➕ 都可新增任务。</div>
+        <div class="note" style="margin-bottom:12px">长按拖动到「已完成」打卡，轻点推进，➕ 新增自定义任务。</div>
         <div class="board">
           <div class="lane" data-status="todo">
             <div class="lane-head"><span>未完成</span><span class="lane-right"><span class="count" id="cnt-todo">0</span><button class="lane-add" data-add="todo">+</button></span></div>
@@ -349,11 +390,6 @@
             <div class="lane-body" id="lane-done"></div>
           </div>
         </div>
-      </div>
-      <div class="card">
-        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="m8 2 0 4M16 2v4M3 10h18"/></svg></span>日历闹钟兜底</h3>
-        <div class="note">系统通知已启用时无需此步。若某手机厂商限制后台通知，可导出 .ics 导入系统日历，作为原生闹钟兜底。</div>
-        <button class="btn btn-secondary btn-full" id="icsBtn" style="margin-top:10px">导出日历提醒 (.ics)</button>
       </div>
     </section>
 
@@ -460,11 +496,16 @@
       <div class="card">
         <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg></span>热更新（免重装）</h3>
         <div class="note">填一次你的 GitHub Token（需 <b>repo</b> 权限），之后点「检查更新」即从私有仓库拉新包热替换，不用卸载重装。Token 只存在本机。</div>
-        <div class="field" style="margin-top:10px"><label>当前版本</label><div id="curVer" class="note" style="margin:0">v1.0.3</div></div>
+        <div class="field" style="margin-top:10px"><label>当前版本</label><div id="curVer" class="note" style="margin:0">v1.0.5</div></div>
         <div class="field"><label>GitHub Token（Private 仓库读取用）</label><input type="password" id="ghToken" placeholder="ghp_xxx 或 github_pat_xxx" autocomplete="off"></div>
         <div class="field"><label>更新仓库 (owner/repo)</label><input type="text" id="ghRepo" placeholder="dkcoinlj/shouyeren-app"></div>
         <button class="btn btn-accent btn-full" id="checkUpd" style="margin-top:4px">检查更新</button>
         <div class="note" id="updStatus" style="margin-top:8px">未检查</div>
+      </div>
+      <div class="card">
+        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="m8 2 0 4M16 2v4M3 10h18"/></svg></span>日历闹钟兜底</h3>
+        <div class="note">系统通知已启用时无需此步。若某手机厂商限制后台通知，可导出 .ics 导入系统日历，作为原生闹钟兜底。</div>
+        <button class="btn btn-secondary btn-full" id="icsBtn" style="margin-top:10px">导出日历提醒 (.ics)</button>
       </div>
       <div class="card">
         <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v.01M11 12h1v4h1"/></svg></span>关于</h3>
@@ -472,9 +513,31 @@
           <div class="logo" style="width:60px;height:60px;border-radius:18px"><svg viewBox="0 0 32 32" aria-hidden="true"><defs><radialGradient id="nwMoonB" cx="34%" cy="26%" r="85%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="35%" stop-color="#EAF8F4"/><stop offset="72%" stop-color="#A9DED4"/><stop offset="100%" stop-color="#5AA195"/></radialGradient><linearGradient id="nwHaloB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2DD4BF" stop-opacity="0"/><stop offset="50%" stop-color="#2DD4BF" stop-opacity=".85"/><stop offset="1" stop-color="#2DD4BF" stop-opacity="0"/></linearGradient><filter id="nwFloatB" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="2.2" stdDeviation="2" flood-color="#000" flood-opacity=".5"/></filter><filter id="nwGlowB" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="1.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g filter="url(#nwGlowB)"><circle cx="16" cy="16" r="13.5" fill="none" stroke="url(#nwHaloB)" stroke-width="0.8" opacity=".6"><animateTransform attributeName="transform" type="rotate" from="0 16 16" to="360 16 16" dur="22s" repeatCount="indefinite"/></circle></g><g filter="url(#nwFloatB)"><g><animateTransform attributeName="transform" type="translate" values="0 0;0 -0.8;0 0" dur="3.4s" repeatCount="indefinite" calcMode="spline" keySplines="0.45 0 0.55 1;0.45 0 0.55 1"/><path fill="url(#nwMoonB)" fill-rule="evenodd" d="M16 4.5a11.5 11.5 0 1 0 0 23 11.5 11.5 0 0 0 0-23z M19.2 3a8 8 0 1 1 0 16 8 8 0 0 1 0-16z"/><ellipse cx="13" cy="10.5" rx="2.6" ry="3.4" fill="#FFFFFF" opacity=".55" filter="url(#nwGlowB)"><animate attributeName="opacity" values="0.55;0.22;0.55" dur="3.4s" repeatCount="indefinite"/></ellipse></g></g><path d="M8.6 10.4l.9 2.2L11.7 13.5l-2.2.9L8.6 16.6l-.9-2.2L5.5 13.5l2.2-.9z" fill="#FFD98A" filter="url(#nwGlowB)"><animate attributeName="opacity" values="1;0.4;1" dur="2.6s" repeatCount="indefinite"/></path></svg></div>
           <div><div style="font-size:18px;font-weight:700;letter-spacing:-.02em">守夜人</div><div class="note" style="margin-top:2px">个人作息保命 · Nightwatcher</div></div>
         </div>
-        <div class="note">守夜人 v1.0.4 · 全部数据留在本机，不联网、不上传。更新包走私有 GitHub，仅你本人可拉取。</div>
+        <div class="note">守夜人 v1.0.5 · 全部数据留在本机，不联网、不上传。更新包走私有 GitHub，仅你本人可拉取。</div>
       </div>
     </section>
+  </div>
+
+  <div class="drawer-back" id="drawerBack"></div>
+  <div class="drawer" id="drawer">
+    <div class="drawer-head">
+      <div class="dh-logo">
+        <div class="logo"><svg viewBox="0 0 32 32" aria-hidden="true"><defs><radialGradient id="nwMoonC" cx="34%" cy="26%" r="85%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="35%" stop-color="#EAF8F4"/><stop offset="72%" stop-color="#A9DED4"/><stop offset="100%" stop-color="#5AA195"/></radialGradient><linearGradient id="nwHaloC" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2DD4BF" stop-opacity="0"/><stop offset="50%" stop-color="#2DD4BF" stop-opacity=".85"/><stop offset="1" stop-color="#2DD4BF" stop-opacity="0"/></linearGradient><filter id="nwFloatC" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="2.2" stdDeviation="2" flood-color="#000" flood-opacity=".5"/></filter><filter id="nwGlowC" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="1.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g filter="url(#nwGlowC)"><circle cx="16" cy="16" r="13.5" fill="none" stroke="url(#nwHaloC)" stroke-width="0.8" opacity=".6"><animateTransform attributeName="transform" type="rotate" from="0 16 16" to="360 16 16" dur="22s" repeatCount="indefinite"/></circle></g><g filter="url(#nwFloatC)"><g><animateTransform attributeName="transform" type="translate" values="0 0;0 -0.8;0 0" dur="3.4s" repeatCount="indefinite" calcMode="spline" keySplines="0.45 0 0.55 1;0.45 0 0.55 1"/><path fill="url(#nwMoonC)" fill-rule="evenodd" d="M16 4.5a11.5 11.5 0 1 0 0 23 11.5 11.5 0 0 0 0-23z M19.2 3a8 8 0 1 1 0 16 8 8 0 0 1 0-16z"/><ellipse cx="13" cy="10.5" rx="2.6" ry="3.4" fill="#FFFFFF" opacity=".55" filter="url(#nwGlowC)"><animate attributeName="opacity" values="0.55;0.22;0.55" dur="3.4s" repeatCount="indefinite"/></ellipse></g></g><path d="M8.6 10.4l.9 2.2L11.7 13.5l-2.2.9L8.6 16.6l-.9-2.2L5.5 13.5l2.2-.9z" fill="#FFD98A" filter="url(#nwGlowC)"><animate attributeName="opacity" values="1;0.4;1" dur="2.6s" repeatCount="indefinite"/></path></svg></div>
+        <div><div class="dh-title">守夜人</div><div class="dh-sub">v1.0.5 · 个人作息保命</div></div>
+      </div>
+    </div>
+    <div class="drawer-nav">
+      <div class="drawer-item active" data-drawer="today"><div class="di"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></div>今日</div>
+      <div class="drawer-item" data-drawer="plan"><div class="di"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>方案</div>
+      <div class="drawer-item" data-drawer="data"><div class="di"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>数据</div>
+      <div class="drawer-item" data-drawer="settings"><div class="di"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 13a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.5 1z"/></svg></div>设置</div>
+      <div class="drawer-sep">快捷操作</div>
+      <div class="drawer-item" data-action="timer"><div class="di"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M9 2h6"/></svg></div>静蹲计时</div>
+      <div class="drawer-item" data-action="focus"><div class="di"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>专注计时</div>
+      <div class="drawer-item" data-action="water"><div class="di"><svg viewBox="0 0 24 24"><path d="M12 2.5S5 9 5 14a7 7 0 0 0 14 0c0-5-7-11.5-7-11.5Z"/></svg></div>喝水提醒</div>
+      <div class="drawer-item" data-action="notif"><div class="di"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>开启通知</div>
+    </div>
+    <div class="drawer-foot">当前阶段 <b id="drawerPhase">适应期</b><br>无酒日 / 饮酒上限 / 烟上限 在「今日」页顶部查看。</div>
   </div>
 
   <div class="tabbar">
@@ -649,6 +712,7 @@ function renderOverview(){
   const hh=Math.floor(leftMin/60), mm=leftMin%60;
   const cdTxt=`距关机 ${hh}小时${mm}分`;
   const C=2*Math.PI*38;
+  const dp=document.getElementById('drawerPhase');if(dp)dp.textContent=p.name;
   document.getElementById('heroCard').innerHTML=
    `<div class="hero-top">
       <div class="ring">
@@ -659,18 +723,17 @@ function renderOverview(){
         <div class="pct"><b>${rate}%</b><span>今日完成</span></div>
       </div>
       <div class="hero-info">
-        <div class="hero-phase"><span class="tag tag-accent">${p.name}</span><span class="tag">${na?'无酒日':'饮酒≤'+p.alc+'ml'}</span></div>
         <div class="hero-rows">
-          <div class="hero-line">${icon('check',15)} 已完成 <b>${done}/${tot}</b> 项任务</div>
+          <div class="hero-line">${icon('check',15)} 已完成 <b>${done}/${tot}</b> 项</div>
           <div class="hero-line">${icon('moon',15)} ${cdTxt}</div>
-          ${skinDay?`<div class="hero-line">${icon('drop',15)} 今晚 <b class="accent">去角质日</b></div>`:''}
         </div>
       </div>
     </div>
     <div class="hero-tagrow">
-      ${na?'<span class="tag tag-accent">'+icon('wine',12)+' 无酒日 · 喝水/茶</span>':''}
-      ${skinDay?'<span class="tag tag-gold">'+icon('drop',12)+' 去角质日</span>':''}
-      <span class="tag">${na?'烟 ≤'+p.cig+'支':'烟酒节制'}</span>
+      <span class="tag tag-accent">${p.name}</span>
+      <span class="tag">${na?'无酒日':'饮酒≤'+p.alc+'ml'}</span>
+      <span class="tag">烟≤${p.cig}支</span>
+      ${skinDay?'<span class="tag tag-gold">'+icon('drop',12)+' 去角质</span>':''}
     </div>`;
 }
 
@@ -809,7 +872,7 @@ function icsItem(id,title,body,h,m,wd){let r=['BEGIN:VEVENT','UID:sy'+id+'@shouy
   if(wd.length)r.push('RRULE:FREQ=WEEKLY;BYDAY='+wd.map(x=>['SU','MO','TU','WE','TH','FR','SA'][x-1]).join(','));else r.push('RRULE:FREQ=DAILY');
   r.push('TRIGGER:-PT0M','BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:'+body,'END:VALARM','END:VEVENT');return r.join('\r\n');}
 
-const APP_VERSION='1.0.4';
+const APP_VERSION='1.0.5';
 const GH_DEFAULT_REPO='dkcoinlj/shouyeren-app';
 const CU=(window.Capacitor&&Capacitor.Plugins)?Capacitor.Plugins.CapacitorUpdater:null;
 const NOTIF=(window.Capacitor&&Capacitor.isPluginAvailable&&Capacitor.isPluginAvailable('LocalNotifications'))?Capacitor.Plugins.LocalNotifications:null;
@@ -1122,16 +1185,31 @@ function renderPlan(){
   document.getElementById('planPhaseTime').innerHTML=`<table class="plan-table"><thead><tr><th>阶段</th><th>日期</th><th>饮酒</th><th>吸烟</th><th>无酒日</th></tr></thead><tbody>${phaseRows}</tbody></table>`;
 }
 
-document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
-  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');
-  ['today','plan','data','settings'].forEach(n=>{const sec=document.getElementById('tab-'+n);sec.classList.toggle('hide',n!==t.dataset.tab);
-    if(n===t.dataset.tab){sec.classList.remove('float-in');void sec.offsetWidth;sec.classList.add('float-in');}});
-  if(t.dataset.tab==='plan')renderPlan();
-  if(t.dataset.tab==='data')renderData();
-  if(t.dataset.tab==='settings'){document.getElementById('targetW').value=DB.target;refreshNotifState();
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===name));
+  ['today','plan','data','settings'].forEach(n=>{const sec=document.getElementById('tab-'+n);sec.classList.toggle('hide',n!==name);
+    if(n===name){sec.classList.remove('float-in');void sec.offsetWidth;sec.classList.add('float-in');}});
+  if(name==='plan')renderPlan();
+  if(name==='data')renderData();
+  if(name==='settings'){document.getElementById('targetW').value=DB.target;refreshNotifState();
     document.getElementById('curVer').textContent='v'+APP_VERSION;
     document.getElementById('ghToken').value=DB.ghToken||'';
-    document.getElementById('ghRepo').value=DB.ghRepo||GH_DEFAULT_REPO;}});
+    document.getElementById('ghRepo').value=DB.ghRepo||GH_DEFAULT_REPO;}
+  document.querySelectorAll('.drawer-item[data-drawer]').forEach(d=>d.classList.toggle('active',d.dataset.drawer===name));
+}
+function openDrawer(){document.getElementById('drawer').classList.add('show');document.getElementById('drawerBack').classList.add('show');}
+function closeDrawer(){document.getElementById('drawer').classList.remove('show');document.getElementById('drawerBack').classList.remove('show');}
+document.getElementById('menuBtn').onclick=openDrawer;
+document.getElementById('drawerBack').onclick=closeDrawer;
+document.querySelectorAll('.drawer-item[data-drawer]').forEach(d=>d.onclick=()=>{switchTab(d.dataset.drawer);closeDrawer();});
+document.querySelectorAll('.drawer-item[data-action]').forEach(d=>d.onclick=()=>{
+  const a=d.dataset.action;closeDrawer();
+  if(a==='timer')openTimer(5,'静蹲');
+  if(a==='focus')openTimer(25,'专注');
+  if(a==='water')document.getElementById('toolWater').click();
+  if(a==='notif'){switchTab('settings');setTimeout(()=>document.getElementById('notifBtn').click(),180);}
+});
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>switchTab(t.dataset.tab));
 document.getElementById('ghToken').oninput=e=>{DB.ghToken=e.target.value.trim();save();};
 document.getElementById('ghRepo').oninput=e=>{DB.ghRepo=e.target.value.trim()||GH_DEFAULT_REPO;save();};
 document.getElementById('checkUpd').onclick=()=>checkUpdate(false);
