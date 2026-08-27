@@ -860,7 +860,6 @@
           <li><b>设置 → 密码与安全 → 系统安全 → 未知来源应用</b>：允许本次安装（仅首次装包用）</li>
           <li>若仍不弹通知：<b>设置 → 应用 → 守夜人 → 权限 → 精确闹钟</b> 设为允许</li>
         </ol>
-        <div class="note" style="margin-top:8px">🎤 <b>语音输入</b>：国内版 OPPO 无 Google 语音服务，原生识别不可用，麦克风按钮已自动隐藏；直接用键盘输入即可。需要真语音可后续接入国内 ASR（如腾讯云一句话识别）。</div>
         <button class="btn btn-secondary btn-full" id="copyOeppoTips" style="margin-top:8px">复制设置步骤</button>
       </div>
       <div class="card">
@@ -997,7 +996,6 @@
   <div class="modal" id="mFirstRun"><div class="sheet">
     <h3><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="13" rx="2.5"/><path d="M8 7V4h8v3M12 12v3"/></svg></span>欢迎使用守夜人</h3>
     <div class="note" style="margin-bottom:8px">检测到这是首次启动。国产安卓（OPPO/华为/小米）对后台与通知管控很严，<b>不设置会收不到作息提醒</b>。建议先去「设置 → 国产安卓必做设置」逐项开启（电池白名单 + 锁屏显示通知）。</div>
-    <div class="note">语音输入在国内版 OPPO 上不可用（无 Google 语音服务），已自动隐藏麦克风，用键盘输入即可。</div>
     <button class="btn btn-accent btn-full" id="frGot" style="margin-top:12px">我知道了</button>
     <button class="btn btn-ghost btn-full" id="frGoSet" style="margin-top:8px;color:var(--txt-2)">去设置页看必做项</button>
   </div></div>
@@ -1212,7 +1210,7 @@ const DEFAULT_TASKS=SCHEDULE.map(s=>({
   time:`${String(s.h).padStart(2,'0')}:${String(s.m).padStart(2,'0')}`
 }));
 
-const APP_VERSION='1.3.3';
+const APP_VERSION='1.3.4';
 const GH_DEFAULT_REPO='dkcoinlj/shouyeren-app';
 const AI_DEFAULT_ENDPOINT='https://tokenhub.tencentmaas.com/v1/chat/completions';
 const AI_DEFAULT_KEY='';
@@ -1243,7 +1241,11 @@ function load(){try{DB=JSON.parse(localStorage.getItem(KEY))||{};}catch(e){DB={}
   if(!DB.records[todayStr])DB.records[todayStr]={checkins:{}};
   DB.firstRun=(DB.firstRun===undefined)?true:DB.firstRun;
 }
-function save(){localStorage.setItem(KEY,JSON.stringify(DB));}
+let _saveTimer=null;
+function save(){if(_saveTimer)clearTimeout(_saveTimer);_saveTimer=setTimeout(_saveFlush,120);}
+function _saveFlush(){if(!_saveTimer)return;_saveTimer=null;try{localStorage.setItem(KEY,JSON.stringify(DB));}catch(e){console.error('save failed',e);}}
+window.addEventListener('beforeunload',_saveFlush);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')_saveFlush();});
 load();
 const rec=d=>DB.records[d]||(DB.records[d]={checkins:{}});
 const todayRec=rec(todayStr);
@@ -1444,9 +1446,10 @@ function genReport(){const days=[];const d=new Date();for(let i=6;i>=0;i--){cons
   if(navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file],title:'守夜人周报',text:'本周守夜人周报'}).catch(()=>{});}
   else{const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=file.name;a.click();URL.revokeObjectURL(url);toast('周报已下载');}}
 
-/* ===== 语音输入（Web Speech） ===== */
+/* ===== 数据页渲染 ===== */
 
 function renderData(){
+  if(document.getElementById('tab-data')&&document.getElementById('tab-data').classList.contains('hide'))return;
   const now=new Date();const mon=new Date(now);mon.setDate(now.getDate()-(now.getDay()===0?6:now.getDay()-1));
   const weekDays=[];for(let i=0;i<=Math.floor((now-mon)/864e5);i++){const x=new Date(mon);x.setDate(mon.getDate()+i);weekDays.push(fmt(x));}
   const p=getPhase(now);let alcSum=0,cigSum=0,daysWith=0,okDays=0;
@@ -2341,7 +2344,7 @@ document.getElementById('resetSched').onclick=()=>{
   if(DB.hiddenSchedule.length||Object.keys(DB.scheduleOverride).length){DB.hiddenSchedule=[];DB.scheduleOverride={};save();renderTasks();toast('已恢复默认作息');}
   else toast('本来就是默认作息');};
 
-/* ===== 新功能：饮水 / 睡眠 / 备份 / 锁屏 / 周报 / 语音 ===== */
+/* ===== 新功能：饮水 / 睡眠 / 备份 / 锁屏 / 周报 ===== */
 document.getElementById('backupPass').oninput=e=>{DB.backupPass=e.target.value;save();};
 document.getElementById('autoBackup').onchange=e=>{DB.autoBackup=e.target.checked;save();if(DB.autoBackup)doBackup();};
 document.getElementById('backupNow').onclick=doBackup;
@@ -2381,7 +2384,7 @@ function closeFirstRun(){document.getElementById('mFirstRun').classList.remove('
 document.getElementById('frGot').onclick=()=>{DB.firstRun=false;save();closeFirstRun();};
 document.getElementById('frGoSet').onclick=()=>{DB.firstRun=false;save();closeFirstRun();document.querySelector('.tab[data-tab="settings"]').click();const c=document.getElementById('card-oppo');if(c)c.scrollIntoView({behavior:'smooth',block:'center'});};
 document.getElementById('copyOeppoTips').onclick=()=>{
-  const text='守夜人 App 必做设置（OPPO/国产安卓）：\n1. 电池→应用耗电管理→守夜人：允许后台运行/自启动/锁屏清理白名单\n2. 设置→通知与状态栏→通知管理→守夜人：允许通知+锁屏显示+设为重要\n3. 设置→密码与安全→系统安全→未知来源应用：允许安装（仅首次）\n4. 应用→守夜人→权限→精确闹钟：允许\n语音输入在国内版 OPPO 不可用（无 Google 语音服务），请用键盘输入。';
+  const text='守夜人 App 必做设置（OPPO/国产安卓）：\n1. 电池→应用耗电管理→守夜人：允许后台运行/自启动/锁屏清理白名单\n2. 设置→通知与状态栏→通知管理→守夜人：允许通知+锁屏显示+设为重要\n3. 设置→密码与安全→系统安全→未知来源应用：允许安装（仅首次）\n4. 应用→守夜人→权限→精确闹钟：允许';
   try{navigator.clipboard.writeText(text);toast('已复制设置步骤');}catch(e){toast('复制失败，请手动记录');}
 };
 renderAll();setTimeout(refreshNotifState,300);setTimeout(autoEnableNotif,600);
