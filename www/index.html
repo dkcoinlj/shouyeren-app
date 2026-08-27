@@ -563,13 +563,6 @@
         </div>
       </div>
 
-      <div id="notifBanner"></div>
-      <div class="tools">
-        <div class="tool" id="toolSquat"><div class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5 17.5 17.5"/><path d="M3 9v6M6 7v10M18 7v10M21 9v6"/></svg></div><div class="tl">静蹲计时</div></div>
-        <div class="tool" id="toolFocus"><div class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><div class="tl">专注计时</div></div>
-        <div class="tool gold" id="toolWater"><div class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5S5 9 5 14a7 7 0 0 0 14 0c0-5-7-11.5-7-11.5Z"/></svg></div><div class="tl">喝水提醒</div></div>
-      </div>
-      <div id="sundayCard"></div>
       <div class="card" id="todayBoardCard">
         <div class="board-head">
           <h3 class="card-title" style="margin:0"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg></span>我的任务 <span class="tag" id="datePill"></span></h3>
@@ -586,6 +579,14 @@
           </div>
         </div>
       </div>
+
+      <div id="notifBanner"></div>
+      <div class="tools">
+        <div class="tool" id="toolSquat"><div class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5 17.5 17.5"/><path d="M3 9v6M6 7v10M18 7v10M21 9v6"/></svg></div><div class="tl">静蹲计时</div></div>
+        <div class="tool" id="toolFocus"><div class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><div class="tl">专注计时</div></div>
+        <div class="tool gold" id="toolWater"><div class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5S5 9 5 14a7 7 0 0 0 14 0c0-5-7-11.5-7-11.5Z"/></svg></div><div class="tl">喝水提醒</div></div>
+      </div>
+      <div id="sundayCard"></div>
     </section>
 
     <section id="tab-plan" class="hide">
@@ -1232,7 +1233,7 @@ const DEFAULT_TASKS=SCHEDULE.map(s=>({
   time:`${String(s.h).padStart(2,'0')}:${String(s.m).padStart(2,'0')}`
 }));
 
-const APP_VERSION='1.3.6';
+const APP_VERSION='1.3.7';
 const GH_DEFAULT_REPO='dkcoinlj/shouyeren-app';
 const AI_DEFAULT_ENDPOINT='https://tokenhub.tencentmaas.com/v1/chat/completions';
 const AI_DEFAULT_KEY='';
