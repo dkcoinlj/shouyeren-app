@@ -105,6 +105,21 @@
 
   /* ===== 执行工具 ===== */
   .tools{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:12px;}
+  /* 冲动冲浪 */
+  .craving-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .craving-btns button{display:flex;align-items:center;justify-content:center;gap:8px;padding:13px;border-radius:var(--r-md);border:1px solid var(--line);background:var(--card);color:var(--txt);font-size:14px;font-weight:600;cursor:pointer;transition:.16s;}
+  .craving-btns button:active{transform:scale(.97);}
+  .craving-btns button span{font-size:18px;}
+  #cravAlcohol{border-color:var(--gold-line);}#cravCig{border-color:rgba(192,132,252,.4);}
+  .craving-stats .cs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;}
+  .craving-stats .cs{background:var(--card);border:1px solid var(--line);border-radius:var(--r-md);padding:11px;text-align:center;}
+  .craving-stats .cs .v{font-size:18px;font-weight:800;color:var(--accent-2);letter-spacing:-.02em;}
+  .craving-stats .cs .k{font-size:10.5px;color:var(--txt-2);margin-top:3px;line-height:1.3;}
+  /* 体重照片对比 */
+  .wp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+  .wp-item{background:var(--card);border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden;}
+  .wp-item img{width:100%;height:130px;object-fit:cover;display:block;}
+  .wp-item .wp-meta{padding:7px 9px;font-size:12px;color:var(--txt-2);}
   .tool{background:linear-gradient(180deg,var(--card-top),var(--card));border:1px solid var(--line);border-radius:var(--r-md);
     padding:14px 8px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;
     transition:transform .18s cubic-bezier(.16,1,.3,1),border-color .2s,box-shadow .2s;}
@@ -536,8 +551,18 @@
           <button data-cmd="weight">记录体重</button>
           <button data-cmd="cig">记录抽烟</button>
           <button data-cmd="goal">定目标</button>
+          <button data-cmd="review">📝 今日复盘</button>
         </div>
         <div class="ai-result hide" id="aiResult"></div>
+      </div>
+
+      <div class="card" id="cravingCard">
+        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12c2 0 3-4 5-4s3 8 5 8 3-8 5-8 3 4 5 4"/></svg></span>冲动冲浪（想抽/想喝时）</h3>
+        <div class="note" style="margin-bottom:10px">瘾头来了别硬扛，记一笔「冲浪」：先停 10 分钟，看它自己退去。记多了你就摸清自己的触发点。</div>
+        <div class="craving-btns">
+          <button id="cravAlcohol"><span>🍷</span>酒瘾冲浪</button>
+          <button id="cravCig"><span>🚬</span>烟瘾冲浪</button>
+        </div>
       </div>
 
       <div class="card" id="streakCard">
@@ -587,6 +612,7 @@
           <div class="meal-input-col">
             <input type="text" id="mealDesc" placeholder="这餐吃了什么，如：一碗米饭+鸡腿+青菜" enterkeyhint="done" autocomplete="off">
             <button class="btn btn-accent" id="mealCalc" style="margin-top:8px;width:100%">计算热量</button>
+            <button class="btn btn-secondary" id="mealManual" style="margin-top:8px;width:100%">手动填热量</button>
           </div>
         </div>
         <div class="meal-list" id="mealList"></div>
@@ -708,6 +734,11 @@
         <div class="fold-body"><canvas id="cvWeight" height="160"></canvas><div class="legend"><span><i style="background:var(--accent-2)"></i>体重 kg</span><span><i style="background:var(--gold)"></i>目标线</span><span class="muted">全部称重记录</span></div></div>
       </div>
 
+      <div class="card" id="card-weightphoto">
+        <div class="fold-head" data-fold="card-weightphoto"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg></span>体重 / 围度照片对比<span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+        <div class="fold-body"><div id="weightPhotos" class="wp-grid"></div></div>
+      </div>
+
       <div class="card" id="card-kcal">
         <div class="fold-head" data-fold="card-kcal"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2s4 4 4 8a4 4 0 0 1-8 0c0-1.5.5-2.5 1-3.5C9 8 12 6 12 2z"/></svg></span>热量趋势（近14天）<span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>
         <div class="fold-body"><canvas id="cvKcal" height="160"></canvas><div class="legend"><span><i style="background:var(--warn)"></i>摄入 kcal</span><span><i style="background:var(--gold)"></i>目标线</span></div></div>
@@ -726,6 +757,11 @@
       <div class="card" id="card-heat">
         <div class="fold-head" data-fold="card-heat"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>打卡热力（近8周）<span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>
         <div class="fold-body"><canvas id="cvHeat" height="110"></canvas></div>
+      </div>
+
+      <div class="card" id="card-craving">
+        <div class="fold-head" data-fold="card-craving"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12c2 0 3-4 5-4s3 8 5 8 3-8 5-8 3 4 5 4"/></svg></span>冲动冲浪统计<span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+        <div class="fold-body"><div id="cravingStats" class="craving-stats"></div></div>
       </div>
     </section>
 
@@ -805,7 +841,7 @@
       <div class="card">
         <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg></span>热更新（免重装）</h3>
         <div class="note">填一次你的 GitHub Token（需 <b>repo</b> 权限），之后点「检查更新」即从私有仓库拉新包热替换，不用卸载重装。Token 只存在本机。</div>
-        <div class="field" style="margin-top:10px"><label>当前版本</label><div id="curVer" class="note" style="margin:0">v1.2.6</div></div>
+        <div class="field" style="margin-top:10px"><label>当前版本</label><div id="curVer" class="note" style="margin:0"></div></div>
         <div class="field"><label>GitHub Token（Private 仓库读取用）</label><input type="password" id="ghToken" placeholder="ghp_xxx 或 github_pat_xxx" autocomplete="off"></div>
         <div class="field"><label>更新仓库 (owner/repo)</label><input type="text" id="ghRepo" placeholder="dkcoinlj/shouyeren-app"></div>
         <button class="btn btn-accent btn-full" id="checkUpd" style="margin-top:4px">检查更新</button>
@@ -823,7 +859,7 @@
           <div class="logo" style="width:60px;height:60px;border-radius:18px"><svg viewBox="0 0 32 32" aria-hidden="true"><defs><radialGradient id="nwMoonB" cx="34%" cy="26%" r="85%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="35%" stop-color="#EAF8F4"/><stop offset="72%" stop-color="#A9DED4"/><stop offset="100%" stop-color="#5AA195"/></radialGradient><linearGradient id="nwHaloB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2DD4BF" stop-opacity="0"/><stop offset="50%" stop-color="#2DD4BF" stop-opacity=".85"/><stop offset="1" stop-color="#2DD4BF" stop-opacity="0"/></linearGradient><filter id="nwFloatB" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="2.2" stdDeviation="2" flood-color="#000" flood-opacity=".5"/></filter><filter id="nwGlowB" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="1.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g filter="url(#nwGlowB)"><circle cx="16" cy="16" r="13.5" fill="none" stroke="url(#nwHaloB)" stroke-width="0.8" opacity=".6"><animateTransform attributeName="transform" type="rotate" from="0 16 16" to="360 16 16" dur="22s" repeatCount="indefinite"/></circle></g><g filter="url(#nwFloatB)"><g><animateTransform attributeName="transform" type="translate" values="0 0;0 -0.8;0 0" dur="3.4s" repeatCount="indefinite" calcMode="spline" keySplines="0.45 0 0.55 1;0.45 0 0.55 1"/><path fill="url(#nwMoonB)" fill-rule="evenodd" d="M16 4.5a11.5 11.5 0 1 0 0 23 11.5 11.5 0 0 0 0-23z M19.2 3a8 8 0 1 1 0 16 8 8 0 0 1 0-16z"/><ellipse cx="13" cy="10.5" rx="2.6" ry="3.4" fill="#FFFFFF" opacity=".55" filter="url(#nwGlowB)"><animate attributeName="opacity" values="0.55;0.22;0.55" dur="3.4s" repeatCount="indefinite"/></ellipse></g></g><path d="M8.6 10.4l.9 2.2L11.7 13.5l-2.2.9L8.6 16.6l-.9-2.2L5.5 13.5l2.2-.9z" fill="#FFD98A" filter="url(#nwGlowB)"><animate attributeName="opacity" values="1;0.4;1" dur="2.6s" repeatCount="indefinite"/></path></svg></div>
           <div><div style="font-size:18px;font-weight:700;letter-spacing:-.02em">守夜人</div><div class="note" style="margin-top:2px">个人作息保命 · Nightwatcher</div></div>
         </div>
-        <div class="note">守夜人 v1.2.6 · 全部数据留在本机，不上传。AI 仅在你发起对话时调用所填接口。更新包走私有 GitHub，仅你本人可拉取。</div>
+        <div class="note">守夜人 <span id="aboutVer"></span> · 全部数据留在本机，不上传。AI 仅在你发起对话时调用所填接口。更新包走私有 GitHub，仅你本人可拉取。</div>
       </div>
     </section>
   </div>
@@ -833,7 +869,7 @@
     <div class="drawer-head">
       <div class="dh-logo">
         <div class="logo"><svg viewBox="0 0 32 32" aria-hidden="true"><defs><radialGradient id="nwMoonC" cx="34%" cy="26%" r="85%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="35%" stop-color="#EAF8F4"/><stop offset="72%" stop-color="#A9DED4"/><stop offset="100%" stop-color="#5AA195"/></radialGradient><linearGradient id="nwHaloC" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2DD4BF" stop-opacity="0"/><stop offset="50%" stop-color="#2DD4BF" stop-opacity=".85"/><stop offset="1" stop-color="#2DD4BF" stop-opacity="0"/></linearGradient><filter id="nwFloatC" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="2.2" stdDeviation="2" flood-color="#000" flood-opacity=".5"/></filter><filter id="nwGlowC" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="1.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g filter="url(#nwGlowC)"><circle cx="16" cy="16" r="13.5" fill="none" stroke="url(#nwHaloC)" stroke-width="0.8" opacity=".6"><animateTransform attributeName="transform" type="rotate" from="0 16 16" to="360 16 16" dur="22s" repeatCount="indefinite"/></circle></g><g filter="url(#nwFloatC)"><g><animateTransform attributeName="transform" type="translate" values="0 0;0 -0.8;0 0" dur="3.4s" repeatCount="indefinite" calcMode="spline" keySplines="0.45 0 0.55 1;0.45 0 0.55 1"/><path fill="url(#nwMoonC)" fill-rule="evenodd" d="M16 4.5a11.5 11.5 0 1 0 0 23 11.5 11.5 0 0 0 0-23z M19.2 3a8 8 0 1 1 0 16 8 8 0 0 1 0-16z"/><ellipse cx="13" cy="10.5" rx="2.6" ry="3.4" fill="#FFFFFF" opacity=".55" filter="url(#nwGlowC)"><animate attributeName="opacity" values="0.55;0.22;0.55" dur="3.4s" repeatCount="indefinite"/></ellipse></g></g><path d="M8.6 10.4l.9 2.2L11.7 13.5l-2.2.9L8.6 16.6l-.9-2.2L5.5 13.5l2.2-.9z" fill="#FFD98A" filter="url(#nwGlowC)"><animate attributeName="opacity" values="1;0.4;1" dur="2.6s" repeatCount="indefinite"/></path></svg></div>
-        <div><div class="dh-title">守夜人</div><div class="dh-sub">v1.2.6 · 个人作息保命</div></div>
+        <div><div class="dh-title">守夜人</div><div class="dh-sub"><span id="drawerVer"></span> · 个人作息保命</div></div>
       </div>
     </div>
     <div class="drawer-nav">
@@ -887,8 +923,30 @@
   <div class="modal" id="mWeight"><div class="sheet">
     <h3><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M6 6v13a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V6M9 10v6M15 10v6"/></svg></span>记录体重</h3>
     <div class="field"><label>今日体重 (kg)</label><input type="number" id="wVal" inputmode="decimal" step="0.1" placeholder="如 78.5"></div>
+    <div class="field"><label>对比照片（可选，记录更直观）</label>
+      <div class="meal-photo" id="weightPhoto" style="height:130px"><span class="meal-photo-tip">拍照 / 选图</span></div>
+      <input type="file" id="weightPhotoFile" accept="image/*" style="display:none">
+    </div>
     <button class="btn btn-accent btn-full" id="wSave">保存</button>
     <button class="btn btn-ghost btn-full" id="wClose" style="margin-top:8px;color:var(--txt-2)">取消</button>
+  </div></div>
+
+    <div class="modal" id="mMealManual"><div class="sheet">
+    <h3><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M6 6v13a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V6M9 10v6M15 10v6"/></svg></span>手动填热量</h3>
+    <div class="field"><label>这餐吃了什么（可选）</label><input type="text" id="manualDesc" placeholder="如：外卖炸鸡一份" autocomplete="off"></div>
+    <div class="field"><label>热量 (kcal)</label><input type="number" id="manualKcal" inputmode="numeric" placeholder="如 650"></div>
+    <div class="note" style="margin:-6px 0 12px">AI 估算失败时用，手动补一条餐食记录，照样计入今日热量。</div>
+    <button class="btn btn-accent btn-full" id="manualSave">保存</button>
+    <button class="btn btn-ghost btn-full" id="manualClose" style="margin-top:8px;color:var(--txt-2)">取消</button>
+  </div></div>
+
+  <div class="modal" id="mCraving"><div class="sheet">
+    <h3><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12c2 0 3-4 5-4s3 8 5 8 3-8 5-8 3 4 5 4"/></svg></span>记录一次冲动</h3>
+    <div class="note" id="cravType" style="margin-bottom:10px"></div>
+    <div class="field"><label>触发场景（可选）</label><input type="text" id="cravTrigger" placeholder="如：刚开完会 / 看别人喝 / 无聊刷手机" autocomplete="off"></div>
+    <div class="note" style="margin:-6px 0 12px">记下来后，先喝口水、停 10 分钟——大概率浪就退了。</div>
+    <button class="btn btn-accent btn-full" id="cravSave">记下了，先冲 10 分钟浪</button>
+    <button class="btn btn-ghost btn-full" id="cravClose" style="margin-top:8px;color:var(--txt-2)">取消</button>
   </div></div>
 
   <div class="modal" id="mTask"><div class="sheet">
@@ -1136,7 +1194,7 @@ const DEFAULT_TASKS=SCHEDULE.map(s=>({
   time:`${String(s.h).padStart(2,'0')}:${String(s.m).padStart(2,'0')}`
 }));
 
-const APP_VERSION='1.2.8';
+const APP_VERSION='1.3.0';
 const GH_DEFAULT_REPO='dkcoinlj/shouyeren-app';
 const AI_DEFAULT_ENDPOINT='https://tokenhub.tencentmaas.com/v1/chat/completions';
 const AI_DEFAULT_KEY='sk-WzI92BSrRAC3RvPbsihLsWH7QWepZfgnQthdPRCbkIhKkISg';
@@ -1157,6 +1215,7 @@ function load(){try{DB=JSON.parse(localStorage.getItem(KEY))||{};}catch(e){DB={}
   DB.water=DB.water||{goal:2000,records:{}};
   DB.sleep=DB.sleep||{wake:'07:00',bed:'23:00',records:{}};
   DB.streakBest=DB.streakBest||0;
+  DB.cravings=DB.cravings||[];
   DB.backupPass=DB.backupPass||'';
   DB.planRaw=DB.planRaw||DEFAULT_PLAN_RAW;
   DB.autoBackup=DB.autoBackup||false;
@@ -1170,6 +1229,7 @@ const rec=d=>DB.records[d]||(DB.records[d]={checkins:{}});
 const todayRec=rec(todayStr);
 todayRec.meals=todayRec.meals||[]; todayRec.mealKcal=todayRec.mealKcal||0;
 let mealPhotoB64='';
+let weightPhotoB64='';
 
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),1800);}
 function esc(s){return (s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
@@ -1272,8 +1332,23 @@ function getSystemTasks(){
 
 function openReview(){document.getElementById('mReview').classList.add('show');}
 function closeReview(){document.getElementById('mReview').classList.remove('show');}
-function openWeight(){document.getElementById('mWeight').classList.add('show');}
+function openWeight(){const wv=document.getElementById('wVal');if(wv)wv.value=todayRec.weight||'';
+  weightPhotoB64=todayRec.photo||'';const ph=document.getElementById('weightPhoto');
+  if(weightPhotoB64)ph.innerHTML='<img src="'+weightPhotoB64+'"><span class="re-snap">重拍</span>';else ph.innerHTML='<span class="meal-photo-tip">拍照 / 选图</span>';
+  bindWeightPhotoRetake();
+  document.getElementById('mWeight').classList.add('show');}
 function closeWeight(){document.getElementById('mWeight').classList.remove('show');}
+function bindWeightPhotoRetake(){const ph=document.getElementById('weightPhoto');const rs=ph.querySelector('.re-snap');if(rs)rs.onclick=e=>{e.stopPropagation();weightPhotoB64='';ph.innerHTML='<span class="meal-photo-tip">拍照 / 选图</span>';};}
+async function takeWeightPhoto(){
+  const ph=document.getElementById('weightPhoto');
+  if(CAMERA){try{const p=await CAMERA.getPhoto({quality:70,allowEditing:false,resultType:'dataUrl',source:'CAMERA',saveToGallery:true});
+    if(p&&p.dataUrl){weightPhotoB64=await compressPhoto(p.dataUrl,800);ph.innerHTML='<img src="'+weightPhotoB64+'"><span class="re-snap">重拍</span>';bindWeightPhotoRetake();return;}}catch(e){}}
+  document.getElementById('weightPhotoFile').click();
+}
+document.getElementById('weightPhoto').onclick=takeWeightPhoto;
+document.getElementById('weightPhotoFile').onchange=e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();
+  rd.onload=()=>{compressPhoto(rd.result,800).then(b64=>{weightPhotoB64=b64;const ph=document.getElementById('weightPhoto');ph.innerHTML='<img src="'+b64+'"><span class="re-snap">重拍</span>';bindWeightPhotoRetake();});};
+  rd.readAsDataURL(f);};
 document.getElementById('rvClose').onclick=closeReview;
 document.getElementById('wClose').onclick=closeWeight;
 document.getElementById('rvSave').onclick=()=>{
@@ -1282,7 +1357,7 @@ document.getElementById('rvSave').onclick=()=>{
   const p=getPhase(new Date());if(a>p.alc||c>p.cig)toast('今日已超阶段上限');else toast('复盘已保存');renderData();renderOverview();updateLockNotif();
 };
 document.getElementById('wSave').onclick=()=>{const v=+document.getElementById('wVal').value;if(!v){toast('请输入体重');return;}
-  todayRec.weight=v;save();closeWeight();renderToday();renderData();toast('体重已记录');};
+  todayRec.weight=v;todayRec.photo=weightPhotoB64||'';save();closeWeight();renderToday();renderData();toast('体重已记录');};
 
 function completionRate(days){let tot=0,done=0;days.forEach(day=>{const r=DB.records[day];if(!r||!r.checkins)return;
   SCHEDULE.forEach(s=>{if(s.key==='shutdown')return;tot++;if(r.checkins[s.key]===true)done++;});});return tot?Math.round(done/tot*100):0;}
@@ -1372,7 +1447,7 @@ function renderData(){
     <div class="stat warn"><div class="v">${daysWith?Math.round(okDays/daysWith*100):0}%</div><div class="k">阶段内不超标率</div></div>
     <div class="stat"><div class="v">${weekDays.reduce((s,day)=>s+((DB.records[day]&&DB.records[day].squat_sec)||0),0)}</div><div class="k">本周静蹲秒数</div></div>
     <div class="stat warn"><div class="v">${todayRec.mealKcal||0}</div><div class="k">今日摄入 kcal（目标 ${DB.mealTarget||0}）</div></div>`;
-  drawWeight();drawHabit();drawHeat();drawQuit();drawKcal();drawSquat();
+  drawWeight();drawHabit();drawHeat();drawQuit();drawKcal();drawSquat();renderCravingStats();renderWeightPhotos();
 }
 
 function setupCanvas(cv,h){const dpr=window.devicePixelRatio||1;const w=cv.clientWidth||cv.parentElement.clientWidth;
@@ -1385,7 +1460,8 @@ function drawWeight(){const cv=document.getElementById('cvWeight');if(!cv.client
   ctx.strokeStyle='rgba(233,196,106,.7)';ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(20,Y(DB.target));ctx.lineTo(w-10,Y(DB.target));ctx.stroke();ctx.setLineDash([]);
   ctx.fillStyle='rgba(233,196,106,.95)';ctx.font='10px sans-serif';ctx.fillText('目标 '+DB.target,22,Y(DB.target)-4);
   ctx.strokeStyle='#2dd4bf';ctx.lineWidth=2;ctx.beginPath();ws.forEach((k,i)=>{const x=X(i),y=Y(DB.records[k].weight);i?ctx.lineTo(x,y):ctx.moveTo(x,y);});ctx.stroke();
-  ws.forEach((k,i)=>{ctx.fillStyle='#2dd4bf';ctx.beginPath();ctx.arc(X(i),Y(DB.records[k].weight),3,0,7);ctx.fill();});}
+  ws.forEach((k,i)=>{const v=DB.records[k].weight;const x=X(i),y=Y(v);ctx.fillStyle='#2dd4bf';ctx.beginPath();ctx.arc(x,y,3,0,7);ctx.fill();
+    ctx.fillStyle='rgba(233,246,242,.95)';ctx.font='10px sans-serif';ctx.textAlign=(i===0?'left':i===ws.length-1?'right':'center');ctx.fillText(v,x,y-7);});ctx.textAlign='left';}
 function drawHabit(){const cv=document.getElementById('cvHabit');if(!cv.clientWidth)return;const{ctx,w,h}=setupCanvas(cv,180);ctx.clearRect(0,0,w,h);
   const days=[];const d=new Date();for(let i=13;i>=0;i--){const x=new Date(d);x.setDate(d.getDate()-i);days.push(fmt(x));}
   const bw=w/days.length,maxA=260,maxC=20;
@@ -1422,12 +1498,20 @@ function drawKcal(){const cv=document.getElementById('cvKcal');if(!cv.clientWidt
   const maxV=Math.max(100,...data,tgt)*1.1;const X=i=>20+i*((w-30)/(days.length-1));const Y=v=>10+(1-v/maxV)*(h-30);
   if(tgt){ctx.strokeStyle='rgba(233,196,106,.7)';ctx.setLineDash([5,4]);ctx.beginPath();ctx.moveTo(20,Y(tgt));ctx.lineTo(w-10,Y(tgt));ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='rgba(233,196,106,.95)';ctx.font='10px sans-serif';ctx.fillText('目标 '+tgt,w-66,Y(tgt)-5);}
   ctx.strokeStyle='#f59e0b';ctx.lineWidth=2;ctx.beginPath();data.forEach((v,i)=>{const x=X(i),y=Y(v);i?ctx.lineTo(x,y):ctx.moveTo(x,y);});ctx.stroke();
-  data.forEach((v,i)=>{ctx.fillStyle='#f59e0b';ctx.beginPath();ctx.arc(X(i),Y(v),3,0,7);ctx.fill();});
+  data.forEach((v,i)=>{const x=X(i),y=Y(v);ctx.fillStyle='#f59e0b';ctx.beginPath();ctx.arc(x,y,3,0,7);ctx.fill();
+    if(v>0){ctx.fillStyle='rgba(255,237,205,.95)';ctx.font='10px sans-serif';ctx.textAlign=(i===0?'left':i===data.length-1?'right':'center');ctx.fillText(v,x,y-7);}});ctx.textAlign='left';
   ctx.fillStyle='#6b7178';ctx.font='9px sans-serif';days.forEach((k,i)=>{if(i%2===0)ctx.fillText(WD_CN[parseD(k).getDay()],X(i)-4,h-6);});}
 function drawSquat(){const cv=document.getElementById('cvSquat');if(!cv.clientWidth)return;const{ctx,w,h}=setupCanvas(cv,180);ctx.clearRect(0,0,w,h);
   const days=[];const d=new Date();for(let i=13;i>=0;i--){const x=new Date(d);x.setDate(d.getDate()-i);days.push(fmt(x));}
   const data=days.map(k=>(DB.records[k]&&DB.records[k].squat_sec)||0);const maxV=Math.max(120,...data)*1.1;const bw=w/days.length;
-  data.forEach((v,i)=>{const x0=i*bw+bw*0.22;const bh=Math.min(h-24,(v/maxV)*(h-24));ctx.fillStyle=v?'#2dd4bf':'rgba(255,255,255,.06)';ctx.fillRect(x0,h-bh,Math.max(2,bw*0.56),bh);ctx.fillStyle='#6b7178';ctx.font='9px sans-serif';ctx.fillText(WD_CN[parseD(days[i]).getDay()],x0,h-8);});}
+  data.forEach((v,i)=>{const x0=i*bw+bw*0.22;const bh=Math.min(h-24,(v/maxV)*(h-24));ctx.fillStyle=v?'#2dd4bf':'rgba(255,255,255,.06)';ctx.fillRect(x0,h-bh,Math.max(2,bw*0.56),bh);ctx.fillStyle='#6b7178';ctx.font='9px sans-serif';ctx.fillText(WD_CN[parseD(days[i]).getDay()],x0,h-8);
+    if(v>0){ctx.fillStyle='rgba(233,246,242,.9)';ctx.font='9px sans-serif';ctx.textAlign='center';ctx.fillText(Math.round(v),x0+bw*0.28,h-bh-3);ctx.textAlign='left';}});}
+function renderWeightPhotos(){
+  const el=document.getElementById('weightPhotos');if(!el)return;
+  const items=Object.keys(DB.records).filter(k=>DB.records[k].photo).sort().slice(-4).reverse();
+  if(!items.length){el.innerHTML='<div class="note">还没有对比照片。称重时拍一张正脸/全身照，过几周就能拼出变化对比。</div>';return;}
+  el.innerHTML=items.map(k=>{const r=DB.records[k];return `<div class="wp-item"><img src="${r.photo}"><div class="wp-meta"><b>${k.slice(5)}</b>${r.weight?' · '+r.weight+'kg':''}</div></div>`;}).join('');
+}
 document.getElementById('expBtn').onclick=()=>{const blob=new Blob([JSON.stringify(DB)],{type:'application/json'});
   const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='守夜人备份_'+todayStr+'.json';a.click();URL.revokeObjectURL(url);toast('备份已导出');};
 document.getElementById('impBtn').onclick=()=>document.getElementById('impFile').click();
@@ -1580,7 +1664,15 @@ function applyStatus(t,status){
       if(t.review&&!todayRec.weight&&!todayRec.alcohol_ml)setTimeout(openReview,250);
       if(t.key==='shutdown')renderData();
     }else{delete todayRec.checkins[key];save();renderTasks();}
-  }else{save();renderTasks();if(status==='done')cancelTaskNotif(t.id);}
+  }else{
+    const key=(t.id&&t.id.indexOf('t_')===0)?t.id.slice(2):null;
+    if(status==='done'){
+      if(key){todayRec.checkins[key]=true;
+        if(key==='shutdown'&&!todayRec.weight&&!todayRec.alcohol_ml)setTimeout(openReview,250);}
+      cancelTaskNotif(t.id);
+    }else{if(key)delete todayRec.checkins[key];}
+    save();renderTasks();renderData();renderStreak();
+  }
   renderOverview();
 }
 
@@ -1757,7 +1849,9 @@ function aiApply(){
       if(DB.tasks.some(t=>t.title===it.title))return;
       DB.tasks.push({id:'t'+Date.now()+Math.random().toString(36).slice(2,5),type:'custom',icon:it.icon||'star',title:it.title,text:it.title,sub:it.sub||'',status:'todo',created:todayStr,time:it.time||null});added++;
     });
-    save();renderTasks();renderOverview();toast('已填入 '+added+' 个任务');
+    save();renderTasks();renderOverview();
+    if(added===0)toast('今日任务已在列表中，无需重复添加');
+    else toast('已填入 '+added+' 个任务');
   }else if(d.type==='goal'){
     const g=d.payload.text.trim();
     if(g&&!DB.userGoals.includes(g)){DB.userGoals.push(g);save();renderPlan();toast('目标已存入「核心目标」');}
@@ -1863,7 +1957,42 @@ document.querySelectorAll('#aiChips button').forEach(b=>b.onclick=()=>{
   if(c==='weight')return openWeight();
   if(c==='cig')return sendAI('我抽了5支烟',true);
   if(c==='goal'){const i=document.getElementById('aiInput');i.value='定目标 ';i.focus();return;}
+  if(c==='review')return reviewWithAI();
 });
+async function callHY3Text(userText,sysText){
+  const key=(DB.aiKey||AI_DEFAULT_KEY||'').trim();if(!key)return null;
+  const endpoint=(DB.aiEndpoint||AI_DEFAULT_ENDPOINT).trim();const model=(DB.aiModel||AI_DEFAULT_MODEL).trim();
+  if(!endpoint||!model)return null;
+  const body={model,messages:[{role:'system',content:sysText},{role:'user',content:userText}],stream:false,temperature:0.6};
+  const ctrl=new AbortController();const to=setTimeout(()=>ctrl.abort(),12000);
+  let res;try{res=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify(body),signal:ctrl.signal});}catch(e){return null;}finally{clearTimeout(to);}
+  if(!res||!res.ok)return null;let j;try{j=await res.json();}catch(e){return null;}
+  return (j.choices&&j.choices[0]&&j.choices[0].message)?j.choices[0].message.content.trim():null;
+}
+function buildTodayContext(){
+  const c=todayRec.checkins||{};const done=Object.keys(c).filter(k=>c[k]===true).length;
+  const p=getPhase(new Date());
+  return `今日（${todayStr}，阶段「${p.name}」）数据：体重 ${todayRec.weight||'未称'}kg；饮酒 ${todayRec.alcohol_ml||0}ml（上限${p.alc}）；吸烟 ${todayRec.cigarettes||0}支（上限${p.cig}）；静蹲 ${todayRec.squat_sec||0}秒；饮水 ${(DB.water.records&&DB.water.records[todayStr])||0}ml；餐食热量 ${todayRec.mealKcal||0}kcal（目标${DB.mealTarget||0}）；已打卡 ${done} 项作息。备注：${todayRec.note||'无'}。`;
+}
+function localReviewFallback(){
+  const c=todayRec.checkins||{};const done=Object.keys(c).filter(k=>c[k]===true).length;
+  const p=getPhase(new Date());const tips=[];
+  if(done>=6)tips.push('今日作息打卡很全，节奏稳。');else tips.push(`今日只打卡 ${done} 项，明天优先把「护胃餐」「运动禁烟」补上。`);
+  if((todayRec.alcohol_ml||0)>p.alc)tips.push('今天酒超上限了，明晚用茶替代。');else tips.push('控酒在线，保持。');
+  if((todayRec.cigarettes||0)>p.cig)tips.push('烟略超，下次烟瘾上来先冲 10 分钟浪。');else tips.push('控烟在线。');
+  if((todayRec.mealKcal||0)>(DB.mealTarget||0)&&DB.mealTarget)tips.push('热量超标，下一餐清淡点。');
+  return tips.join('');
+}
+async function reviewWithAI(){
+  const box=document.getElementById('aiResult');box.classList.remove('hide');
+  box.innerHTML='<div class="ai-reply ai-think">小守正在复盘你的今日数据<span class="dots"><i>.</i><i>.</i><i>.</i></span></div>';
+  const ctx=buildTodayContext();
+  const sys='你是「守夜人」健康教练，语气像靠谱兄弟。基于用户今日数据，给一段中文复盘与可执行建议（不超过150字），点明做得好和要改进的点。只输出建议正文，不要JSON、不要markdown代码块。';
+  let txt=null;try{txt=await callHY3Text(ctx,sys);}catch(e){txt=null;}
+  if(!txt)txt=localReviewFallback();
+  box.innerHTML='<div class="ai-reply"><b>📝 今日复盘 · 小守</b><br><br>'+esc(txt)+'</div><div class="ai-actions"><button class="btn btn-sm btn-ghost" id="aiDel">好的</button></div>';
+  document.getElementById('aiDel').onclick=()=>{box.classList.add('hide');};
+}
 function setupVoiceInput(){
   const mic=document.getElementById('aiMic');const inp=document.getElementById('aiInput');
   const SR=(window.SpeechRecognition||window.webkitSpeechRecognition);
@@ -1915,7 +2044,7 @@ async function estimateMeal(){
   let m=null;try{m=await callMealAI(desc,photo);}catch(e){m=null;}
   if(!m&&photo&&desc){try{m=await callMealAI(desc,'');}catch(e){m=null;}}
   btn.disabled=false;btn.textContent='计算热量';
-  if(!m){if(photo&&!desc)toast('当前模型暂不支持看图，请描述食物内容');else toast('估算失败，请稍后重试或检查 AI 设置');return;}
+  if(!m){if(photo&&!desc)toast('估算失败，可点「手动填热量」补录');else toast('估算失败，可点「手动填热量」补录，或检查 AI 设置');return;}
   const thumb=photo?await compressPhoto(photo,300):'';
   todayRec.meals.push({t:nowHM(),desc,photo:thumb,kcal:m.kcal,protein:m.protein,carb:m.carb,fat:m.fat,items:m.items});
   todayRec.mealKcal=(todayRec.mealKcal||0)+m.kcal;save();
@@ -1943,32 +2072,81 @@ function renderMeals(){
 }
 document.getElementById('mealPhoto').onclick=takeMealPhoto;
 document.getElementById('mealCalc').onclick=estimateMeal;
+document.getElementById('mealManual').onclick=()=>{document.getElementById('mMealManual').classList.add('show');document.getElementById('manualKcal').value='';document.getElementById('manualDesc').value='';};
+document.getElementById('manualClose').onclick=()=>document.getElementById('mMealManual').classList.remove('show');
+document.getElementById('manualSave').onclick=()=>{const k=+document.getElementById('manualKcal').value;if(!k){toast('填个热量');return;}
+  const desc=document.getElementById('manualDesc').value.trim()||'手动记录';
+  todayRec.meals.push({t:nowHM(),desc,kcal:k,protein:0,carb:0,fat:0,items:[]});
+  todayRec.mealKcal=(todayRec.mealKcal||0)+k;save();
+  document.getElementById('mMealManual').classList.remove('show');renderMeals();renderData();updateLockNotif();
+  const tgt=Math.round(DB.mealTarget||0);
+  if(tgt>0&&todayRec.mealKcal>tgt){const over=todayRec.mealKcal-tgt;toast('⚠ 今日热量已超目标 '+over+' kcal');notifyMealOver(over);}else toast('已记录 '+k+' kcal');};
 document.getElementById('mealDesc').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();estimateMeal();}});
 
+/* ===== 冲动冲浪（酒/烟 craving） ===== */
+let cravTypeNow='alcohol';
+function openCraving(type){cravTypeNow=type;document.getElementById('cravType').innerHTML=type==='alcohol'?'类型：<b style="color:var(--gold)">酒瘾冲动</b>':'类型：<b style="color:var(--purple)">烟瘾冲动</b>';document.getElementById('cravTrigger').value='';document.getElementById('mCraving').classList.add('show');}
+document.getElementById('cravAlcohol').onclick=()=>openCraving('alcohol');
+document.getElementById('cravCig').onclick=()=>openCraving('cig');
+document.getElementById('cravClose').onclick=()=>document.getElementById('mCraving').classList.remove('show');
+document.getElementById('cravSave').onclick=()=>{const trigger=document.getElementById('cravTrigger').value.trim();
+  DB.cravings.push({t:new Date().toISOString(),type:cravTypeNow,trigger});save();
+  document.getElementById('mCraving').classList.remove('show');renderCravingStats();
+  toast('记下了 · 喝口水，等 10 分钟浪就退了');};
+function renderCravingStats(){
+  const el=document.getElementById('cravingStats');if(!el)return;
+  const list=DB.cravings||[];
+  if(!list.length){el.innerHTML='<div class="note">还没有冲动记录。瘾头上来的时候点一下，慢慢你就知道啥最容易勾出酒瘾/烟瘾。</div>';return;}
+  const now=Date.now();const last7=list.filter(c=>now-new Date(c.t).getTime()<=7*864e5);
+  const hours=last7.map(c=>new Date(c.t).getHours());
+  const peak=hours.length?mode(hours):'—';
+  let avg='—';
+  if(last7.length>=2){const sorted=last7.map(c=>new Date(c.t).getTime()).sort((a,b)=>a-b);let tot=0;for(let i=1;i<sorted.length;i++)tot+=sorted[i]-sorted[i-1];avg=Math.round(tot/(sorted.length-1)/36e5*10)/10+'h';}
+  const idx={alcohol:'🍷 酒',cig:'🚬 烟'};
+  const a7=last7.filter(c=>c.type==='alcohol').length,c7=last7.filter(c=>c.type==='cig').length;
+  el.innerHTML=`<div class="cs-grid">
+    <div class="cs"><div class="v">${last7.length}</div><div class="k">近7天总次数</div></div>
+    <div class="cs"><div class="v">${a7}</div><div class="k">其中酒瘾</div></div>
+    <div class="cs"><div class="v">${c7}</div><div class="k">其中烟瘾</div></div>
+    <div class="cs"><div class="v">${peak}</div><div class="k">高峰时段</div></div>
+    <div class="cs"><div class="v">${avg}</div><div class="k">平均间隔</div></div>
+    <div class="cs"><div class="v">${list.length}</div><div class="k">累计总次数</div></div>
+  </div>
+  <div class="note" style="margin-top:8px">高峰时段 ${peak} 点前后最容易破防，提前安排替代动作（喝水/静蹲/出门走走）。</div>`;
+}
+function mode(arr){const m={};arr.forEach(x=>m[x]=(m[x]||0)+1);let bk=null,bv=-1;for(const k in m){if(m[k]>bv){bv=m[k];bk=k;}}return bk+'点';}
+
 /* ===== 执行工具：计时器 + 喝水 ===== */
-let timer={total:300,left:300,running:false,intv:null,label:'静蹲'};
+let timer={total:300,left:300,running:false,intv:null,label:'静蹲',endAt:0};
 function fmtMMSS(s){const m=Math.floor(s/60),ss=s%60;return String(m).padStart(2,'0')+':'+String(ss).padStart(2,'0');}
+function tmLeftNow(){return timer.running?Math.max(0,Math.round((timer.endAt-Date.now())/1000)):timer.left;}
 function renderTimer(){
+  timer.left=tmLeftNow();
   document.getElementById('tmTime').textContent=fmtMMSS(timer.left);
   document.getElementById('tmLabel').textContent=timer.label;
-  const C=2*Math.PI*90;const off=C*(1-timer.left/timer.total);
+  const C=2*Math.PI*90;const off=C*(1-Math.max(0,timer.left)/Math.max(1,timer.total));
   const arc=document.getElementById('tmArc');arc.style.strokeDasharray=C;arc.style.strokeDashoffset=off;
   arc.style.stroke=timer.running?'#5eead4':'#2dd4bf';
 }
+function finishTimer(){
+  clearInterval(timer.intv);timer.running=false;timer.left=0;renderTimer();
+  document.getElementById('tmStart').textContent='开始';
+  if(navigator.vibrate){try{navigator.vibrate([40,60,40]);}catch(_){}}
+  if(NOTIF&&notifGranted){try{
+    const opts={notifications:[{id:900,title:'守夜人 · 计时结束',body:timer.label+' 完成，干得漂亮',schedule:{at:Date.now()+1000}}]};
+    NOTIF.schedule(opts);
+  }catch(_){}}
+  toast(timer.label+' 完成');
+}
 function tmTick(){
-  if(timer.left<=0){clearInterval(timer.intv);timer.running=false;timer.left=0;renderTimer();
-    if(navigator.vibrate){try{navigator.vibrate([40,60,40]);}catch(_){}}
-    if(NOTIF&&notifGranted){try{
-      const opts={notifications:[{id:900,title:'守夜人 · 计时结束',body:timer.label+' 完成，干得漂亮',schedule:{at:Date.now()+1000}}]};
-      NOTIF.schedule(opts);
-    }catch(_){}}
-    toast(timer.label+' 完成');document.getElementById('tmStart').textContent='开始';return;}
-  timer.left--;renderTimer();
+  const left=tmLeftNow();
+  if(left<=0){finishTimer();return;}
+  timer.left=left;renderTimer();
 }
 document.getElementById('toolSquat').onclick=()=>openTimer(5,'静蹲');
 document.getElementById('toolFocus').onclick=()=>openTimer(25,'专注');
 function openTimer(min,label){
-  timer.total=Math.round(min*60);timer.left=timer.total;timer.label=label;timer.running=false;
+  timer.total=Math.round(min*60);timer.left=timer.total;timer.label=label;timer.running=false;timer.endAt=0;
   if(timer.intv)clearInterval(timer.intv);
   document.getElementById('tmPresets').querySelectorAll('.preset').forEach(p=>p.classList.remove('active'));
   document.getElementById('mTimer').classList.add('show');renderTimer();
@@ -1977,17 +2155,22 @@ function openTimer(min,label){
 document.getElementById('tmPresets').querySelectorAll('.preset').forEach(p=>p.onclick=()=>{
   document.getElementById('tmPresets').querySelectorAll('.preset').forEach(x=>x.classList.remove('active'));
   p.classList.add('active');
-  timer.total=Math.round(parseFloat(p.dataset.min)*60);timer.left=timer.total;timer.label=p.dataset.label;
+  timer.total=Math.round(parseFloat(p.dataset.min)*60);timer.left=timer.total;timer.label=p.dataset.label;timer.endAt=0;
   timer.running=false;if(timer.intv)clearInterval(timer.intv);renderTimer();document.getElementById('tmStart').textContent='开始';
 });
 document.getElementById('tmStart').onclick=()=>{
-  if(timer.running){timer.running=false;clearInterval(timer.intv);document.getElementById('tmStart').textContent='继续';}
+  if(timer.running){timer.running=false;timer.left=tmLeftNow();clearInterval(timer.intv);document.getElementById('tmStart').textContent='继续';renderTimer();}
   else{timer.running=true;document.getElementById('tmStart').textContent='暂停';
     if(timer.left<=0)timer.left=timer.total;
+    timer.endAt=Date.now()+timer.left*1000;
+    if(timer.intv)clearInterval(timer.intv);
     timer.intv=setInterval(tmTick,1000);}
 };
-document.getElementById('tmReset').onclick=()=>{timer.running=false;if(timer.intv)clearInterval(timer.intv);timer.left=timer.total;
+document.getElementById('tmReset').onclick=()=>{timer.running=false;if(timer.intv)clearInterval(timer.intv);timer.left=timer.total;timer.endAt=0;
   document.getElementById('tmStart').textContent='开始';renderTimer();};
+// 切回前台/解锁后按真实时间戳续算，避免后台被系统暂停导致计时漂移
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&timer.running)tmTick();});
+window.addEventListener('focus',()=>{if(timer.running)tmTick();});
 document.getElementById('toolWater').onclick=async()=>{
   if(NOTIF&&notifGranted){try{const at=Date.now()+1500;const wopt={notifications:[{id:901,title:'守夜人 喝水',body:'该喝水了 300ml温水 小口慢饮',schedule:{at:at}}]};await NOTIF.schedule(wopt);toast('已安排喝水提醒');return;}catch(_){}}
   toast('喝口水吧 · 300ml温水');};
@@ -2183,7 +2366,8 @@ document.getElementById('phaseList').innerHTML=PHASES.map((p,i)=>{
     <div style="font-size:12px;color:var(--txt-2);margin-top:6px;line-height:1.6">无酒日：${p.noAlcohol.length?p.noAlcohol.map(x=>WD_CN[WD.indexOf(x)]).join('、'):'无'} · 酒≤${p.alc}ml · 烟≤${p.cig}支</div>
     <div style="font-size:12px;color:var(--accent-2);margin-top:3px">${p.tip}</div></div>`;}).join('');
 
-function renderAll(){['renderPhase','renderToday','renderTasks','renderOverview','renderAI','renderMeals','renderStreak','renderWater','renderSleep'].forEach(fn=>{try{window[fn]();}catch(e){console.error('render '+fn,e);}});}
+function renderAll(){['renderPhase','renderToday','renderTasks','renderOverview','renderAI','renderMeals','renderStreak','renderWater','renderSleep','refreshVersionLabels'].forEach(fn=>{try{window[fn]();}catch(e){console.error('render '+fn,e);}});}
+function refreshVersionLabels(){const v='v'+APP_VERSION;const a=document.getElementById('curVer');if(a)a.textContent=v;const b=document.getElementById('aboutVer');if(b)b.textContent=v;const d=document.getElementById('drawerVer');if(d)d.textContent=v;}
 renderAll();setTimeout(refreshNotifState,300);setTimeout(autoEnableNotif,600);
 // 每日自动加密备份
 if(DB.autoBackup&&DB.ghToken&&DB.ghToken.trim()&&DB.backupPass&&DB.lastBackup!==todayStr){setTimeout(doBackup,2000);}
