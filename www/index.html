@@ -39,6 +39,7 @@
     font-size:15px;letter-spacing:-.01em;overscroll-behavior:none;}
   body{padding-top:calc(60px + var(--safe-t));padding-bottom:calc(78px + var(--safe-b));min-height:100vh;
     background:var(--bg-grad) fixed;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+  .hide{display:none;}
 
   /* ===== 顶栏 ===== */
   .appbar{position:fixed;top:0;left:0;right:0;z-index:30;height:calc(60px + var(--safe-t));
@@ -302,6 +303,10 @@
   .plan-card.active{display:block;animation:float-in .35s cubic-bezier(.16,1,.3,1) both;}
   .plan-card .fold-head{display:none;}
   .plan-card .fold-body{display:block;}
+  .plan-tabs{display:flex;gap:8px;overflow-x:auto;padding:2px 0 14px;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+  .plan-tabs::-webkit-scrollbar{display:none;}
+  .plan-tabs button{flex-shrink:0;padding:8px 14px;border-radius:var(--r-full);border:1px solid var(--line);background:var(--card);color:var(--txt-2);font-size:12px;font-weight:600;cursor:pointer;transition:.18s;}
+  .plan-tabs button.active{background:var(--accent-bg);color:var(--accent-2);border-color:var(--accent-line);}
   .drawer-foot b{color:var(--accent-2);}
   .hamburger{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--surface);
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;flex-shrink:0;}
@@ -540,28 +545,32 @@
       </div>
 
       <div class="card" id="waterCard">
-        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5S5 9 5 14a7 7 0 0 0 14 0c0-5-7-11.5-7-11.5Z"/></svg></span>饮水记录</h3>
-        <div class="water-top"><div><span class="wt" id="waterToday">0</span><small>/ <span id="waterGoal">2000</span> ml</small></div><div class="tag tag-accent" id="waterPct">0%</div></div>
-        <div class="water-bar"><div class="water-bar-fill" id="waterBarFill"></div></div>
-        <div class="water-btns">
-          <button data-val="200">+200</button>
-          <button data-val="300">+300</button>
-          <button data-val="500">+500</button>
-          <button data-val="undo">撤回</button>
+        <div class="fold-head" data-fold="waterCard"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5S5 9 5 14a7 7 0 0 0 14 0c0-5-7-11.5-7-11.5Z"/></svg></span>饮水记录 · <b id="waterFoldVal">0/2000ml</b><span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+        <div class="fold-body">
+          <div class="water-top"><div><span class="wt" id="waterToday">0</span><small>/ <span id="waterGoal">2000</span> ml</small></div><div class="tag tag-accent" id="waterPct">0%</div></div>
+          <div class="water-bar"><div class="water-bar-fill" id="waterBarFill"></div></div>
+          <div class="water-btns">
+            <button data-val="200">+200</button>
+            <button data-val="300">+300</button>
+            <button data-val="500">+500</button>
+            <button data-val="undo">撤回</button>
+          </div>
+          <div class="water-cust"><input type="number" id="waterCust" inputmode="numeric" min="0" step="50" placeholder="自定义 ml"><button class="btn btn-secondary" id="waterAddBtn" style="margin:0;white-space:nowrap">添加</button></div>
         </div>
-        <div class="water-cust"><input type="number" id="waterCust" inputmode="numeric" min="0" step="50" placeholder="自定义 ml"><button class="btn btn-secondary" id="waterAddBtn" style="margin:0;white-space:nowrap">添加</button></div>
       </div>
 
       <div class="card" id="sleepCard">
-        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a4 4 0 0 1 4 4 4 4 0 0 1-3 3.87M12 3a4 4 0 0 0-4 4 4 4 0 0 0 3 3.87M12 21v-6M8 17a6 6 0 0 0 8 0"/></svg></span>睡眠记录</h3>
-        <div class="sleep-grid">
-          <div class="sleep-fld"><label>入睡时间</label><input type="time" id="sleepBed" value="23:00"></div>
-          <div class="sleep-fld"><label>起床时间</label><input type="time" id="sleepWake" value="07:00"></div>
-        </div>
-        <div class="sleep-dur">本次睡眠时长：<b id="sleepDur">—</b></div>
-        <div class="sleep-row">
-          <span>今早 <b id="sleepThis">尚未记录</b></span>
-          <button class="btn btn-accent btn-sm" id="sleepSave" style="margin:0">保存今日睡眠</button>
+        <div class="fold-head" data-fold="sleepCard"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a4 4 0 0 1 4 4 4 4 0 0 1-3 3.87M12 3a4 4 0 0 0-4 4 4 4 0 0 0 3 3.87M12 21v-6M8 17a6 6 0 0 0 8 0"/></svg></span>睡眠记录 · <b id="sleepFoldVal">—</b><span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+        <div class="fold-body">
+          <div class="sleep-grid">
+            <div class="sleep-fld"><label>入睡时间</label><input type="time" id="sleepBed" value="23:00"></div>
+            <div class="sleep-fld"><label>起床时间</label><input type="time" id="sleepWake" value="07:00"></div>
+          </div>
+          <div class="sleep-dur">本次睡眠时长：<b id="sleepDur">—</b></div>
+          <div class="sleep-row">
+            <span>今早 <b id="sleepThis">尚未记录</b></span>
+            <button class="btn btn-accent btn-sm" id="sleepSave" style="margin:0">保存今日睡眠</button>
+          </div>
         </div>
       </div>
 
@@ -604,6 +613,17 @@
     </section>
 
     <section id="tab-plan" class="hide">
+      <div class="plan-tabs" id="planTabs">
+        <button data-section="goals" class="active">目标</button>
+        <button data-section="schedule">作息</button>
+        <button data-section="alc">戒酒</button>
+        <button data-section="smoke">戒烟</button>
+        <button data-section="skin">美白</button>
+        <button data-section="week">一周</button>
+        <button data-section="track">进度</button>
+        <button data-section="rules">军规</button>
+        <button data-section="phasetime">阶段</button>
+      </div>
       <div class="card plan-card active" data-section="goals" id="card-goals">
         <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m9 12 2 2 4-4"/></svg></span>核心目标（2个月）</h3>
         <div class="fold-body"><div class="goal-grid" id="planGoals"></div></div>
@@ -763,7 +783,7 @@
       <div class="card">
         <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg></span>热更新（免重装）</h3>
         <div class="note">填一次你的 GitHub Token（需 <b>repo</b> 权限），之后点「检查更新」即从私有仓库拉新包热替换，不用卸载重装。Token 只存在本机。</div>
-        <div class="field" style="margin-top:10px"><label>当前版本</label><div id="curVer" class="note" style="margin:0">v1.1.4</div></div>
+        <div class="field" style="margin-top:10px"><label>当前版本</label><div id="curVer" class="note" style="margin:0">v1.2.4</div></div>
         <div class="field"><label>GitHub Token（Private 仓库读取用）</label><input type="password" id="ghToken" placeholder="ghp_xxx 或 github_pat_xxx" autocomplete="off"></div>
         <div class="field"><label>更新仓库 (owner/repo)</label><input type="text" id="ghRepo" placeholder="dkcoinlj/shouyeren-app"></div>
         <button class="btn btn-accent btn-full" id="checkUpd" style="margin-top:4px">检查更新</button>
@@ -781,7 +801,7 @@
           <div class="logo" style="width:60px;height:60px;border-radius:18px"><svg viewBox="0 0 32 32" aria-hidden="true"><defs><radialGradient id="nwMoonB" cx="34%" cy="26%" r="85%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="35%" stop-color="#EAF8F4"/><stop offset="72%" stop-color="#A9DED4"/><stop offset="100%" stop-color="#5AA195"/></radialGradient><linearGradient id="nwHaloB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2DD4BF" stop-opacity="0"/><stop offset="50%" stop-color="#2DD4BF" stop-opacity=".85"/><stop offset="1" stop-color="#2DD4BF" stop-opacity="0"/></linearGradient><filter id="nwFloatB" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="2.2" stdDeviation="2" flood-color="#000" flood-opacity=".5"/></filter><filter id="nwGlowB" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="1.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g filter="url(#nwGlowB)"><circle cx="16" cy="16" r="13.5" fill="none" stroke="url(#nwHaloB)" stroke-width="0.8" opacity=".6"><animateTransform attributeName="transform" type="rotate" from="0 16 16" to="360 16 16" dur="22s" repeatCount="indefinite"/></circle></g><g filter="url(#nwFloatB)"><g><animateTransform attributeName="transform" type="translate" values="0 0;0 -0.8;0 0" dur="3.4s" repeatCount="indefinite" calcMode="spline" keySplines="0.45 0 0.55 1;0.45 0 0.55 1"/><path fill="url(#nwMoonB)" fill-rule="evenodd" d="M16 4.5a11.5 11.5 0 1 0 0 23 11.5 11.5 0 0 0 0-23z M19.2 3a8 8 0 1 1 0 16 8 8 0 0 1 0-16z"/><ellipse cx="13" cy="10.5" rx="2.6" ry="3.4" fill="#FFFFFF" opacity=".55" filter="url(#nwGlowB)"><animate attributeName="opacity" values="0.55;0.22;0.55" dur="3.4s" repeatCount="indefinite"/></ellipse></g></g><path d="M8.6 10.4l.9 2.2L11.7 13.5l-2.2.9L8.6 16.6l-.9-2.2L5.5 13.5l2.2-.9z" fill="#FFD98A" filter="url(#nwGlowB)"><animate attributeName="opacity" values="1;0.4;1" dur="2.6s" repeatCount="indefinite"/></path></svg></div>
           <div><div style="font-size:18px;font-weight:700;letter-spacing:-.02em">守夜人</div><div class="note" style="margin-top:2px">个人作息保命 · Nightwatcher</div></div>
         </div>
-        <div class="note">守夜人 v1.2.2 · 全部数据留在本机，不上传。AI 仅在你发起对话时调用所填接口。更新包走私有 GitHub，仅你本人可拉取。</div>
+        <div class="note">守夜人 v1.2.4 · 全部数据留在本机，不上传。AI 仅在你发起对话时调用所填接口。更新包走私有 GitHub，仅你本人可拉取。</div>
       </div>
     </section>
   </div>
@@ -791,7 +811,7 @@
     <div class="drawer-head">
       <div class="dh-logo">
         <div class="logo"><svg viewBox="0 0 32 32" aria-hidden="true"><defs><radialGradient id="nwMoonC" cx="34%" cy="26%" r="85%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="35%" stop-color="#EAF8F4"/><stop offset="72%" stop-color="#A9DED4"/><stop offset="100%" stop-color="#5AA195"/></radialGradient><linearGradient id="nwHaloC" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2DD4BF" stop-opacity="0"/><stop offset="50%" stop-color="#2DD4BF" stop-opacity=".85"/><stop offset="1" stop-color="#2DD4BF" stop-opacity="0"/></linearGradient><filter id="nwFloatC" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="2.2" stdDeviation="2" flood-color="#000" flood-opacity=".5"/></filter><filter id="nwGlowC" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="1.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g filter="url(#nwGlowC)"><circle cx="16" cy="16" r="13.5" fill="none" stroke="url(#nwHaloC)" stroke-width="0.8" opacity=".6"><animateTransform attributeName="transform" type="rotate" from="0 16 16" to="360 16 16" dur="22s" repeatCount="indefinite"/></circle></g><g filter="url(#nwFloatC)"><g><animateTransform attributeName="transform" type="translate" values="0 0;0 -0.8;0 0" dur="3.4s" repeatCount="indefinite" calcMode="spline" keySplines="0.45 0 0.55 1;0.45 0 0.55 1"/><path fill="url(#nwMoonC)" fill-rule="evenodd" d="M16 4.5a11.5 11.5 0 1 0 0 23 11.5 11.5 0 0 0 0-23z M19.2 3a8 8 0 1 1 0 16 8 8 0 0 1 0-16z"/><ellipse cx="13" cy="10.5" rx="2.6" ry="3.4" fill="#FFFFFF" opacity=".55" filter="url(#nwGlowC)"><animate attributeName="opacity" values="0.55;0.22;0.55" dur="3.4s" repeatCount="indefinite"/></ellipse></g></g><path d="M8.6 10.4l.9 2.2L11.7 13.5l-2.2.9L8.6 16.6l-.9-2.2L5.5 13.5l2.2-.9z" fill="#FFD98A" filter="url(#nwGlowC)"><animate attributeName="opacity" values="1;0.4;1" dur="2.6s" repeatCount="indefinite"/></path></svg></div>
-        <div><div class="dh-title">守夜人</div><div class="dh-sub">v1.2.2 · 个人作息保命</div></div>
+        <div><div class="dh-title">守夜人</div><div class="dh-sub">v1.2.4 · 个人作息保命</div></div>
       </div>
     </div>
     <div class="drawer-nav">
@@ -961,7 +981,7 @@ const SCHEDULE=[
   {key:'shutdown',h:2,m:0,icon:'moon',title:'强制关机',sub:'关手机睡觉。回顾今日烟酒量。',notif:'强制关机',review:true}
 ];
 
-const APP_VERSION='1.2.2';
+const APP_VERSION='1.2.4';
 const GH_DEFAULT_REPO='dkcoinlj/shouyeren-app';
 const AI_DEFAULT_ENDPOINT='https://tokenhub.tencentmaas.com/v1/chat/completions';
 const AI_DEFAULT_KEY='sk-WzI92BSrRAC3RvPbsihLsWH7QWepZfgnQthdPRCbkIhKkISg';
@@ -1114,9 +1134,9 @@ function streakDays(){let n=0;const d=new Date();for(;;){const k=fmt(d);const r=
 /* ===== 连续打卡 / 饮水 / 睡眠 渲染 ===== */
 function sleepDur(bed,wake){if(!bed||!wake)return 0;const[bh,bm]=bed.split(':').map(Number);const[wh,wm]=wake.split(':').map(Number);let mins=(wh*60+wm)-(bh*60+bm);if(mins<=0)mins+=1440;return Math.round(mins/6)/10;}
 function renderStreak(){const n=streakDays();if(n>DB.streakBest)DB.streakBest=n;const el=document.getElementById('streakNum');if(el)el.textContent=n;const be=document.getElementById('streakBest');if(be)be.textContent=DB.streakBest;const sb=document.getElementById('streakBadge');if(sb)sb.style.display=n>0?'inline-flex':'none';}
-function renderWater(){const goal=DB.water.goal||2000;const cur=(DB.water.records&&DB.water.records[todayStr])||0;const el=document.getElementById('waterToday');if(el)el.textContent=cur;const g=document.getElementById('waterGoal');if(g)g.textContent=goal;const pct=Math.min(100,Math.round(cur/goal*100));const fill=document.getElementById('waterBarFill');if(fill)fill.style.width=pct+'%';const pe=document.getElementById('waterPct');if(pe)pe.textContent=pct+'%';}
+function renderWater(){const goal=DB.water.goal||2000;const cur=(DB.water.records&&DB.water.records[todayStr])||0;const el=document.getElementById('waterToday');if(el)el.textContent=cur;const g=document.getElementById('waterGoal');if(g)g.textContent=goal;const pct=Math.min(100,Math.round(cur/goal*100));const fill=document.getElementById('waterBarFill');if(fill)fill.style.width=pct+'%';const pe=document.getElementById('waterPct');if(pe)pe.textContent=pct+'%';const fv=document.getElementById('waterFoldVal');if(fv)fv.textContent=cur+'/'+goal+'ml';}
 function addWater(ml){if(!DB.water.records)DB.water.records={};DB.water.records[todayStr]=Math.max(0,(DB.water.records[todayStr]||0)+ml);todayRec.checkins=todayRec.checkins||{};todayRec.checkins.water=true;save();renderWater();renderData();renderStreak();updateLockNotif();}
-function renderSleep(){const b=document.getElementById('sleepBed'),w=document.getElementById('sleepWake');const rec=DB.sleep.records&&DB.sleep.records[todayStr];if(b)b.value=(rec&&rec.bed)||(DB.sleep.bed||'23:00');if(w)w.value=(DB.sleep.wake)||'07:00';const te=document.getElementById('sleepThis');if(te)te.textContent=rec?('入睡 '+rec.bed+' / 起床 '+rec.wake):'尚未记录';const d=document.getElementById('sleepDur');if(d)d.textContent=rec?sleepDur(rec.bed,rec.wake)+' h':'—';}
+function renderSleep(){const b=document.getElementById('sleepBed'),w=document.getElementById('sleepWake');const rec=DB.sleep.records&&DB.sleep.records[todayStr];if(b)b.value=(rec&&rec.bed)||(DB.sleep.bed||'23:00');if(w)w.value=(DB.sleep.wake)||'07:00';const te=document.getElementById('sleepThis');if(te)te.textContent=rec?('入睡 '+rec.bed+' / 起床 '+rec.wake):'尚未记录';const d=document.getElementById('sleepDur');if(d)d.textContent=rec?sleepDur(rec.bed,rec.wake)+' h':'—';const fv=document.getElementById('sleepFoldVal');if(fv)fv.textContent=rec?(sleepDur(rec.bed,rec.wake)+'h · '+rec.bed+'-'+rec.wake):'未记录';}
 function saveSleep(){const b=document.getElementById('sleepBed').value,w=document.getElementById('sleepWake').value;if(!DB.sleep.records)DB.sleep.records={};DB.sleep.records[todayStr]={bed:b,wake:w};DB.sleep.wake=w;DB.sleep.bed=b;todayRec.checkins=todayRec.checkins||{};todayRec.checkins.sleep=true;save();renderSleep();renderData();renderStreak();updateLockNotif();toast('睡眠已记录');}
 
 /* ===== 锁屏常驻通知 ===== */
@@ -1299,6 +1319,22 @@ function taskNotifId(id){return Number(id.replace(/\D/g,'').slice(-8))||0;}
 async function scheduleTaskNotif(task){if(!NOTIF||!notifGranted||!task.time)return;const[h,m]=task.time.split(':').map(Number);const id=taskNotifId(task.id);if(!id)return;
   try{await NOTIF.schedule({notifications:[{id,title:'守夜人 · 任务提醒',body:task.text,schedule:{on:{hour:h,minute:m},repeats:false}}]});}catch(e){}}
 async function cancelTaskNotif(id){if(!NOTIF)return;const nid=taskNotifId(id);if(!nid)return;try{await NOTIF.cancel({notifications:[{id:nid}]});}catch(e){}}
+async function clearAllNotifications(){
+  if(!NOTIF)return;
+  try{
+    const pending=await NOTIF.getPending();
+    if(pending&&pending.notifications&&pending.notifications.length){
+      await NOTIF.cancel(pending);
+      return;
+    }
+  }catch(e){}
+  const ids=[];
+  SCHEDULE.forEach((s,i)=>ids.push(100+i));
+  ids.push(121,122,130,50,51,777,900);
+  PHASES.slice(1).forEach((_,i)=>ids.push(200+i));
+  (DB.tasks||[]).forEach(t=>{const id=taskNotifId(t.id);if(id)ids.push(id);});
+  try{await NOTIF.cancel({notifications:ids.map(id=>({id}))});}catch(e){}
+}
 
 /* ===== 热更新（Capacitor Updater，私有仓库） ===== */
 function setUpdateStatus(t){const el=document.getElementById('updStatus');if(el)el.innerHTML=t;}
@@ -1323,7 +1359,7 @@ async function checkUpdate(silent){
 }
 async function enableNotifications(silent){if(!NOTIF){toast('请在 App 内操作');return;}
   try{const p=await NOTIF.requestPermissions();if(p.display!=='granted'){toast('通知权限被拒绝，请在系统设置开启');return;}
-    await NOTIF.cancelAll();const sched=[];const hidden=DB.hiddenSchedule||[];const ov=DB.scheduleOverride||{};
+    await clearAllNotifications();const sched=[];const hidden=DB.hiddenSchedule||[];const ov=DB.scheduleOverride||{};
     SCHEDULE.forEach((s,i)=>{if(s.key==='skin')return;if(hidden.includes(s.key))return;
       const o=ov[s.key]||{};const t=o.time||`${String(s.h).padStart(2,'0')}:${String(s.m).padStart(2,'0')}`;
       const[hh,mm]=t.split(':').map(Number);
@@ -1586,21 +1622,28 @@ async function callHY3(userText){
     '- type=text：普通对话，payload={}。\n'+
     '只返回 JSON。';
   const body={model,messages:[{role:'system',content:sys},{role:'user',content:userText}],stream:false,temperature:0.3};
-  const ctrl=new AbortController();const to=setTimeout(()=>ctrl.abort(),15000);
+  const ctrl=new AbortController();const to=setTimeout(()=>ctrl.abort(),12000);
   let res;
   try{
     res=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify(body),signal:ctrl.signal});
-  }catch(e){return null;}finally{clearTimeout(to);}
-  if(!res||!res.ok)return null;
-  let j;try{j=await res.json();}catch(e){return null;}
+  }catch(e){console.warn('[小守] fetch 失败',e);throw e;}finally{clearTimeout(to);}
+  if(!res||!res.ok){console.warn('[小守] HTTP 失败',res&&res.status);throw new Error('HTTP '+((res&&res.status)||'?'));}
+  let j;try{j=await res.json();}catch(e){console.warn('[小守] JSON 解析失败',e);return null;}
   const raw=(j.choices&&j.choices[0]&&j.choices[0].message)?j.choices[0].message.content:'';
-  return normalizeAI(raw);
+  if(!raw){console.warn('[小守] 模型返回空');return null;}
+  const out=normalizeAI(raw);
+  if(!out)console.warn('[小守] normalize 失败，原始内容：',raw.slice(0,200));
+  return out;
 }
 function normalizeAI(raw){
   if(!raw)return null;
-  let s=raw.trim().replace(/^```(?:json)?/i,'').replace(/```$/i,'');
-  const m=s.match(/\{[\s\S]*\}/);if(!m)return null;
-  let o;try{o=JSON.parse(m[0]);}catch(e){return null;}
+  let s=raw.trim().replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/i,'').trim();
+  let o=null;
+  try{o=JSON.parse(s);}catch(e){
+    const m=s.match(/\{[\s\S]*\}/);
+    if(m)try{o=JSON.parse(m[0]);}catch(_){}
+  }
+  if(!o)return null;
   const allowed=['tasks','goal','record','water','timer','text'];
   if(!allowed.includes(o.type))return null;
   if(o.type==='tasks'){
@@ -1626,9 +1669,17 @@ async function sendAI(text,useLocal){
   const box=document.getElementById('aiResult');
   box.classList.remove('hide');
   box.innerHTML='<div class="ai-reply ai-think">小守正在思考<span class="dots"><i>.</i><i>.</i><i>.</i></span></div>';
-  let draft=null;
-  if(!useLocal){try{draft=await callHY3(t);}catch(e){draft=null;}}
+  let draft=null;let netErr='';
+  if(!useLocal){
+    try{
+      draft=await Promise.race([
+        callHY3(t).catch(e=>{netErr=e&&e.message?e.message:'';return null;}),
+        new Promise(r=>setTimeout(()=>{netErr='响应超时，已切换本地规则';r(null);},8000))
+      ]);
+    }catch(e){netErr=e&&e.message?e.message:'';}
+  }
   if(!draft)draft=parseAICommand(t);
+  if(netErr&&!draft.reply.includes('本地规则')){draft.reply='（网络有点慢，已用本地规则兜底）'+draft.reply;}
   DB.aiDraft=draft;save();renderAI();
   if(btn)btn.disabled=false;
 }
@@ -1847,6 +1898,7 @@ function renderPlan(){
     return `<tr><td>${p.name}</td><td>${fmt(s).slice(5)}${e?' ~ '+fmt(e).slice(5):' 起'}</td><td>${p.alc}ml</td><td>${p.cig}支</td><td>${p.noAlcohol.length?p.noAlcohol.map(x=>WD_CN[WD.indexOf(x)]).join('、'):'无'}</td></tr>`;}).join('');
   document.getElementById('planPhaseTime').innerHTML=`<table class="plan-table"><thead><tr><th>阶段</th><th>日期</th><th>饮酒</th><th>吸烟</th><th>无酒日</th></tr></thead><tbody>${phaseRows}</tbody></table>`;
   document.querySelectorAll('.plan-card').forEach(c=>c.classList.toggle('active',c.dataset.section===currentPlanSection));
+  document.querySelectorAll('#planTabs button').forEach(b=>b.classList.toggle('active',b.dataset.section===currentPlanSection));
 }
 
 let currentPlanSection='goals';
@@ -1893,6 +1945,7 @@ document.querySelectorAll('.drawer-item[data-action]').forEach(d=>d.onclick=()=>
   if(a==='notif'){switchTab('settings');setTimeout(()=>document.getElementById('notifBtn').click(),180);}
 });
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>switchTab(t.dataset.tab));
+document.querySelectorAll('#planTabs button').forEach(b=>b.onclick=()=>{currentPlanSection=b.dataset.section;renderPlan();window.scrollTo({top:0,behavior:'smooth'});});
 document.getElementById('ghToken').oninput=e=>{DB.ghToken=e.target.value.trim();save();};
 document.getElementById('ghRepo').oninput=e=>{DB.ghRepo=e.target.value.trim()||GH_DEFAULT_REPO;save();};
 document.getElementById('aiEndpoint').oninput=e=>{DB.aiEndpoint=e.target.value.trim()||AI_DEFAULT_ENDPOINT;save();};
