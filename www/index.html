@@ -170,6 +170,15 @@
   .meal-item .mi-kcal{font-size:15px;font-weight:800;color:var(--gold);flex-shrink:0;}
   .meal-item .mi-del{background:none;border:none;color:var(--txt-3);cursor:pointer;width:26px;height:26px;flex-shrink:0;font-size:16px;line-height:1;padding:0;}
   .meal-empty{font-size:12px;color:var(--txt-3);text-align:center;padding:6px 0;}
+  .meal-progress{height:7px;border-radius:6px;background:var(--surface);border:1px solid var(--line);margin-top:10px;overflow:hidden;}
+  .meal-progress-bar{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--gold));border-radius:6px;transition:width .45s cubic-bezier(.22,1,.36,1);}
+  .meal-progress-bar.over{background:linear-gradient(90deg,var(--warn),#ff7a45);box-shadow:0 0 10px rgba(255,90,60,.4);}
+  .inline-field{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .inline-field label{font-size:13px;color:var(--txt-2);}
+  .inline-input{display:flex;align-items:center;gap:6px;}
+  .inline-input input{width:84px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:7px 9px;font-size:14px;color:var(--txt);outline:none;font-family:inherit;text-align:right;}
+  .inline-input input:focus{border-color:var(--accent);box-shadow:0 0 0 4px var(--ring);}
+  .inline-input .unit{font-size:12px;color:var(--txt-3);}
 
   /* 开关行 */
   .switch-row{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13px;color:var(--txt-2);cursor:pointer;}
@@ -479,7 +488,8 @@
       </div>
       <div class="card meal-card" id="mealCard">
         <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11h18a9 9 0 0 1-9 9 9 9 0 0 1-9-9Z"/><path d="M3 11a9 9 0 0 1 18 0"/><path d="M12 3v18"/></svg></span>餐食记录 · 热量</h3>
-        <div class="note">吃饭时拍照，AI 帮你估算这餐热量与营养素。今日已记录 <b id="mealTotal" style="color:var(--txt)">0</b> kcal。</div>
+        <div class="note">吃饭时拍照，AI 帮你估算这餐热量与营养素。今日已记录 <b id="mealTotal" style="color:var(--txt)">0</b> / 目标 <b id="mealTargetTxt" style="color:var(--gold)">1800</b> kcal。</div>
+        <div class="meal-progress"><div class="meal-progress-bar" id="mealBar"></div></div>
         <div class="meal-snap-row">
           <div class="meal-photo" id="mealPhoto"><span class="meal-photo-tip">拍照 / 选图</span></div>
           <div class="meal-input-col">
@@ -594,6 +604,11 @@
         <div class="note" id="notifState">检测中…</div>
         <button class="btn btn-accent btn-full" id="notifBtn" style="margin-top:10px">启用系统通知</button>
         <label class="switch-row" style="margin-top:12px"><span>三餐拍照提醒（早/午/晚餐通知附带「拍照记录」）</span><input type="checkbox" id="mealPhotoRemind"><span class="switch"></span></label>
+        <div class="inline-field" style="margin-top:12px">
+          <label for="mealTarget">每日目标摄入热量</label>
+          <div class="inline-input"><input type="number" id="mealTarget" inputmode="numeric" min="0" step="50"><span class="unit">kcal</span></div>
+        </div>
+        <div class="note" style="margin-top:8px">记录餐食后，若累计超过此目标，App 会立刻提醒你；达标进度也显示在餐食卡片与数据页。</div>
         <div class="note" style="margin-top:10px">启用后，每天 12 个作息点 + 周二/四/六去角质 + 阶段切换日，都会由手机系统直接弹提醒（关屏、杀后台都响）。</div>
       </div>
       <div class="card">
@@ -810,7 +825,7 @@ const SCHEDULE=[
   {key:'shutdown',h:2,m:0,icon:'moon',title:'强制关机',sub:'关手机睡觉。回顾今日烟酒量。',notif:'强制关机',review:true}
 ];
 
-const APP_VERSION='1.1.2';
+const APP_VERSION='1.1.3';
 const GH_DEFAULT_REPO='dkcoinlj/shouyeren-app';
 const AI_DEFAULT_ENDPOINT='https://tokenhub.tencentmaas.com/v1/chat/completions';
 const AI_DEFAULT_KEY='sk-WzI92BSrRAC3RvPbsihLsWH7QWepZfgnQthdPRCbkIhKkISg';
@@ -824,6 +839,7 @@ function load(){try{DB=JSON.parse(localStorage.getItem(KEY))||{};}catch(e){DB={}
   DB.aiKey=DB.aiKey||''; DB.aiEndpoint=DB.aiEndpoint||AI_DEFAULT_ENDPOINT; DB.aiModel=DB.aiModel||AI_DEFAULT_MODEL;
   DB.notifAsked=DB.notifAsked||false;
   DB.mealPhotoRemind=DB.mealPhotoRemind!==false;
+  DB.mealTarget=DB.mealTarget||1800;
   if(!DB.records[todayStr])DB.records[todayStr]={checkins:{}};}
 function save(){localStorage.setItem(KEY,JSON.stringify(DB));}
 load();
@@ -964,7 +980,7 @@ function renderData(){
     <div class="stat pur"><div class="v">${Math.round(cigSum/dn)}</div><div class="k">周日均吸烟 支 (上限${p.cig})</div></div>
     <div class="stat warn"><div class="v">${daysWith?Math.round(okDays/daysWith*100):0}%</div><div class="k">阶段内不超标率</div></div>
     <div class="stat"><div class="v">${weekDays.reduce((s,day)=>s+((DB.records[day]&&DB.records[day].squat_sec)||0),0)}</div><div class="k">本周静蹲秒数</div></div>
-    <div class="stat warn"><div class="v">${todayRec.mealKcal||0}</div><div class="k">今日摄入 kcal</div></div>`;
+    <div class="stat warn"><div class="v">${todayRec.mealKcal||0}</div><div class="k">今日摄入 kcal（目标 ${DB.mealTarget||0}）</div></div>`;
   drawWeight();drawHabit();drawHeat();drawQuit();
 }
 
@@ -1019,6 +1035,7 @@ document.getElementById('testNotif').onclick=sendTestNotif;
 async function sendTestNotif(){if(!NOTIF){toast('请在 App 内操作');return;}
   if(!notifGranted){try{const p=await NOTIF.requestPermissions();if(p.display!=='granted'){toast('请先在系统设置允许通知');return;}notifGranted=true;refreshNotifState();}catch(e){toast('授权失败');return;}}
   try{await NOTIF.schedule({notifications:[{id:777,title:'守夜人 · 测试',body:'如果这条弹出来了，说明通知已正常',schedule:{at:Date.now()+3000}}]});toast('测试通知已安排，3 秒后弹出');}catch(e){toast('测试失败：'+(e.message||e));}}
+async function notifyMealOver(over){if(!NOTIF||!notifGranted)return;try{await NOTIF.schedule({notifications:[{id:900,title:'守夜人 · 热量提醒',body:'今日摄入已超目标 '+over+' kcal，注意控制后续饮食',schedule:{at:Date.now()+1500}}]});}catch(e){}}
 
 const CU=(window.Capacitor&&Capacitor.Plugins)?Capacitor.Plugins.CapacitorUpdater:null;
 const NOTIF=(window.Capacitor&&Capacitor.isPluginAvailable&&Capacitor.isPluginAvailable('LocalNotifications'))?Capacitor.Plugins.LocalNotifications:null;
@@ -1435,11 +1452,19 @@ async function estimateMeal(){
   todayRec.meals.push({t:nowHM(),desc,photo:thumb,kcal:m.kcal,protein:m.protein,carb:m.carb,fat:m.fat,items:m.items});
   todayRec.mealKcal=(todayRec.mealKcal||0)+m.kcal;save();
   document.getElementById('mealDesc').value='';mealPhotoB64='';document.getElementById('mealPhoto').innerHTML='<span class="meal-photo-tip">拍照 / 选图</span>';
-  renderMeals();renderData();toast('已记录 '+m.kcal+' kcal');
+  renderMeals();renderData();
+  const tgt=Math.round(DB.mealTarget||0);
+  if(tgt>0&&todayRec.mealKcal>tgt){const over=todayRec.mealKcal-tgt;toast('⚠ 今日热量已超目标 '+over+' kcal');notifyMealOver(over);}
+  else toast('已记录 '+m.kcal+' kcal');
 }
 function renderMeals(){
   const list=document.getElementById('mealList');const tot=document.getElementById('mealTotal');
-  tot.textContent=todayRec.mealKcal||0;
+  const bar=document.getElementById('mealBar');const tgtEl=document.getElementById('mealTargetTxt');
+  const total=Math.round(todayRec.mealKcal||0);const tgt=Math.round(DB.mealTarget||0);
+  tot.textContent=total;if(tgtEl)tgtEl.textContent=tgt;
+  const pct=tgt>0?Math.min(100,Math.round(total/tgt*100)):0;
+  const over=total>tgt && tgt>0;
+  if(bar){bar.style.width=pct+'%';bar.classList.toggle('over',over);}
   if(!todayRec.meals.length){list.innerHTML='<div class="meal-empty">还没有餐食记录，拍照或描述后点「计算热量」</div>';return;}
   list.innerHTML=todayRec.meals.map((x,i)=>`<div class="meal-item">
     ${x.photo?`<img class="mi-photo" src="${x.photo}">`:'<div class="mi-photo"></div>'}
@@ -1591,7 +1616,8 @@ function switchTab(name,section){
     document.getElementById('aiEndpoint').value=DB.aiEndpoint||AI_DEFAULT_ENDPOINT;
     document.getElementById('aiKey').value=DB.aiKey||'';
     document.getElementById('aiModel').value=DB.aiModel||AI_DEFAULT_MODEL;
-    document.getElementById('mealPhotoRemind').checked=DB.mealPhotoRemind;}
+    document.getElementById('mealPhotoRemind').checked=DB.mealPhotoRemind;
+    document.getElementById('mealTarget').value=DB.mealTarget||1800;}
   document.querySelectorAll('.drawer-item[data-drawer]').forEach(d=>{
     const isPlan=d.dataset.planSection;
     const active=isPlan?(name==='plan'&&d.dataset.planSection===currentPlanSection):(d.dataset.drawer===name);
@@ -1617,6 +1643,7 @@ document.getElementById('aiEndpoint').oninput=e=>{DB.aiEndpoint=e.target.value.t
 document.getElementById('aiKey').oninput=e=>{DB.aiKey=e.target.value.trim();save();};
 document.getElementById('aiModel').oninput=e=>{DB.aiModel=e.target.value.trim()||AI_DEFAULT_MODEL;save();};
 document.getElementById('mealPhotoRemind').onchange=e=>{DB.mealPhotoRemind=e.target.checked;save();if(NOTIF&&notifGranted)enableNotifications();};
+document.getElementById('mealTarget').oninput=e=>{const v=parseInt(e.target.value,10);DB.mealTarget=(isFinite(v)&&v>=0)?v:1800;save();renderMeals();renderData();};
 document.getElementById('checkUpd').onclick=()=>checkUpdate(false);
 document.getElementById('targetW').onchange=e=>{DB.target=+e.target.value||72;save();renderData();};
 document.getElementById('resetSched').onclick=()=>{
