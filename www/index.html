@@ -153,10 +153,6 @@
   @keyframes aiDot{0%,80%,100%{opacity:0;transform:translateY(0);}40%{opacity:1;transform:translateY(-2px);}}
   .ai-input-wrap button:active{transform:scale(.92);}
   .ai-input-wrap button svg{width:18px;height:18px;}
-  .ai-mic{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--txt-2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.18s;flex-shrink:0;}
-  .ai-mic:active{transform:scale(.92);border-color:var(--accent-line);color:var(--accent-2);}
-  .ai-mic.listening{background:var(--danger-bg);border-color:var(--danger);color:var(--danger);animation:pulse 1.1s infinite;}
-  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,122,122,.5)}50%{box-shadow:0 0 0 7px rgba(255,122,122,0)}}
   .ai-chips{display:flex;gap:8px;overflow-x:auto;padding:2px 0;margin-top:10px;-ms-overflow-style:none;scrollbar-width:none;white-space:nowrap;}
   .ai-chips::-webkit-scrollbar{display:none;}
   .ai-chips button{height:30px;padding:0 12px;border-radius:var(--r-full);border:1px solid var(--line);background:var(--card);color:var(--txt-2);font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer;transition:.18s;}
@@ -544,7 +540,6 @@
         </div>
         <div class="ai-input-wrap">
           <input type="text" id="aiInput" placeholder="例如：生成今日任务 / 我喝了150ml / 定目标减20斤" enterkeyhint="send" autocomplete="off">
-          <button id="aiMic" title="语音输入" class="ai-mic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4"/></svg></button>
           <button id="aiSend" title="发送"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
         </div>
         <div class="ai-chips" id="aiChips">
@@ -1217,7 +1212,7 @@ const DEFAULT_TASKS=SCHEDULE.map(s=>({
   time:`${String(s.h).padStart(2,'0')}:${String(s.m).padStart(2,'0')}`
 }));
 
-const APP_VERSION='1.3.2';
+const APP_VERSION='1.3.3';
 const GH_DEFAULT_REPO='dkcoinlj/shouyeren-app';
 const AI_DEFAULT_ENDPOINT='https://tokenhub.tencentmaas.com/v1/chat/completions';
 const AI_DEFAULT_KEY='';
@@ -2018,27 +2013,6 @@ async function reviewWithAI(){
   box.innerHTML='<div class="ai-reply"><b>📝 今日复盘 · 小守</b><br><br>'+esc(txt)+'</div><div class="ai-actions"><button class="btn btn-sm btn-ghost" id="aiDel">好的</button></div>';
   document.getElementById('aiDel').onclick=()=>{box.classList.add('hide');};
 }
-function setupVoiceInput(){
-  const mic=document.getElementById('aiMic');const inp=document.getElementById('aiInput');
-  if(!mic||!inp)return;
-  const SR=(window.Capacitor&&Capacitor.Plugins&&Capacitor.isPluginAvailable&&Capacitor.isPluginAvailable('SpeechRecognition'))?Capacitor.Plugins.SpeechRecognition:null;
-  if(!SR){mic.style.display='none';return;}
-  let busy=false;
-  mic.onclick=async()=>{
-    if(busy){try{await SR.stop();}catch(e){}busy=false;mic.classList.remove('listening');mic.title='语音输入';return;}
-    try{
-      let av=true;try{const r=await SR.available();av=!!(r&&r.available);}catch(e){av=false;}
-      if(!av){toast('本机无可用语音识别（国内安卓多无 Google 语音服务），改用键盘输入');return;}
-      try{await SR.requestPermissions();}catch(e){}
-      busy=true;mic.classList.add('listening');mic.title='正在聆听…再点停止';
-      const r=await SR.start({language:'zh-CN',maxResults:1,partialResults:false,popup:false});
-      busy=false;mic.classList.remove('listening');mic.title='语音输入';
-      const t=(r&&r.matches&&r.matches[0])||'';
-      if(t){inp.value=(inp.value?inp.value+' ':'')+t;inp.focus();}
-      else toast('没听清，请再说一次');
-    }catch(e){busy=false;mic.classList.remove('listening');mic.title='语音输入';toast('语音识别不可用，请用键盘输入');}
-  };
-}
 function refreshAiKeyTip(){const el=document.getElementById('aiKeyTip');if(el)el.classList.toggle('hide',!!DB.aiKey);}
 
 /* ===== 餐食记录 · 热量计算 ===== */
@@ -2381,7 +2355,6 @@ document.querySelectorAll('#waterCard .water-btns button').forEach(b=>b.onclick=
 document.getElementById('sleepSave').onclick=saveSleep;
 document.getElementById('sleepBed').onchange=()=>{const b=document.getElementById('sleepBed').value,w=document.getElementById('sleepWake').value;document.getElementById('sleepDur').textContent=sleepDur(b,w)+' h';};
 document.getElementById('sleepWake').onchange=()=>{const b=document.getElementById('sleepBed').value,w=document.getElementById('sleepWake').value;document.getElementById('sleepDur').textContent=sleepDur(b,w)+' h';};
-setupVoiceInput();
 
 /* 折叠面板 */
 document.querySelectorAll('.fold-head').forEach(h=>h.addEventListener('click',()=>{
