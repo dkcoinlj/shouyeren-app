@@ -519,6 +519,8 @@
   .settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
   .settings-grid .btn{margin-top:0;}
   .lock-note{font-size:12px;color:var(--txt-3);line-height:1.5;margin-top:8px;}
+  .oeppo-list{margin:10px 0 2px;padding-left:18px;}
+  .oeppo-list li{font-size:12.5px;color:var(--txt-2);line-height:1.6;margin-bottom:8px;}
 </style>
 </head>
 <body>
@@ -854,6 +856,18 @@
         <button class="btn btn-accent btn-full" id="testNotif" style="margin-top:10px">发送测试通知（3 秒后）</button>
         <div class="note" style="margin-top:10px"><b>收不到时这样处理：</b><br>① 系统设置里给「守夜人」开启「允许通知」与「锁屏显示」。<br>② 电池/省电里设为「不受限制」或加入自启动/白名单。<br>③ 部分国产手机（小米/华为/OPPO）需额外开启「允许后台弹出界面」。</div>
       </div>
+      <div class="card" id="card-oppo">
+        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="13" rx="2.5"/><path d="M8 7V4h8v3M12 12v3"/></svg></span>国产安卓（OPPO/华为/小米）必做设置</h3>
+        <div class="note">ColorOS / EMUI / MIUI 对后台和通知管控极严，不设置会「杀后台、不弹通知、锁屏不显示」。装好后请逐项开启（以 OPPO ColorOS 为例，其他品牌路径相近）：</div>
+        <ol class="oeppo-list">
+          <li><b>电池 → 应用耗电管理 → 守夜人</b>：设为「允许后台运行 / 自启动 / 锁屏清理加入白名单」</li>
+          <li><b>设置 → 通知与状态栏 → 通知管理 → 守夜人</b>：开启「允许通知」+「锁屏显示」+ 设为重要</li>
+          <li><b>设置 → 密码与安全 → 系统安全 → 未知来源应用</b>：允许本次安装（仅首次装包用）</li>
+          <li>若仍不弹通知：<b>设置 → 应用 → 守夜人 → 权限 → 精确闹钟</b> 设为允许</li>
+        </ol>
+        <div class="note" style="margin-top:8px">🎤 <b>语音输入</b>：国内版 OPPO 无 Google 语音服务，原生识别不可用，麦克风按钮已自动隐藏；直接用键盘输入即可。需要真语音可后续接入国内 ASR（如腾讯云一句话识别）。</div>
+        <button class="btn btn-secondary btn-full" id="copyOeppoTips" style="margin-top:8px">复制设置步骤</button>
+      </div>
       <div class="card">
         <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v.01M11 12h1v4h1"/></svg></span>关于</h3>
         <div style="display:flex;align-items:center;gap:14px;margin:4px 0 12px">
@@ -983,6 +997,14 @@
       <button class="btn btn-primary" id="tmStart">开始</button>
       <button class="btn btn-secondary" id="tmReset">重置</button>
     </div>
+  </div></div>
+
+  <div class="modal" id="mFirstRun"><div class="sheet">
+    <h3><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="13" rx="2.5"/><path d="M8 7V4h8v3M12 12v3"/></svg></span>欢迎使用守夜人</h3>
+    <div class="note" style="margin-bottom:8px">检测到这是首次启动。国产安卓（OPPO/华为/小米）对后台与通知管控很严，<b>不设置会收不到作息提醒</b>。建议先去「设置 → 国产安卓必做设置」逐项开启（电池白名单 + 锁屏显示通知）。</div>
+    <div class="note">语音输入在国内版 OPPO 上不可用（无 Google 语音服务），已自动隐藏麦克风，用键盘输入即可。</div>
+    <button class="btn btn-accent btn-full" id="frGot" style="margin-top:12px">我知道了</button>
+    <button class="btn btn-ghost btn-full" id="frGoSet" style="margin-top:8px;color:var(--txt-2)">去设置页看必做项</button>
   </div></div>
 
   <div class="toast" id="toast"></div>
@@ -1195,7 +1217,7 @@ const DEFAULT_TASKS=SCHEDULE.map(s=>({
   time:`${String(s.h).padStart(2,'0')}:${String(s.m).padStart(2,'0')}`
 }));
 
-const APP_VERSION='1.3.1';
+const APP_VERSION='1.3.2';
 const GH_DEFAULT_REPO='dkcoinlj/shouyeren-app';
 const AI_DEFAULT_ENDPOINT='https://tokenhub.tencentmaas.com/v1/chat/completions';
 const AI_DEFAULT_KEY='';
@@ -1223,7 +1245,9 @@ function load(){try{DB=JSON.parse(localStorage.getItem(KEY))||{};}catch(e){DB={}
   DB.lockNotif=DB.lockNotif!==false;
   DB.wakeNotif=DB.wakeNotif!==false;
   DB.lastBackup=DB.lastBackup||'';
-  if(!DB.records[todayStr])DB.records[todayStr]={checkins:{}};}
+  if(!DB.records[todayStr])DB.records[todayStr]={checkins:{}};
+  DB.firstRun=(DB.firstRun===undefined)?true:DB.firstRun;
+}
 function save(){localStorage.setItem(KEY,JSON.stringify(DB));}
 load();
 const rec=d=>DB.records[d]||(DB.records[d]={checkins:{}});
@@ -2379,7 +2403,16 @@ document.getElementById('phaseList').innerHTML=PHASES.map((p,i)=>{
 
 function renderAll(){['renderPhase','renderToday','renderTasks','renderOverview','renderAI','renderMeals','renderStreak','renderWater','renderSleep','refreshVersionLabels','refreshAiKeyTip'].forEach(fn=>{try{window[fn]();}catch(e){console.error('render '+fn,e);}});}
 function refreshVersionLabels(){const v='v'+APP_VERSION;const a=document.getElementById('curVer');if(a)a.textContent=v;const b=document.getElementById('aboutVer');if(b)b.textContent=v;const d=document.getElementById('drawerVer');if(d)d.textContent=v;}
+/* 国产安卓适配：复制设置步骤 + 首次启动引导 */
+function closeFirstRun(){document.getElementById('mFirstRun').classList.remove('show');}
+document.getElementById('frGot').onclick=()=>{DB.firstRun=false;save();closeFirstRun();};
+document.getElementById('frGoSet').onclick=()=>{DB.firstRun=false;save();closeFirstRun();document.querySelector('.tab[data-tab="settings"]').click();const c=document.getElementById('card-oppo');if(c)c.scrollIntoView({behavior:'smooth',block:'center'});};
+document.getElementById('copyOeppoTips').onclick=()=>{
+  const text='守夜人 App 必做设置（OPPO/国产安卓）：\n1. 电池→应用耗电管理→守夜人：允许后台运行/自启动/锁屏清理白名单\n2. 设置→通知与状态栏→通知管理→守夜人：允许通知+锁屏显示+设为重要\n3. 设置→密码与安全→系统安全→未知来源应用：允许安装（仅首次）\n4. 应用→守夜人→权限→精确闹钟：允许\n语音输入在国内版 OPPO 不可用（无 Google 语音服务），请用键盘输入。';
+  try{navigator.clipboard.writeText(text);toast('已复制设置步骤');}catch(e){toast('复制失败，请手动记录');}
+};
 renderAll();setTimeout(refreshNotifState,300);setTimeout(autoEnableNotif,600);
+if(DB.firstRun){setTimeout(()=>{document.getElementById('mFirstRun').classList.add('show');},900);}
 // 每日自动加密备份
 if(DB.autoBackup&&DB.ghToken&&DB.ghToken.trim()&&DB.backupPass&&DB.lastBackup!==todayStr){setTimeout(doBackup,2000);}
 window.addEventListener('resize',()=>{if(!document.getElementById('tab-data').classList.contains('hide'))renderData();});
