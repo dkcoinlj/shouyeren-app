@@ -1,5 +1,8 @@
 name: Build 守夜人 APK
 
+permissions:
+  contents: write
+
 on:
   push:
     branches: [main, master]
