@@ -361,30 +361,29 @@
   .lane-body:empty::after{content:'把任务卡拖到这里';display:block;text-align:center;color:var(--txt-3);font-size:12px;
     padding:16px 0;border:1px dashed var(--line);border-radius:var(--r-md);}
   .tcard{position:relative;background:linear-gradient(180deg,var(--card-top),var(--card));border:1px solid var(--line);border-radius:var(--r-md);
-    padding:11px 34px 11px 11px;margin-bottom:9px;box-shadow:0 2px 8px rgba(0,0,0,.25);touch-action:pan-y;cursor:grab;
+    padding:13px 28px 13px 12px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,.25);touch-action:pan-y;cursor:grab;min-height:68px;
     transition:transform .18s cubic-bezier(.16,1,.3,1),border-color .2s,box-shadow .2s,opacity .2s;}
   .tcard:active{cursor:grabbing;}
   .tcard.dragging{opacity:.25;}
   .tcard.done{border-color:var(--accent-line);background:linear-gradient(0deg,var(--accent-soft),var(--card));}
   .tcard.done .tc-title{text-decoration:line-through;color:var(--txt-2);}
-  .tc-row{display:flex;align-items:center;gap:10px;}
-  .tc-ic{width:34px;height:34px;border-radius:var(--r-md);background:var(--surface);border:1px solid var(--line);
-    display:flex;align-items:center;justify-content:center;color:var(--accent);flex-shrink:0;}
-  .tc-ic svg{width:18px;height:18px;}
-  .tc-main{flex:1;min-width:0;}
-  .tc-time{font-size:10px;color:var(--txt-3);font-variant-numeric:tabular-nums;}
-  .tc-title{font-size:15px;font-weight:600;margin-top:1px;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .tc-row{display:flex;align-items:flex-start;gap:9px;}
+  .tc-ic{width:32px;height:32px;border-radius:var(--r-md);background:var(--surface);border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;color:var(--accent);flex-shrink:0;margin-top:2px;}
+  .tc-ic svg{width:17px;height:17px;}
+  .tc-main{flex:1;min-width:0;overflow:hidden;}
+  .tc-time{font-size:10px;color:var(--txt-3);font-variant-numeric:tabular-nums;line-height:1.3;}
+  .tc-title{font-size:12px;font-weight:600;margin-top:2px;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--txt);}
   .tc-sub{display:none;}
-  .tc-main{width:100%;}
   .detail-body{white-space:pre-wrap;word-break:break-word;line-height:1.6;color:var(--txt);font-size:15px;}
   .detail-meta{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 6px;}
   .detail-actions{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:16px;}
   .detail-actions .btn{width:100%;justify-content:center;}
   .detail-status{font-size:12px;color:var(--txt-3);margin-top:2px;}
-  .tc-del{position:absolute;top:6px;right:6px;width:22px;height:22px;border:none;background:transparent;color:var(--txt-3);
-    font-size:18px;line-height:1;cursor:pointer;border-radius:7px;transition:background .15s,color .15s;}
+  .tc-del{position:absolute;top:7px;right:6px;width:20px;height:20px;border:none;background:transparent;color:var(--txt-3);
+    font-size:17px;line-height:1;cursor:pointer;border-radius:6px;transition:background .15s,color .15s;display:flex;align-items:center;justify-content:center;}
   .tc-del:active{background:var(--danger-bg);color:var(--danger);}
-  .tc-grip{position:absolute;bottom:5px;right:8px;color:var(--txt-3);font-size:10px;opacity:.45;letter-spacing:-1px;}
+  .tc-grip{position:absolute;bottom:7px;right:7px;color:var(--txt-3);font-size:9px;opacity:.5;letter-spacing:-1px;line-height:1;}
   .ghost{position:fixed;z-index:80;pointer-events:none;opacity:.96;box-shadow:var(--shadow-accent);transform:rotate(2.5deg);}
   body.dragging-scroll{overflow:hidden;touch-action:none;overscroll-behavior:none;}
 
@@ -556,15 +555,6 @@
         <div class="ai-result hide" id="aiResult"></div>
       </div>
 
-      <div class="card" id="cravingCard">
-        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12c2 0 3-4 5-4s3 8 5 8 3-8 5-8 3 4 5 4"/></svg></span>冲动冲浪（想抽/想喝时）</h3>
-        <div class="note" style="margin-bottom:10px">瘾头来了别硬扛，记一笔「冲浪」：先停 10 分钟，看它自己退去。记多了你就摸清自己的触发点。</div>
-        <div class="craving-btns">
-          <button id="cravAlcohol"><span>🍷</span>酒瘾冲浪</button>
-          <button id="cravCig"><span>🚬</span>烟瘾冲浪</button>
-        </div>
-      </div>
-
       <div class="card" id="streakCard">
         <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></span>连续打卡</h3>
         <div style="display:flex;align-items:center;gap:14px">
@@ -573,56 +563,12 @@
         </div>
       </div>
 
-      <div class="card" id="waterCard">
-        <div class="fold-head" data-fold="waterCard"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5S5 9 5 14a7 7 0 0 0 14 0c0-5-7-11.5-7-11.5Z"/></svg></span>饮水记录 · <b id="waterFoldVal">0/2000ml</b><span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>
-        <div class="fold-body">
-          <div class="water-top"><div><span class="wt" id="waterToday">0</span><small>/ <span id="waterGoal">2000</span> ml</small></div><div class="tag tag-accent" id="waterPct">0%</div></div>
-          <div class="water-bar"><div class="water-bar-fill" id="waterBarFill"></div></div>
-          <div class="water-btns">
-            <button data-val="200">+200</button>
-            <button data-val="300">+300</button>
-            <button data-val="500">+500</button>
-            <button data-val="undo">撤回</button>
-          </div>
-          <div class="water-cust"><input type="number" id="waterCust" inputmode="numeric" min="0" step="50" placeholder="自定义 ml"><button class="btn btn-secondary" id="waterAddBtn" style="margin:0;white-space:nowrap">添加</button></div>
-        </div>
-      </div>
-
-      <div class="card" id="sleepCard">
-        <div class="fold-head" data-fold="sleepCard"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a4 4 0 0 1 4 4 4 4 0 0 1-3 3.87M12 3a4 4 0 0 0-4 4 4 4 0 0 0 3 3.87M12 21v-6M8 17a6 6 0 0 0 8 0"/></svg></span>睡眠记录 · <b id="sleepFoldVal">—</b><span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>
-        <div class="fold-body">
-          <div class="sleep-grid">
-            <div class="sleep-fld"><label>入睡时间</label><input type="time" id="sleepBed" value="23:00"></div>
-            <div class="sleep-fld"><label>起床时间</label><input type="time" id="sleepWake" value="07:00"></div>
-          </div>
-          <div class="sleep-dur">本次睡眠时长：<b id="sleepDur">—</b></div>
-          <div class="sleep-row">
-            <span>今早 <b id="sleepThis">尚未记录</b></span>
-            <button class="btn btn-accent btn-sm" id="sleepSave" style="margin:0">保存今日睡眠</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="card meal-card" id="mealCard">
-        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11h18a9 9 0 0 1-9 9 9 9 0 0 1-9-9Z"/><path d="M3 11a9 9 0 0 1 18 0"/><path d="M12 3v18"/></svg></span>餐食记录 · 热量</h3>
-        <div class="note">吃饭时拍照，AI 帮你估算这餐热量与营养素。今日已记录 <b id="mealTotal" style="color:var(--txt)">0</b> / 目标 <b id="mealTargetTxt" style="color:var(--gold)">1800</b> kcal。</div>
-        <div class="meal-progress"><div class="meal-progress-bar" id="mealBar"></div></div>
-        <div class="meal-snap-row">
-          <div class="meal-photo" id="mealPhoto"><span class="meal-photo-tip">拍照 / 选图</span></div>
-          <div class="meal-input-col">
-            <input type="text" id="mealDesc" placeholder="这餐吃了什么，如：一碗米饭+鸡腿+青菜" enterkeyhint="done" autocomplete="off">
-            <button class="btn btn-accent" id="mealCalc" style="margin-top:8px;width:100%">计算热量</button>
-            <button class="btn btn-secondary" id="mealManual" style="margin-top:8px;width:100%">手动填热量</button>
-          </div>
-        </div>
-        <div class="meal-list" id="mealList"></div>
-      </div>
+      <div id="notifBanner"></div>
       <div class="tools">
         <div class="tool" id="toolSquat"><div class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5 17.5 17.5"/><path d="M3 9v6M6 7v10M18 7v10M21 9v6"/></svg></div><div class="tl">静蹲计时</div></div>
         <div class="tool" id="toolFocus"><div class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><div class="tl">专注计时</div></div>
         <div class="tool gold" id="toolWater"><div class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5S5 9 5 14a7 7 0 0 0 14 0c0-5-7-11.5-7-11.5Z"/></svg></div><div class="tl">喝水提醒</div></div>
       </div>
-      <div id="notifBanner"></div>
       <div id="sundayCard"></div>
       <div class="card" id="todayBoardCard">
         <div class="board-head">
@@ -711,6 +657,66 @@
     </div></div>
 
     <section id="tab-data" class="hide">
+      <h3 class="card-title" style="margin:0 0 10px 2px"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>今日记录</h3>
+
+      <div class="card" id="cravingCard">
+        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12c2 0 3-4 5-4s3 8 5 8 3-8 5-8 3 4 5 4"/></svg></span>冲动冲浪（想抽/想喝时）</h3>
+        <div class="note" style="margin-bottom:10px">瘾头来了别硬扛，记一笔「冲浪」：先停 10 分钟，看它自己退去。记多了你就摸清自己的触发点。</div>
+        <div class="craving-btns">
+          <button id="cravAlcohol"><span>🍷</span>酒瘾冲浪</button>
+          <button id="cravCig"><span>🚬</span>烟瘾冲浪</button>
+        </div>
+      </div>
+
+      <div class="card" id="waterCard">
+        <div class="fold-head" data-fold="waterCard"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5S5 9 5 14a7 7 0 0 0 14 0c0-5-7-11.5-7-11.5Z"/></svg></span>饮水记录 · <b id="waterFoldVal">0/2000ml</b><span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+        <div class="fold-body">
+          <div class="water-top"><div><span class="wt" id="waterToday">0</span><small>/ <span id="waterGoal">2000</span> ml</small></div><div class="tag tag-accent" id="waterPct">0%</div></div>
+          <div class="water-bar"><div class="water-bar-fill" id="waterBarFill"></div></div>
+          <div class="water-btns">
+            <button data-val="200">+200</button>
+            <button data-val="300">+300</button>
+            <button data-val="500">+500</button>
+            <button data-val="undo">撤回</button>
+          </div>
+          <div class="water-cust"><input type="number" id="waterCust" inputmode="numeric" min="0" step="50" placeholder="自定义 ml"><button class="btn btn-secondary" id="waterAddBtn" style="margin:0;white-space:nowrap">添加</button></div>
+        </div>
+      </div>
+
+      <div class="card" id="sleepCard">
+        <div class="fold-head" data-fold="sleepCard"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a4 4 0 0 1 4 4 4 4 0 0 1-3 3.87M12 3a4 4 0 0 0-4 4 4 4 0 0 0 3 3.87M12 21v-6M8 17a6 6 0 0 0 8 0"/></svg></span>睡眠记录 · <b id="sleepFoldVal">—</b><span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+        <div class="fold-body">
+          <div class="sleep-grid">
+            <div class="sleep-fld"><label>入睡时间</label><input type="time" id="sleepBed" value="23:00"></div>
+            <div class="sleep-fld"><label>起床时间</label><input type="time" id="sleepWake" value="07:00"></div>
+          </div>
+          <div class="sleep-dur">本次睡眠时长：<b id="sleepDur">—</b></div>
+          <div class="sleep-row">
+            <span>今早 <b id="sleepThis">尚未记录</b></span>
+            <button class="btn btn-accent btn-sm" id="sleepSave" style="margin:0">保存今日睡眠</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card meal-card" id="mealCard">
+        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11h18a9 9 0 0 1-9 9 9 9 0 0 1-9-9Z"/><path d="M3 11a9 9 0 0 1 18 0"/><path d="M12 3v18"/></svg></span>餐食记录 · 热量</h3>
+        <div class="note">吃饭时拍照，AI 帮你估算这餐热量与营养素。今日已记录 <b id="mealTotal" style="color:var(--txt)">0</b> / 目标 <b id="mealTargetTxt" style="color:var(--gold)">1800</b> kcal。</div>
+        <div class="meal-progress"><div class="meal-progress-bar" id="mealBar"></div></div>
+        <div class="meal-snap-row">
+          <div class="meal-photo" id="mealPhoto"><span class="meal-photo-tip">拍照 / 选图</span></div>
+          <div class="meal-input-col">
+            <input type="text" id="mealDesc" placeholder="这餐吃了什么，如：一碗米饭+鸡腿+青菜" enterkeyhint="done" autocomplete="off">
+            <button class="btn btn-accent" id="mealCalc" style="margin-top:8px;width:100%">计算热量</button>
+            <button class="btn btn-secondary" id="mealManual" style="margin-top:8px;width:100%">手动填热量</button>
+          </div>
+        </div>
+        <div class="meal-list" id="mealList"></div>
+      </div>
+
+      <div id="notifBanner"></div>
+      <div id="sundayCard"></div>
+
+      <h3 class="card-title" style="margin:16px 0 10px 2px"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg></span>趋势与统计</h3>
       <div class="kpi-grid" id="kpiGrid"></div>
 
       <div class="card open" id="card-quit">
@@ -914,7 +920,7 @@
       <span class="ic-wrap"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span>方案
     </div>
     <div class="tab" data-tab="data">
-      <span class="ic-wrap"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>数据
+      <span class="ic-wrap"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>记录
     </div>
     <div class="tab" data-tab="settings">
       <span class="ic-wrap"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 13a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.5 1z"/></svg></span>设置
@@ -1226,7 +1232,7 @@ const DEFAULT_TASKS=SCHEDULE.map(s=>({
   time:`${String(s.h).padStart(2,'0')}:${String(s.m).padStart(2,'0')}`
 }));
 
-const APP_VERSION='1.3.5';
+const APP_VERSION='1.3.6';
 const GH_DEFAULT_REPO='dkcoinlj/shouyeren-app';
 const AI_DEFAULT_ENDPOINT='https://tokenhub.tencentmaas.com/v1/chat/completions';
 const AI_DEFAULT_KEY='';
