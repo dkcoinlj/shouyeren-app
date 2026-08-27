@@ -1130,16 +1130,24 @@ const SCHEDULE=[
   {key:'shutdown',h:2,m:0,icon:'moon',title:'强制关机',sub:'关手机睡觉。回顾今日烟酒量。',notif:'强制关机',review:true}
 ];
 
-const APP_VERSION='1.2.7';
+const DEFAULT_TASKS=SCHEDULE.map(s=>({
+  id:'t_'+s.key,type:'custom',icon:s.icon,title:s.title,text:s.title,
+  sub:s.sub||'',status:'todo',created:todayStr,
+  time:`${String(s.h).padStart(2,'0')}:${String(s.m).padStart(2,'0')}`
+}));
+
+const APP_VERSION='1.2.8';
 const GH_DEFAULT_REPO='dkcoinlj/shouyeren-app';
 const AI_DEFAULT_ENDPOINT='https://tokenhub.tencentmaas.com/v1/chat/completions';
 const AI_DEFAULT_KEY='sk-WzI92BSrRAC3RvPbsihLsWH7QWepZfgnQthdPRCbkIhKkISg';
 const AI_DEFAULT_MODEL='hy3';
 let DB;
 function load(){try{DB=JSON.parse(localStorage.getItem(KEY))||{};}catch(e){DB={};}
-  DB.records=DB.records||{}; DB.target=DB.target||72; DB.tomorrow=DB.tomorrow||''; DB.tasks=DB.tasks||[];
+  DB.records=DB.records||{}; DB.target=DB.target||72; DB.tomorrow=DB.tomorrow||'';
   DB.hiddenSchedule=DB.hiddenSchedule||[]; DB.scheduleOverride=DB.scheduleOverride||{};
   DB.userGoals=DB.userGoals||[]; DB.aiDraft=DB.aiDraft||null;
+  DB.tasks=DB.tasks||[];
+  if(!DB.tasks.length){DB.tasks=DEFAULT_TASKS.map(t=>({...t}));}
   DB.ghToken=DB.ghToken||''; DB.ghRepo=DB.ghRepo||GH_DEFAULT_REPO;
   DB.aiKey=DB.aiKey||''; DB.aiEndpoint=DB.aiEndpoint||AI_DEFAULT_ENDPOINT; DB.aiModel=DB.aiModel||AI_DEFAULT_MODEL;
   DB.notifAsked=DB.notifAsked||false;
@@ -1542,7 +1550,10 @@ async function enableNotifications(silent){if(!NOTIF){toast('请在 App 内操�
 const STATUSES=[{k:'todo',label:'未完成'},{k:'done',label:'已完成'}];
 const ORDER=['todo','done'];
 let taskTargetStatus='todo';
-function allTasks(){return getSystemTasks().concat(DB.tasks);}
+function allTasks(){
+  const customKeys=new Set((DB.tasks||[]).filter(t=>t.id&&t.id.startsWith('t_')).map(t=>t.id.slice(2)));
+  return getSystemTasks().filter(t=>!customKeys.has(t.key)).concat(DB.tasks||[]);
+}
 function iconFor(t){return t.icon&&ICONS[t.icon]?icon(t.icon,18):(t.em?esc(t.em):icon('star',18));}
 function renderTasks(){
   STATUSES.forEach(s=>{
@@ -2172,7 +2183,7 @@ document.getElementById('phaseList').innerHTML=PHASES.map((p,i)=>{
     <div style="font-size:12px;color:var(--txt-2);margin-top:6px;line-height:1.6">无酒日：${p.noAlcohol.length?p.noAlcohol.map(x=>WD_CN[WD.indexOf(x)]).join('、'):'无'} · 酒≤${p.alc}ml · 烟≤${p.cig}支</div>
     <div style="font-size:12px;color:var(--accent-2);margin-top:3px">${p.tip}</div></div>`;}).join('');
 
-function renderAll(){renderPhase();renderToday();renderTasks();renderOverview();renderAI();renderMeals();renderStreak();renderWater();renderSleep();}
+function renderAll(){['renderPhase','renderToday','renderTasks','renderOverview','renderAI','renderMeals','renderStreak','renderWater','renderSleep'].forEach(fn=>{try{window[fn]();}catch(e){console.error('render '+fn,e);}});}
 renderAll();setTimeout(refreshNotifState,300);setTimeout(autoEnableNotif,600);
 // 每日自动加密备份
 if(DB.autoBackup&&DB.ghToken&&DB.ghToken.trim()&&DB.backupPass&&DB.lastBackup!==todayStr){setTimeout(doBackup,2000);}
