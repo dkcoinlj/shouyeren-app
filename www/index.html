@@ -553,6 +553,7 @@
           <button data-cmd="goal">定目标</button>
           <button data-cmd="review">📝 今日复盘</button>
         </div>
+        <div class="hide" id="aiKeyTip" style="font-size:12px;color:#f59e0b;background:rgba(245,158,11,.1);padding:8px 10px;border-radius:10px;margin-bottom:8px;line-height:1.45">⚠️ 尚未配置 AI Key，小守的云端智能（生成任务/餐食识图/复盘）未启用，当前仅本地规则兜底。前往「设置 → AI 接口」填写 Key 即可启用，仅本机保存。</div>
         <div class="ai-result hide" id="aiResult"></div>
       </div>
 
@@ -1194,10 +1195,10 @@ const DEFAULT_TASKS=SCHEDULE.map(s=>({
   time:`${String(s.h).padStart(2,'0')}:${String(s.m).padStart(2,'0')}`
 }));
 
-const APP_VERSION='1.3.0';
+const APP_VERSION='1.3.1';
 const GH_DEFAULT_REPO='dkcoinlj/shouyeren-app';
 const AI_DEFAULT_ENDPOINT='https://tokenhub.tencentmaas.com/v1/chat/completions';
-const AI_DEFAULT_KEY='sk-WzI92BSrRAC3RvPbsihLsWH7QWepZfgnQthdPRCbkIhKkISg';
+const AI_DEFAULT_KEY='';
 const AI_DEFAULT_MODEL='hy3';
 let DB;
 function load(){try{DB=JSON.parse(localStorage.getItem(KEY))||{};}catch(e){DB={};}
@@ -1995,16 +1996,26 @@ async function reviewWithAI(){
 }
 function setupVoiceInput(){
   const mic=document.getElementById('aiMic');const inp=document.getElementById('aiInput');
-  const SR=(window.SpeechRecognition||window.webkitSpeechRecognition);
-  if(!SR||!mic||!inp){if(mic)mic.style.display='none';return;}
-  let rec;try{rec=new SR();}catch(e){mic.style.display='none';return;}
-  rec.lang='zh-CN';rec.interimResults=false;rec.continuous=false;rec._on=false;
-  mic.onclick=()=>{if(rec._on){rec.stop();return;}try{rec.start();mic.classList.add('listening');}catch(e){}};
-  rec.onstart=()=>{rec._on=true;};
-  rec.onend=()=>{rec._on=false;mic.classList.remove('listening');};
-  rec.onerror=()=>{rec._on=false;mic.classList.remove('listening');toast('语音识别不可用');};
-  rec.onresult=e=>{const t=e.results[0][0].transcript;inp.value=(inp.value?inp.value+' ':'')+t;inp.focus();};
+  if(!mic||!inp)return;
+  const SR=(window.Capacitor&&Capacitor.Plugins&&Capacitor.isPluginAvailable&&Capacitor.isPluginAvailable('SpeechRecognition'))?Capacitor.Plugins.SpeechRecognition:null;
+  if(!SR){mic.style.display='none';return;}
+  let busy=false;
+  mic.onclick=async()=>{
+    if(busy){try{await SR.stop();}catch(e){}busy=false;mic.classList.remove('listening');mic.title='语音输入';return;}
+    try{
+      let av=true;try{const r=await SR.available();av=!!(r&&r.available);}catch(e){av=false;}
+      if(!av){toast('本机无可用语音识别（国内安卓多无 Google 语音服务），改用键盘输入');return;}
+      try{await SR.requestPermissions();}catch(e){}
+      busy=true;mic.classList.add('listening');mic.title='正在聆听…再点停止';
+      const r=await SR.start({language:'zh-CN',maxResults:1,partialResults:false,popup:false});
+      busy=false;mic.classList.remove('listening');mic.title='语音输入';
+      const t=(r&&r.matches&&r.matches[0])||'';
+      if(t){inp.value=(inp.value?inp.value+' ':'')+t;inp.focus();}
+      else toast('没听清，请再说一次');
+    }catch(e){busy=false;mic.classList.remove('listening');mic.title='语音输入';toast('语音识别不可用，请用键盘输入');}
+  };
 }
+function refreshAiKeyTip(){const el=document.getElementById('aiKeyTip');if(el)el.classList.toggle('hide',!!DB.aiKey);}
 
 /* ===== 餐食记录 · 热量计算 ===== */
 function compressPhoto(dataUrl,maxSide){return new Promise(res=>{
@@ -2319,7 +2330,7 @@ document.getElementById('planRawSave').onclick=savePlanRaw;
 document.getElementById('ghToken').oninput=e=>{DB.ghToken=e.target.value.trim();save();};
 document.getElementById('ghRepo').oninput=e=>{DB.ghRepo=e.target.value.trim()||GH_DEFAULT_REPO;save();};
 document.getElementById('aiEndpoint').oninput=e=>{DB.aiEndpoint=e.target.value.trim()||AI_DEFAULT_ENDPOINT;save();};
-document.getElementById('aiKey').oninput=e=>{DB.aiKey=e.target.value.trim();save();};
+document.getElementById('aiKey').oninput=e=>{DB.aiKey=e.target.value.trim();save();refreshAiKeyTip();};
 document.getElementById('aiModel').oninput=e=>{DB.aiModel=e.target.value.trim()||AI_DEFAULT_MODEL;save();};
 document.getElementById('mealPhotoRemind').onchange=e=>{DB.mealPhotoRemind=e.target.checked;save();if(NOTIF&&notifGranted)enableNotifications();};
 document.getElementById('mealTarget').oninput=e=>{const v=parseInt(e.target.value,10);DB.mealTarget=(isFinite(v)&&v>=0)?v:1800;save();renderMeals();renderData();};
@@ -2366,7 +2377,7 @@ document.getElementById('phaseList').innerHTML=PHASES.map((p,i)=>{
     <div style="font-size:12px;color:var(--txt-2);margin-top:6px;line-height:1.6">无酒日：${p.noAlcohol.length?p.noAlcohol.map(x=>WD_CN[WD.indexOf(x)]).join('、'):'无'} · 酒≤${p.alc}ml · 烟≤${p.cig}支</div>
     <div style="font-size:12px;color:var(--accent-2);margin-top:3px">${p.tip}</div></div>`;}).join('');
 
-function renderAll(){['renderPhase','renderToday','renderTasks','renderOverview','renderAI','renderMeals','renderStreak','renderWater','renderSleep','refreshVersionLabels'].forEach(fn=>{try{window[fn]();}catch(e){console.error('render '+fn,e);}});}
+function renderAll(){['renderPhase','renderToday','renderTasks','renderOverview','renderAI','renderMeals','renderStreak','renderWater','renderSleep','refreshVersionLabels','refreshAiKeyTip'].forEach(fn=>{try{window[fn]();}catch(e){console.error('render '+fn,e);}});}
 function refreshVersionLabels(){const v='v'+APP_VERSION;const a=document.getElementById('curVer');if(a)a.textContent=v;const b=document.getElementById('aboutVer');if(b)b.textContent=v;const d=document.getElementById('drawerVer');if(d)d.textContent=v;}
 renderAll();setTimeout(refreshNotifState,300);setTimeout(autoEnableNotif,600);
 // 每日自动加密备份

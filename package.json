@@ -1,6 +1,6 @@
 {
   "name": "shouyeren-app",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "守夜人 · 个人保命作息 App（Capacitor 原生封装，数据本地）",
   "private": true,
   "scripts": {
@@ -13,6 +13,7 @@
     "@capacitor/core": "^5.7.0",
     "@capacitor/local-notifications": "^5.0.7",
     "@capacitor/splash-screen": "^5.0.7",
+    "@capacitor-community/speech-recognition": "^5.1.0",
     "@capgo/capacitor-updater": "^4.0.0"
   },
   "devDependencies": {
