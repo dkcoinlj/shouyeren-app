@@ -257,6 +257,7 @@
   canvas{width:100%;display:block;}
   .legend{display:flex;gap:16px;font-size:11px;color:var(--txt-2);margin:8px 2px 0;}
   .legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px;vertical-align:middle;}
+  .legend .muted{color:var(--txt-3);margin-left:auto;}
 
   /* 彩色卡片变体 */
   .card.gold{border-color:var(--gold-line);background:linear-gradient(180deg,#2d2a1f 0%,#1e232b 55%);box-shadow:var(--shadow-gold);}
@@ -584,7 +585,17 @@
 
       <div class="card" id="card-weight">
         <div class="fold-head" data-fold="card-weight"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M6 6v13a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V6M9 10v6M15 10v6"/></svg></span>体重趋势<span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>
-        <div class="fold-body"><canvas id="cvWeight" height="160"></canvas></div>
+        <div class="fold-body"><canvas id="cvWeight" height="160"></canvas><div class="legend"><span><i style="background:var(--accent-2)"></i>体重 kg</span><span><i style="background:var(--gold)"></i>目标线</span><span class="muted">全部称重记录</span></div></div>
+      </div>
+
+      <div class="card" id="card-kcal">
+        <div class="fold-head" data-fold="card-kcal"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2s4 4 4 8a4 4 0 0 1-8 0c0-1.5.5-2.5 1-3.5C9 8 12 6 12 2z"/></svg></span>热量趋势（近14天）<span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+        <div class="fold-body"><canvas id="cvKcal" height="160"></canvas><div class="legend"><span><i style="background:var(--warn)"></i>摄入 kcal</span><span><i style="background:var(--gold)"></i>目标线</span></div></div>
+      </div>
+
+      <div class="card" id="card-squat">
+        <div class="fold-head" data-fold="card-squat"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 9.5 4 12l2.5 2.5M4 12h16M17.5 9.5 20 12l-2.5 2.5"/><path d="m8 7 8 10M16 7 8 17"/></svg></span>静蹲趋势（近14天）<span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+        <div class="fold-body"><canvas id="cvSquat" height="160"></canvas><div class="legend"><span><i style="background:var(--accent-2)"></i>静蹲秒数</span></div></div>
       </div>
 
       <div class="card" id="card-habit">
@@ -624,6 +635,13 @@
           <input type="number" id="targetW" inputmode="decimal" step="0.1"></div>
       </div>
       <div class="card">
+        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg></span>我的起航日</h3>
+        <div class="note">设定你的开始日期，阶段（适应期→微降期→替换期→巩固期→自由态）会按经过天数自动切换，无需手动调整。</div>
+        <div class="field" style="margin-top:10px"><label>起航日（点击日期选择）</label>
+          <input type="date" id="startDate" style="width:100%;border:1px solid var(--line);border-radius:var(--r-md);padding:12px 14px;font-size:15px;background:var(--card);color:var(--txt);font-family:inherit;outline:none"></div>
+        <div class="note" style="margin-top:8px" id="phaseHint"></div>
+      </div>
+      <div class="card">
         <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18 3 12l6-6M15 6l6 6-6 6"/></svg></span>阶段总览</h3>
         <div id="phaseList"></div>
       </div>
@@ -642,7 +660,7 @@
       <div class="card">
         <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg></span>热更新（免重装）</h3>
         <div class="note">填一次你的 GitHub Token（需 <b>repo</b> 权限），之后点「检查更新」即从私有仓库拉新包热替换，不用卸载重装。Token 只存在本机。</div>
-        <div class="field" style="margin-top:10px"><label>当前版本</label><div id="curVer" class="note" style="margin:0">v1.0.7</div></div>
+        <div class="field" style="margin-top:10px"><label>当前版本</label><div id="curVer" class="note" style="margin:0">v1.1.4</div></div>
         <div class="field"><label>GitHub Token（Private 仓库读取用）</label><input type="password" id="ghToken" placeholder="ghp_xxx 或 github_pat_xxx" autocomplete="off"></div>
         <div class="field"><label>更新仓库 (owner/repo)</label><input type="text" id="ghRepo" placeholder="dkcoinlj/shouyeren-app"></div>
         <button class="btn btn-accent btn-full" id="checkUpd" style="margin-top:4px">检查更新</button>
@@ -660,7 +678,7 @@
           <div class="logo" style="width:60px;height:60px;border-radius:18px"><svg viewBox="0 0 32 32" aria-hidden="true"><defs><radialGradient id="nwMoonB" cx="34%" cy="26%" r="85%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="35%" stop-color="#EAF8F4"/><stop offset="72%" stop-color="#A9DED4"/><stop offset="100%" stop-color="#5AA195"/></radialGradient><linearGradient id="nwHaloB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2DD4BF" stop-opacity="0"/><stop offset="50%" stop-color="#2DD4BF" stop-opacity=".85"/><stop offset="1" stop-color="#2DD4BF" stop-opacity="0"/></linearGradient><filter id="nwFloatB" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="2.2" stdDeviation="2" flood-color="#000" flood-opacity=".5"/></filter><filter id="nwGlowB" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="1.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g filter="url(#nwGlowB)"><circle cx="16" cy="16" r="13.5" fill="none" stroke="url(#nwHaloB)" stroke-width="0.8" opacity=".6"><animateTransform attributeName="transform" type="rotate" from="0 16 16" to="360 16 16" dur="22s" repeatCount="indefinite"/></circle></g><g filter="url(#nwFloatB)"><g><animateTransform attributeName="transform" type="translate" values="0 0;0 -0.8;0 0" dur="3.4s" repeatCount="indefinite" calcMode="spline" keySplines="0.45 0 0.55 1;0.45 0 0.55 1"/><path fill="url(#nwMoonB)" fill-rule="evenodd" d="M16 4.5a11.5 11.5 0 1 0 0 23 11.5 11.5 0 0 0 0-23z M19.2 3a8 8 0 1 1 0 16 8 8 0 0 1 0-16z"/><ellipse cx="13" cy="10.5" rx="2.6" ry="3.4" fill="#FFFFFF" opacity=".55" filter="url(#nwGlowB)"><animate attributeName="opacity" values="0.55;0.22;0.55" dur="3.4s" repeatCount="indefinite"/></ellipse></g></g><path d="M8.6 10.4l.9 2.2L11.7 13.5l-2.2.9L8.6 16.6l-.9-2.2L5.5 13.5l2.2-.9z" fill="#FFD98A" filter="url(#nwGlowB)"><animate attributeName="opacity" values="1;0.4;1" dur="2.6s" repeatCount="indefinite"/></path></svg></div>
           <div><div style="font-size:18px;font-weight:700;letter-spacing:-.02em">守夜人</div><div class="note" style="margin-top:2px">个人作息保命 · Nightwatcher</div></div>
         </div>
-        <div class="note">守夜人 v1.0.9 · 全部数据留在本机，不上传。AI 仅在你发起对话时调用所填接口。更新包走私有 GitHub，仅你本人可拉取。</div>
+        <div class="note">守夜人 v1.1.4 · 全部数据留在本机，不上传。AI 仅在你发起对话时调用所填接口。更新包走私有 GitHub，仅你本人可拉取。</div>
       </div>
     </section>
   </div>
@@ -802,13 +820,28 @@ function icon(name,size){const p=ICONS[name]||ICONS.spark;const s=size||20;
   return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:${s}px;height:${s}px">${p}</svg>`;}
 
 const PHASES=[
-  {key:'adaptation', name:'适应期', start:'2026-08-26', end:'2026-09-08', noAlcohol:['Tue','Thu'], alc:250, cig:18, tip:'先稳住节律，酒≤250ml/烟≤18支'},
-  {key:'reduce', name:'微降期', start:'2026-09-09', end:'2026-09-22', noAlcohol:['Tue','Thu'], alc:200, cig:15, tip:'饮酒日≤200ml（可掺20%白水），烟≤15支'},
-  {key:'replace', name:'替换期', start:'2026-09-23', end:'2026-10-06', noAlcohol:['Tue','Thu','Sat'], alc:150, cig:10, tip:'增加无酒日(周六)，用茶/运动替代'},
-  {key:'consolidate', name:'巩固期', start:'2026-10-07', end:'2026-10-20', noAlcohol:['Tue','Thu','Sat','Sun'], alc:100, cig:6, tip:'仅周三五可微醺，其余全无酒'},
-  {key:'free', name:'自由态', start:'2026-10-21', end:'', noAlcohol:[], alc:50, cig:3, tip:'形成本能，偶尔放松不破底'}
+  {key:'adaptation', name:'适应期', len:14, noAlcohol:['Tue','Thu'], alc:250, cig:18, tip:'先稳住节律，酒≤250ml/烟≤18支'},
+  {key:'reduce', name:'微降期', len:14, noAlcohol:['Tue','Thu'], alc:200, cig:15, tip:'饮酒日≤200ml（可掺20%白水），烟≤15支'},
+  {key:'replace', name:'替换期', len:14, noAlcohol:['Tue','Thu','Sat'], alc:150, cig:10, tip:'增加无酒日(周六)，用茶/运动替代'},
+  {key:'consolidate', name:'巩固期', len:14, noAlcohol:['Tue','Thu','Sat','Sun'], alc:100, cig:6, tip:'仅周三五可微醺，其余全无酒'},
+  {key:'free', name:'自由态', len:Infinity, noAlcohol:[], alc:50, cig:3, tip:'形成本能，偶尔放松不破底'}
 ];
-function getPhase(d){let cur=PHASES[0];for(const p of PHASES){if(parseD(p.start)<=d)cur=p;}return cur;}
+function addDays(base,n){const d=new Date(base.getTime?base.getTime():parseD(fmt(base)));d.setDate(d.getDate()+n);return d;}
+function phaseStartDay(idx){let d=1;for(let i=0;i<idx;i++)d+=PHASES[i].len;return d;}
+function getPhase(d){
+  const start=parseD(DB.startDate||'2026-08-26');
+  let days=Math.round((parseD(fmt(d))-start)/864e5);
+  if(days<0)days=0;
+  let acc=0,idx=0;
+  for(let i=0;i<PHASES.length;i++){if(days<acc+PHASES[i].len){idx=i;break;}acc+=PHASES[i].len;}
+  const p=PHASES[idx];const startDay=phaseStartDay(idx);const inPhase=days-(startDay-1);
+  return Object.assign({},p,{
+    _idx:idx,_startDay:startDay,_day:inPhase+1,
+    _totalDays:(p.len===Infinity?Infinity:p.len),
+    _calStart:addDays(start,startDay-1),
+    _calEnd:(p.len===Infinity?null:addDays(start,startDay+p.len-2))
+  });
+}
 const noAlcoholToday=d=>getPhase(d).noAlcohol.includes(WD[d.getDay()]);
 
 const SCHEDULE=[
@@ -825,7 +858,7 @@ const SCHEDULE=[
   {key:'shutdown',h:2,m:0,icon:'moon',title:'强制关机',sub:'关手机睡觉。回顾今日烟酒量。',notif:'强制关机',review:true}
 ];
 
-const APP_VERSION='1.1.3';
+const APP_VERSION='1.1.4';
 const GH_DEFAULT_REPO='dkcoinlj/shouyeren-app';
 const AI_DEFAULT_ENDPOINT='https://tokenhub.tencentmaas.com/v1/chat/completions';
 const AI_DEFAULT_KEY='sk-WzI92BSrRAC3RvPbsihLsWH7QWepZfgnQthdPRCbkIhKkISg';
@@ -840,6 +873,7 @@ function load(){try{DB=JSON.parse(localStorage.getItem(KEY))||{};}catch(e){DB={}
   DB.notifAsked=DB.notifAsked||false;
   DB.mealPhotoRemind=DB.mealPhotoRemind!==false;
   DB.mealTarget=DB.mealTarget||1800;
+  DB.startDate=DB.startDate||'2026-08-26';
   if(!DB.records[todayStr])DB.records[todayStr]={checkins:{}};}
 function save(){localStorage.setItem(KEY,JSON.stringify(DB));}
 load();
@@ -853,14 +887,15 @@ function esc(s){return (s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':
 
 function renderPhase(){
   const d=new Date();const p=getPhase(d);
-  let total=0,passed=0;
-  if(p.end){const ed=parseD(p.end);total=Math.ceil((ed-parseD(p.start))/864e5);passed=Math.ceil((d-parseD(p.start))/864e5);}
-  const pct=total?Math.min(100,Math.round(passed/total*100)):100;
-  const left=p.end?`剩余 ${Math.ceil((parseD(p.end)-d)/864e5)} 天`:'已达成';
+  const total=p._totalDays,passed=p._day;
+  const pct=total===Infinity?100:Math.min(100,Math.round(passed/total*100));
+  const left=total===Infinity?'已步入自由态':`剩余 ${total-passed} 天`;
+  const dayTxt=total===Infinity?`第 ${passed} 天 · 自由态`:`第 ${passed}/${total} 天`;
   const na=noAlcoholToday(d)?'<span class="tag tag-accent">今日无酒日</span>':'<span class="tag">今日饮酒 ≤'+p.alc+'ml</span>';
+  const calRange=(p._calStart&&p._calEnd)?`<span class="tag">${fmt(p._calStart).slice(5)} ~ ${fmt(p._calEnd).slice(5)}</span>`:'';
   document.getElementById('phaseBanner').innerHTML=
-    `<div class="ph-row"><span class="tag tag-accent">${p.name}</span><span class="ph-main">第 ${passed}/${total} 天</span><span class="tag">${left}</span></div>
-     <div class="ph-row" style="margin-top:8px">${na}<span class="tag">烟 ≤${p.cig}支</span></div>
+    `<div class="ph-row"><span class="tag tag-accent">${p.name}</span><span class="ph-main">${dayTxt}</span><span class="tag">${left}</span></div>
+     <div class="ph-row" style="margin-top:8px">${na}${calRange}<span class="tag">烟 ≤${p.cig}支</span></div>
      <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>`;
 }
 
@@ -981,7 +1016,7 @@ function renderData(){
     <div class="stat warn"><div class="v">${daysWith?Math.round(okDays/daysWith*100):0}%</div><div class="k">阶段内不超标率</div></div>
     <div class="stat"><div class="v">${weekDays.reduce((s,day)=>s+((DB.records[day]&&DB.records[day].squat_sec)||0),0)}</div><div class="k">本周静蹲秒数</div></div>
     <div class="stat warn"><div class="v">${todayRec.mealKcal||0}</div><div class="k">今日摄入 kcal（目标 ${DB.mealTarget||0}）</div></div>`;
-  drawWeight();drawHabit();drawHeat();drawQuit();
+  drawWeight();drawHabit();drawHeat();drawQuit();drawKcal();drawSquat();
 }
 
 function setupCanvas(cv,h){const dpr=window.devicePixelRatio||1;const w=cv.clientWidth||cv.parentElement.clientWidth;
@@ -991,8 +1026,8 @@ function drawWeight(){const cv=document.getElementById('cvWeight');if(!cv.client
   if(!ws.length){ctx.fillStyle='#6b7178';ctx.font='13px sans-serif';ctx.fillText('暂无体重数据，周日称重后显示',12,h/2);return;}
   const vals=ws.map(k=>DB.records[k].weight);const min=Math.min(...vals,DB.target)-1,max=Math.max(...vals,DB.target)+1;
   const X=i=>20+i*((w-30)/(Math.max(1,ws.length-1)));const Y=v=>10+(1-(v-min)/(max-min))*(h-40);
-  ctx.strokeStyle='rgba(45,212,191,.5)';ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(20,Y(DB.target));ctx.lineTo(w-10,Y(DB.target));ctx.stroke();ctx.setLineDash([]);
-  ctx.fillStyle='#5eead4';ctx.font='10px sans-serif';ctx.fillText('目标 '+DB.target,22,Y(DB.target)-4);
+  ctx.strokeStyle='rgba(233,196,106,.7)';ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(20,Y(DB.target));ctx.lineTo(w-10,Y(DB.target));ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle='rgba(233,196,106,.95)';ctx.font='10px sans-serif';ctx.fillText('目标 '+DB.target,22,Y(DB.target)-4);
   ctx.strokeStyle='#2dd4bf';ctx.lineWidth=2;ctx.beginPath();ws.forEach((k,i)=>{const x=X(i),y=Y(DB.records[k].weight);i?ctx.lineTo(x,y):ctx.moveTo(x,y);});ctx.stroke();
   ws.forEach((k,i)=>{ctx.fillStyle='#2dd4bf';ctx.beginPath();ctx.arc(X(i),Y(DB.records[k].weight),3,0,7);ctx.fill();});}
 function drawHabit(){const cv=document.getElementById('cvHabit');if(!cv.clientWidth)return;const{ctx,w,h}=setupCanvas(cv,180);ctx.clearRect(0,0,w,h);
@@ -1025,6 +1060,18 @@ function drawQuit(){const cv=document.getElementById('cvQuit');if(!cv)return;con
     <div style="font-size:12px;color:var(--txt-2);margin-top:5px;line-height:1.5">近7天 ${okDays}/${tot} 天不超标。<br>${tip}。<br>上限：酒≤${p.alc}ml · 烟≤${p.cig}支</div>`;
 }
 
+function drawKcal(){const cv=document.getElementById('cvKcal');if(!cv.clientWidth)return;const{ctx,w,h}=setupCanvas(cv,180);ctx.clearRect(0,0,w,h);
+  const days=[];const d=new Date();for(let i=13;i>=0;i--){const x=new Date(d);x.setDate(d.getDate()-i);days.push(fmt(x));}
+  const data=days.map(k=>(DB.records[k]&&DB.records[k].mealKcal)||0);const tgt=Math.round(DB.mealTarget||0);
+  const maxV=Math.max(100,...data,tgt)*1.1;const X=i=>20+i*((w-30)/(days.length-1));const Y=v=>10+(1-v/maxV)*(h-30);
+  if(tgt){ctx.strokeStyle='rgba(233,196,106,.7)';ctx.setLineDash([5,4]);ctx.beginPath();ctx.moveTo(20,Y(tgt));ctx.lineTo(w-10,Y(tgt));ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='rgba(233,196,106,.95)';ctx.font='10px sans-serif';ctx.fillText('目标 '+tgt,w-66,Y(tgt)-5);}
+  ctx.strokeStyle='#f59e0b';ctx.lineWidth=2;ctx.beginPath();data.forEach((v,i)=>{const x=X(i),y=Y(v);i?ctx.lineTo(x,y):ctx.moveTo(x,y);});ctx.stroke();
+  data.forEach((v,i)=>{ctx.fillStyle='#f59e0b';ctx.beginPath();ctx.arc(X(i),Y(v),3,0,7);ctx.fill();});
+  ctx.fillStyle='#6b7178';ctx.font='9px sans-serif';days.forEach((k,i)=>{if(i%2===0)ctx.fillText(WD_CN[parseD(k).getDay()],X(i)-4,h-6);});}
+function drawSquat(){const cv=document.getElementById('cvSquat');if(!cv.clientWidth)return;const{ctx,w,h}=setupCanvas(cv,180);ctx.clearRect(0,0,w,h);
+  const days=[];const d=new Date();for(let i=13;i>=0;i--){const x=new Date(d);x.setDate(d.getDate()-i);days.push(fmt(x));}
+  const data=days.map(k=>(DB.records[k]&&DB.records[k].squat_sec)||0);const maxV=Math.max(120,...data)*1.1;const bw=w/days.length;
+  data.forEach((v,i)=>{const x0=i*bw+bw*0.22;const bh=Math.min(h-24,(v/maxV)*(h-24));ctx.fillStyle=v?'#2dd4bf':'rgba(255,255,255,.06)';ctx.fillRect(x0,h-bh,Math.max(2,bw*0.56),bh);ctx.fillStyle='#6b7178';ctx.font='9px sans-serif';ctx.fillText(WD_CN[parseD(days[i]).getDay()],x0,h-8);});}
 document.getElementById('expBtn').onclick=()=>{const blob=new Blob([JSON.stringify(DB)],{type:'application/json'});
   const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='守夜人备份_'+todayStr+'.json';a.click();URL.revokeObjectURL(url);toast('备份已导出');};
 document.getElementById('impBtn').onclick=()=>document.getElementById('impFile').click();
@@ -1104,7 +1151,7 @@ async function enableNotifications(){if(!NOTIF){toast('请在 App 内操作');re
       sched.push({id:121,title:'守夜人',body:'基础护肤时间',schedule:{on:{hour:21,minute:0},repeats:true}});
       sched.push({id:122,title:'守夜人 · 去角质',body:'周二/四/六：别忘了去角质',schedule:{on:{hour:21,minute:2,weekday:[3,5,7]},repeats:true}});
     }
-    PHASES.slice(1).forEach((ph,i)=>{const d=parseD(ph.start);sched.push({id:200+i,title:'守夜人 · 新阶段',body:ph.name+'开始：'+ph.tip,schedule:{on:{year:d.getFullYear(),month:d.getMonth()+1,day:d.getDate(),hour:8,minute:0},repeats:false}});});
+    PHASES.slice(1).forEach((ph,i)=>{const sd=addDays(parseD(DB.startDate||'2026-08-26'),phaseStartDay(i+1)-1);sched.push({id:200+i,title:'守夜人 · 新阶段',body:ph.name+'开始：'+ph.tip,schedule:{on:{year:sd.getFullYear(),month:sd.getMonth()+1,day:sd.getDate(),hour:8,minute:0},repeats:false}});});
     await NOTIF.schedule({notifications:sched});notifGranted=true;toast('作息提醒已按你的设置排程');refreshNotifState();renderToday();
   }catch(e){toast('排程失败：'+e.message);}}
 
@@ -1596,7 +1643,9 @@ function renderPlan(){
     '每周日只对比周体重：喝酒后体重虚低是水分，别被骗，别额外加餐补偿'
   ].map(s=>`<div class="rule"><span>${icon('alert',18)}</span><div>${s.replace(/(\d+:\d+|[0-9]+支|[0-9]+ml|防火墙|七折)/g,'<b>$1</b>')}</div></div>`).join('');
 
-  const phaseRows=PHASES.map(p=>`<tr><td>${p.name}</td><td>${p.start}${p.end?' ~ '+p.end:''}</td><td>${p.alc}ml</td><td>${p.cig}支</td><td>${p.noAlcohol.length?p.noAlcohol.map(x=>WD_CN[WD.indexOf(x)]).join('、'):'无'}</td></tr>`).join('');
+  const start0=parseD(DB.startDate||'2026-08-26');
+  const phaseRows=PHASES.map((p,i)=>{const s=addDays(start0,phaseStartDay(i)-1);const e=p.len===Infinity?null:addDays(start0,phaseStartDay(i)+p.len-2);
+    return `<tr><td>${p.name}</td><td>${fmt(s).slice(5)}${e?' ~ '+fmt(e).slice(5):' 起'}</td><td>${p.alc}ml</td><td>${p.cig}支</td><td>${p.noAlcohol.length?p.noAlcohol.map(x=>WD_CN[WD.indexOf(x)]).join('、'):'无'}</td></tr>`;}).join('');
   document.getElementById('planPhaseTime').innerHTML=`<table class="plan-table"><thead><tr><th>阶段</th><th>日期</th><th>饮酒</th><th>吸烟</th><th>无酒日</th></tr></thead><tbody>${phaseRows}</tbody></table>`;
   document.querySelectorAll('.plan-card').forEach(c=>c.classList.toggle('active',c.dataset.section===currentPlanSection));
 }
@@ -1617,7 +1666,9 @@ function switchTab(name,section){
     document.getElementById('aiKey').value=DB.aiKey||'';
     document.getElementById('aiModel').value=DB.aiModel||AI_DEFAULT_MODEL;
     document.getElementById('mealPhotoRemind').checked=DB.mealPhotoRemind;
-    document.getElementById('mealTarget').value=DB.mealTarget||1800;}
+    document.getElementById('mealTarget').value=DB.mealTarget||1800;
+    document.getElementById('startDate').value=DB.startDate||'2026-08-26';
+    const ph=getPhase(new Date());document.getElementById('phaseHint').innerHTML='当前处于 <b style="color:var(--accent-2)">'+ph.name+'</b>（第 '+ph._day+(ph._totalDays===Infinity?' 天 · 自由态':'/'+ph._totalDays+' 天）');}
   document.querySelectorAll('.drawer-item[data-drawer]').forEach(d=>{
     const isPlan=d.dataset.planSection;
     const active=isPlan?(name==='plan'&&d.dataset.planSection===currentPlanSection):(d.dataset.drawer===name);
@@ -1646,6 +1697,9 @@ document.getElementById('mealPhotoRemind').onchange=e=>{DB.mealPhotoRemind=e.tar
 document.getElementById('mealTarget').oninput=e=>{const v=parseInt(e.target.value,10);DB.mealTarget=(isFinite(v)&&v>=0)?v:1800;save();renderMeals();renderData();};
 document.getElementById('checkUpd').onclick=()=>checkUpdate(false);
 document.getElementById('targetW').onchange=e=>{DB.target=+e.target.value||72;save();renderData();};
+document.getElementById('startDate').onchange=e=>{const v=e.target.value;if(!v){return;}DB.startDate=v;save();renderPhase();renderOverview();renderPlan();
+  const ph=getPhase(new Date());document.getElementById('phaseHint').innerHTML='已更新，当前处于 <b style="color:var(--accent-2)">'+ph.name+'</b>（第 '+ph._day+(ph._totalDays===Infinity?' 天 · 自由态':'/'+ph._totalDays+' 天）');
+  if(NOTIF&&notifGranted)enableNotifications();};
 document.getElementById('resetSched').onclick=()=>{
   if(DB.hiddenSchedule.length||Object.keys(DB.scheduleOverride).length){DB.hiddenSchedule=[];DB.scheduleOverride={};save();renderTasks();toast('已恢复默认作息');}
   else toast('本来就是默认作息');};
@@ -1657,13 +1711,16 @@ document.querySelectorAll('.fold-head').forEach(h=>h.addEventListener('click',()
   if(card.classList.contains('open')&&id==='card-weight')setTimeout(drawWeight,50);
   if(card.classList.contains('open')&&id==='card-habit')setTimeout(drawHabit,50);
   if(card.classList.contains('open')&&id==='card-heat')setTimeout(drawHeat,50);
+  if(card.classList.contains('open')&&id==='card-kcal')setTimeout(drawKcal,50);
+  if(card.classList.contains('open')&&id==='card-squat')setTimeout(drawSquat,50);
 }));
 
-document.getElementById('phaseList').innerHTML=PHASES.map(p=>
-  `<div style="padding:10px 0;border-bottom:1px solid var(--line)">
-    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="tag tag-accent">${p.name}</span><span class="tag">${p.start}${p.end?' ~ '+p.end:''}</span></div>
+document.getElementById('phaseList').innerHTML=PHASES.map((p,i)=>{
+  const s=addDays(parseD(DB.startDate||'2026-08-26'),phaseStartDay(i)-1);const e=p.len===Infinity?null:addDays(parseD(DB.startDate||'2026-08-26'),phaseStartDay(i)+p.len-2);
+  return `<div style="padding:10px 0;border-bottom:1px solid var(--line)">
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="tag tag-accent">${p.name}</span><span class="tag">${fmt(s).slice(5)}${e?' ~ '+fmt(e).slice(5):' 起'}</span></div>
     <div style="font-size:12px;color:var(--txt-2);margin-top:6px;line-height:1.6">无酒日：${p.noAlcohol.length?p.noAlcohol.map(x=>WD_CN[WD.indexOf(x)]).join('、'):'无'} · 酒≤${p.alc}ml · 烟≤${p.cig}支</div>
-    <div style="font-size:12px;color:var(--accent-2);margin-top:3px">${p.tip}</div></div>`).join('');
+    <div style="font-size:12px;color:var(--accent-2);margin-top:3px">${p.tip}</div></div>`;}).join('');
 
 function renderAll(){renderPhase();renderToday();renderTasks();renderOverview();renderAI();renderMeals();}
 renderAll();setTimeout(refreshNotifState,300);setTimeout(autoEnableNotif,600);
