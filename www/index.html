@@ -411,6 +411,13 @@
   .note{font-size:12px;color:var(--txt-2);line-height:1.6;}
   .banner{background:var(--warn-bg);border:1px solid var(--warn-line);border-radius:var(--r-lg);
     padding:12px 14px;font-size:13px;color:var(--warn);line-height:1.5;}
+  /* 今日提醒（应用内替代系统通知） */
+  .remind-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:12px 14px;margin-bottom:12px;}
+  .remind-head{font-size:13px;font-weight:600;color:var(--txt);margin-bottom:6px;}
+  .remind-row{display:flex;gap:10px;align-items:baseline;padding:6px 0;border-top:1px solid var(--line);}
+  .remind-row:first-of-type{border-top:none;}
+  .remind-time{font-size:12px;color:var(--accent);font-variant-numeric:tabular-nums;flex-shrink:0;width:44px;}
+  .remind-title{font-size:13px;color:var(--txt);}
   .hr{height:1px;background:var(--line);margin:10px 0;}
 
   .float-in{animation:float-in .5s cubic-bezier(.16,1,.3,1) both;}
@@ -714,7 +721,6 @@
         <div class="meal-list" id="mealList"></div>
       </div>
 
-      <div id="notifBanner"></div>
       <div id="sundayCard"></div>
 
       <h3 class="card-title" style="margin:16px 0 10px 2px"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg></span>趋势与统计</h3>
@@ -774,16 +780,15 @@
 
     <section id="tab-settings" class="hide">
       <div class="card">
-        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>系统通知</h3>
-        <div class="note" id="notifState">检测中…</div>
-        <button class="btn btn-accent btn-full" id="notifBtn" style="margin-top:10px">启用系统通知</button>
-        <label class="switch-row" style="margin-top:12px"><span>三餐拍照提醒（早/午/晚餐通知附带「拍照记录」）</span><input type="checkbox" id="mealPhotoRemind"><span class="switch"></span></label>
+        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>提醒方式</h3>
+        <div class="note" id="notifState">系统通知已关闭（OPPO 兼容性）：改用 App 内「今日提醒」，打开守夜人即可看到今日待办清单。</div>
+        <button class="btn btn-accent btn-full" id="notifBtn" style="margin-top:10px">查看今日提醒</button>
         <div class="inline-field" style="margin-top:12px">
           <label for="mealTarget">每日目标摄入热量</label>
           <div class="inline-input"><input type="number" id="mealTarget" inputmode="numeric" min="0" step="50"><span class="unit">kcal</span></div>
         </div>
-        <div class="note" style="margin-top:8px">记录餐食后，若累计超过此目标，App 会立刻提醒你；达标进度也显示在餐食卡片与数据页。</div>
-        <div class="note" style="margin-top:10px">启用后，每天 12 个作息点 + 周二/四/六去角质 + 阶段切换日，都会由手机系统直接弹提醒（关屏、杀后台都响）。</div>
+        <div class="note" style="margin-top:8px">记录餐食后，若累计超过此目标，App 会在餐食卡片与数据页标注超标；达标进度也实时显示。</div>
+        <div class="note" style="margin-top:10px">系统弹窗通知在部分国产机型（如 OPPO/ColorOS）上会导致启动崩溃，已停用。如需在关机、后台也收到提醒，可在系统「时钟 / 日历」里手动设闹钟，或告诉我，我再换更稳的原生方案。</div>
       </div>
       <div class="card">
         <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></span>数据备份</h3>
@@ -1232,7 +1237,7 @@ const DEFAULT_TASKS=SCHEDULE.map(s=>({
   time:`${String(s.h).padStart(2,'0')}:${String(s.m).padStart(2,'0')}`
 }));
 
-const APP_VERSION='1.3.11';
+const APP_VERSION='1.3.12';
 const GH_DEFAULT_REPO='dkcoinlj/shouyeren-app';
 const AI_DEFAULT_ENDPOINT='https://tokenhub.tencentmaas.com/v1/chat/completions';
 const AI_DEFAULT_KEY='sk-WzI92BSrRAC3RvPbsihLsWH7QWepZfgnQthdPRCbkIhKkISg';
@@ -1344,9 +1349,20 @@ function renderToday(){
     sc.querySelector('#wOpen').onclick=openWeight;
   }else sc.innerHTML='';
   const nb=document.getElementById('notifBanner');
-  if(NOTIF&&notifGranted)nb.innerHTML='';
-  else if(NOTIF)nb.innerHTML='<div class="banner">尚未启用系统通知，去「设置」开启，否则关屏后收不到作息提醒。</div>';
-  else nb.innerHTML='';
+  if(nb)renderReminders(nb);
+}
+// 应用内「今日提醒」：替代系统通知，避免 OPPO 上原生通知插件崩溃
+function renderReminders(target){
+  const nb=target||document.getElementById('notifBanner');if(!nb)return;
+  const hidden=DB.hiddenSchedule||[];const ov=DB.scheduleOverride||{};
+  const list=[];
+  SCHEDULE.forEach(s=>{if(s.key==='skin')return;if(hidden.includes(s.key))return;
+    const o=ov[s.key]||{};const t=o.time||`${String(s.h).padStart(2,'0')}:${String(s.m).padStart(2,'0')}`;
+    const tt=(o.title!==undefined)?o.title:s.title;list.push({time:t,title:tt});});
+  (DB.tasks||[]).forEach(t=>{if(t.time&&t.status!=='done')list.push({time:t.time,title:(t.title||t.text)});});
+  list.sort((a,b)=>a.time<b.time?-1:1);
+  nb.innerHTML=`<div class="remind-card"><div class="remind-head">📋 今日提醒 · 共 ${list.length} 项（App 内 · 打开即看）</div>`+
+    list.map(x=>`<div class="remind-row"><span class="remind-time">${esc(x.time)}</span><span class="remind-title">${esc(x.title)}</span></div>`).join('')+`</div>`;
 }
 
 function getSystemTasks(){
@@ -1575,13 +1591,13 @@ const CAMERA=(window.Capacitor&&Capacitor.isPluginAvailable&&Capacitor.isPluginA
 if(NOTIF&&NOTIF.addListener){NOTIF.addListener('actionPerformed',e=>{const a=e&&e.action&&e.action.id;if(a==='water'){addWater(200);toast('已记一杯水 +200ml');}});}
 let notifGranted=false;
 async function refreshNotifState(){const el=document.getElementById('notifState');const btn=document.getElementById('notifBtn');const bell=document.getElementById('bellBtn');const dot=document.getElementById('bellDot');
-  if(!NOTIF){el.innerHTML='当前为网页预览，通知不可用。请把本文件装入「守夜人」App 后，在此启用系统通知。';btn.disabled=true;btn.style.opacity=.5;return;}
+  if(!NOTIF){el.innerHTML='系统通知已关闭（OPPO 兼容性）：改用 App 内「今日提醒」，打开守夜人即可看到今日待办清单。';btn.disabled=false;btn.style.opacity=1;btn.textContent='查看今日提醒';return;}
   try{const s=await NOTIF.checkPermissions();notifGranted=s.display==='granted';
     el.innerHTML=notifGranted?'<span class="tag tag-accent">已启用 · 系统级提醒生效中</span>':'<span class="tag tag-warn">尚未授权</span>';
     btn.textContent=notifGranted?'重新排程通知':'启用系统通知';
     if(bell){bell.classList.toggle('on',notifGranted);if(dot)dot.style.display=notifGranted?'none':'block';}
   }catch(e){el.textContent='状态检测失败';}}
-document.getElementById('notifBtn').onclick=enableNotifications;
+document.getElementById('notifBtn').onclick=()=>switchTab('today');
 // 首次启动自动申请通知权限并排程，免去手动开启
 async function autoEnableNotif(){
   if(!NOTIF)return;
@@ -2427,7 +2443,7 @@ document.getElementById('phaseList').innerHTML=PHASES.map((p,i)=>{
     <div style="font-size:12px;color:var(--txt-2);margin-top:6px;line-height:1.6">无酒日：${p.noAlcohol.length?p.noAlcohol.map(x=>WD_CN[WD.indexOf(x)]).join('、'):'无'} · 酒≤${p.alc}ml · 烟≤${p.cig}支</div>
     <div style="font-size:12px;color:var(--accent-2);margin-top:3px">${p.tip}</div></div>`;}).join('');
 
-function renderAll(){['renderPhase','renderToday','renderTasks','renderOverview','renderAI','renderMeals','renderStreak','renderWater','renderSleep','refreshVersionLabels','refreshAiKeyTip'].forEach(fn=>{try{window[fn]();}catch(e){console.error('render '+fn,e);}});}
+function renderAll(){['renderPhase','renderToday','renderTasks','renderOverview','renderAI','renderMeals','renderStreak','renderWater','renderSleep','renderReminders','refreshVersionLabels','refreshAiKeyTip'].forEach(fn=>{try{window[fn]();}catch(e){console.error('render '+fn,e);}});}
 function refreshVersionLabels(){const v='v'+APP_VERSION;const a=document.getElementById('curVer');if(a)a.textContent=v;const b=document.getElementById('aboutVer');if(b)b.textContent=v;const d=document.getElementById('drawerVer');if(d)d.textContent=v;}
 /* 国产安卓适配：复制设置步骤 + 首次启动引导 */
 function closeFirstRun(){document.getElementById('mFirstRun').classList.remove('show');}
@@ -2437,7 +2453,7 @@ document.getElementById('copyOeppoTips').onclick=()=>{
   const text='守夜人 App 必做设置（OPPO/国产安卓）：\n1. 电池→应用耗电管理→守夜人：允许后台运行/自启动/锁屏清理白名单\n2. 设置→通知与状态栏→通知管理→守夜人：允许通知+锁屏显示+设为重要\n3. 设置→密码与安全→系统安全→未知来源应用：允许安装（仅首次）\n4. 应用→守夜人→权限→精确闹钟：允许';
   try{navigator.clipboard.writeText(text);toast('已复制设置步骤');}catch(e){toast('复制失败，请手动记录');}
 };
-renderAll();setTimeout(refreshNotifState,300);setTimeout(autoEnableNotif,600);
+renderAll();setTimeout(refreshNotifState,300);setTimeout(renderReminders,600);
 if(DB.firstRun){setTimeout(()=>{document.getElementById('mFirstRun').classList.add('show');},900);}
 // 每日自动加密备份
 if(DB.autoBackup&&DB.ghToken&&DB.ghToken.trim()&&DB.backupPass&&DB.lastBackup!==todayStr){setTimeout(doBackup,2000);}
