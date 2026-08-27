@@ -1,6 +1,6 @@
 {
   "name": "shouyeren-app",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "守夜人 · 个人保命作息 App（Capacitor 原生封装，数据本地）",
   "private": true,
   "scripts": {
