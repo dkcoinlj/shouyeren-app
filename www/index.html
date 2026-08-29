@@ -238,6 +238,10 @@
   .btn-secondary:hover{background:var(--surface-2);}
   .btn-ghost{background:transparent;color:var(--txt-2);border-color:transparent;}
   .btn-ghost:hover{background:rgba(255,255,255,.05);color:var(--txt);}
+  .btn-danger{background:linear-gradient(180deg,#ff8a8a,#ff5a5a);color:#3a0a0a;border-color:#ff5a5a;box-shadow:0 6px 18px rgba(255,90,90,.28);}
+  .breath-circle{width:150px;height:150px;border-radius:50%;margin:18px auto;background:radial-gradient(circle,var(--accent-bg),var(--accent-soft));border:2px solid var(--accent-line);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--accent-2);font-size:18px;transition:transform .3s;}
+  .breath-circle.breathing{animation:breath 19s ease-in-out infinite;}
+  @keyframes breath{0%{transform:scale(.55)}21%{transform:scale(1)}58%{transform:scale(1)}100%{transform:scale(.55)}}
 
   /* 分析卡 */
   .stats{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
@@ -571,6 +575,14 @@
         </div>
       </div>
 
+      <div class="card warn" id="sosCard">
+        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3Z"/></svg></span>紧急求助</h3>
+        <div class="note">撑不住、快破防的时候，先别硬扛。打给信任的人，或跟着呼吸锚定 1 分钟，让这阵浪自己退下去。</div>
+        <button class="btn btn-danger btn-full" id="sosCall" style="margin-top:10px">呼叫 <span id="sosNameTxt">紧急联系人</span></button>
+        <button class="btn btn-secondary btn-full" id="sosSms">发短信求助</button>
+        <button class="btn btn-accent btn-full" id="sosBreath">呼吸锚定 1 分钟</button>
+      </div>
+
       <div class="card" id="todayBoardCard">
         <div class="board-head">
           <h3 class="card-title" style="margin:0"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg></span>我的任务 <span class="tag" id="datePill"></span></h3>
@@ -878,6 +890,13 @@
         <button class="btn btn-secondary btn-full" id="copyOeppoTips" style="margin-top:8px">复制设置步骤</button>
       </div>
       <div class="card">
+        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3Z"/></svg></span>紧急联系人</h3>
+        <div class="note">填一个你信任的人（家人 / 朋友 / 监督人）。瘾头最猛、快破防时，一键呼叫或发短信。仅存本机。</div>
+        <div class="field" style="margin-top:10px"><label>称呼</label><input type="text" id="sosName" placeholder="如：老张 / 监督人" autocomplete="off"></div>
+        <div class="field"><label>手机号</label><input type="tel" id="sosPhone" placeholder="手机号" autocomplete="off"></div>
+      </div>
+
+      <div class="card">
         <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v.01M11 12h1v4h1"/></svg></span>关于</h3>
         <div style="display:flex;align-items:center;gap:14px;margin:4px 0 12px">
           <div class="logo" style="width:60px;height:60px;border-radius:18px"><svg viewBox="0 0 32 32" aria-hidden="true"><defs><radialGradient id="nwMoonB" cx="34%" cy="26%" r="85%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="35%" stop-color="#EAF8F4"/><stop offset="72%" stop-color="#A9DED4"/><stop offset="100%" stop-color="#5AA195"/></radialGradient><linearGradient id="nwHaloB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2DD4BF" stop-opacity="0"/><stop offset="50%" stop-color="#2DD4BF" stop-opacity=".85"/><stop offset="1" stop-color="#2DD4BF" stop-opacity="0"/></linearGradient><filter id="nwFloatB" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="2.2" stdDeviation="2" flood-color="#000" flood-opacity=".5"/></filter><filter id="nwGlowB" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="1.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g filter="url(#nwGlowB)"><circle cx="16" cy="16" r="13.5" fill="none" stroke="url(#nwHaloB)" stroke-width="0.8" opacity=".6"><animateTransform attributeName="transform" type="rotate" from="0 16 16" to="360 16 16" dur="22s" repeatCount="indefinite"/></circle></g><g filter="url(#nwFloatB)"><g><animateTransform attributeName="transform" type="translate" values="0 0;0 -0.8;0 0" dur="3.4s" repeatCount="indefinite" calcMode="spline" keySplines="0.45 0 0.55 1;0.45 0 0.55 1"/><path fill="url(#nwMoonB)" fill-rule="evenodd" d="M16 4.5a11.5 11.5 0 1 0 0 23 11.5 11.5 0 0 0 0-23z M19.2 3a8 8 0 1 1 0 16 8 8 0 0 1 0-16z"/><ellipse cx="13" cy="10.5" rx="2.6" ry="3.4" fill="#FFFFFF" opacity=".55" filter="url(#nwGlowB)"><animate attributeName="opacity" values="0.55;0.22;0.55" dur="3.4s" repeatCount="indefinite"/></ellipse></g></g><path d="M8.6 10.4l.9 2.2L11.7 13.5l-2.2.9L8.6 16.6l-.9-2.2L5.5 13.5l2.2-.9z" fill="#FFD98A" filter="url(#nwGlowB)"><animate attributeName="opacity" values="1;0.4;1" dur="2.6s" repeatCount="indefinite"/></path></svg></div>
@@ -968,8 +987,9 @@
     <h3><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12c2 0 3-4 5-4s3 8 5 8 3-8 5-8 3 4 5 4"/></svg></span>记录一次冲动</h3>
     <div class="note" id="cravType" style="margin-bottom:10px"></div>
     <div class="field"><label>触发场景（可选）</label><input type="text" id="cravTrigger" placeholder="如：刚开完会 / 看别人喝 / 无聊刷手机" autocomplete="off"></div>
-    <div class="note" style="margin:-6px 0 12px">记下来后，先喝口水、停 10 分钟——大概率浪就退了。</div>
-    <button class="btn btn-accent btn-full" id="cravSave">记下了，先冲 10 分钟浪</button>
+    <div class="note" style="margin:-6px 0 12px">记下来后，先喝口水、停 10 分钟——大概率浪就退了。也可以先跟着呼吸锚定 1 分钟。</div>
+    <button class="btn btn-accent btn-full" id="cravBreath">呼吸锚定 1 分钟</button>
+    <button class="btn btn-primary btn-full" id="cravSave">记下了，先冲 10 分钟浪</button>
     <button class="btn btn-ghost btn-full" id="cravClose" style="margin-top:8px;color:var(--txt-2)">取消</button>
   </div></div>
 
@@ -1029,6 +1049,13 @@
     <button class="btn btn-ghost btn-full" id="frGoSet" style="margin-top:8px;color:var(--txt-2)">去设置页看必做项</button>
   </div></div>
 
+  <div class="modal" id="mBreath"><div class="sheet" style="text-align:center">
+    <h3><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5S5 9 5 14a7 7 0 0 0 14 0c0-5-7-11.5-7-11.5Z"/></svg></span>呼吸锚定</h3>
+    <div class="breath-circle" id="breathCircle"><span id="breathText">准备</span></div>
+    <div class="note" id="breathHint">跟着圆圈：放大时吸气，缩小时呼气。4-7-8 节奏，共 1 分钟。</div>
+    <button class="btn btn-ghost btn-full" id="breathStop" style="margin-top:12px;color:var(--txt-2)">结束</button>
+  </div></div>
+
   <div class="toast" id="toast"></div>
 
 <script>
@@ -1038,6 +1065,16 @@ const KEY='sy_data_v2';
 const parseD=s=>{const[a,b,c]=s.split('-');return new Date(a,+b-1,+c,12,0,0);};
 const fmt=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 const todayStr=fmt(new Date());
+
+/* ===== 全局安全网 + 安全绑定助手（坚固化：单点出错不再拖垮整个 App） ===== */
+function $on(id,ev,fn){const el=document.getElementById(id);if(!el){console.warn('[守夜人] 绑定跳过缺失元素 #'+id);return;}el.addEventListener(ev,fn);}
+function $click(sel,fn){document.querySelectorAll(sel).forEach(e=>e.addEventListener('click',fn));}
+let _errShown=false;
+window.addEventListener('error',e=>{
+  if(e&&e.error){console.error('[守夜人] 运行时错误:',e.message);if(!_errShown){_errShown=true;try{toast('出错了：'+(e.message||'')+'（已记入日志）');}catch(_){}}}
+  else if(e&&e.target&&e.target.src){console.warn('[守夜人] 资源加载失败:',e.target.src);}
+});
+window.addEventListener('unhandledrejection',e=>{console.error('[守夜人] 未处理异步错误:',e&&e.reason);});
 
 /* ===== 邪修全案（原版默认，可在 App 端调整） ===== */
 const DEFAULT_PLAN_RAW=`# 📜 守夜人·邪修全案（190斤→170斤·烟酒对冲·美白版）
@@ -1239,7 +1276,7 @@ const DEFAULT_TASKS=SCHEDULE.map(s=>({
   time:`${String(s.h).padStart(2,'0')}:${String(s.m).padStart(2,'0')}`
 }));
 
-const APP_VERSION='1.3.13';
+const APP_VERSION='1.4.0';
 const GH_DEFAULT_REPO='dkcoinlj/shouyeren-app';
 const AI_DEFAULT_ENDPOINT='https://tokenhub.tencentmaas.com/v1/chat/completions';
 const AI_DEFAULT_KEY='sk-WzI92BSrRAC3RvPbsihLsWH7QWepZfgnQthdPRCbkIhKkISg';
@@ -1268,6 +1305,7 @@ function load(){try{DB=JSON.parse(localStorage.getItem(KEY))||{};}catch(e){DB={}
   DB.wakeNotif=DB.wakeNotif!==false;
   DB.lastBackup=DB.lastBackup||'';
   if(!DB.records[todayStr])DB.records[todayStr]={checkins:{}};
+  DB.sosName=DB.sosName||''; DB.sosPhone=DB.sosPhone||'';
   DB.firstRun=(DB.firstRun===undefined)?true:DB.firstRun;
 }
 let _saveTimer=null;
@@ -2196,6 +2234,22 @@ function renderCravingStats(){
 }
 function mode(arr){const m={};arr.forEach(x=>m[x]=(m[x]||0)+1);let bk=null,bv=-1;for(const k in m){if(m[k]>bv){bv=m[k];bk=k;}}return bk+'点';}
 
+/* ===== 紧急求助 + 呼吸锚定（拓展 / 加强） ===== */
+function renderSOS(){
+  const nm=document.getElementById('sosNameTxt');if(nm)nm.textContent=DB.sosName||'紧急联系人';
+  const ok=DB.sosPhone&&/^[0-9+\-\s]{5,20}$/.test(DB.sosPhone);
+  const call=document.getElementById('sosCall'),sms=document.getElementById('sosSms');
+  if(call)call.disabled=!ok; if(sms)sms.disabled=!ok;
+}
+function callSOS(){if(!DB.sosPhone){toast('先在设置里填紧急联系人');return;}try{window.location.href='tel:'+DB.sosPhone.replace(/\s/g,'');}catch(e){toast('无法拨号');}}
+function smsSOS(){if(!DB.sosPhone){toast('先在设置里填紧急联系人');return;}const body=encodeURIComponent('我在守夜人，现在有点撑不住，需要你陪我说两句。');try{window.location.href='sms:'+DB.sosPhone.replace(/\s/g,'')+'?body='+body;}catch(e){toast('无法发短信');}}
+let breathTimer=null;
+function openBreath(){const m=document.getElementById('mBreath');if(m)m.classList.add('show');startBreath();}
+function closeBreath(){stopBreath();const m=document.getElementById('mBreath');if(m)m.classList.remove('show');}
+function startBreath(){stopBreath();const cir=document.getElementById('breathCircle');const txt=document.getElementById('breathText');const hint=document.getElementById('breathHint');if(!cir)return;cir.classList.add('breathing');let t=0;const total=60;
+  breathTimer=setInterval(()=>{t++;const cyc=t%19;const phase=cyc<4?'吸气…':cyc<11?'屏息…':'呼气…';if(txt)txt.textContent=phase;const left=total-t;if(left<=0){if(txt)txt.textContent='完成 ✓';if(hint)hint.textContent='做得好，这阵浪已经退了。';stopBreath();cir.classList.remove('breathing');return;}if(hint)hint.textContent='剩 '+left+' 秒 · 跟着圆圈 '+phase;},1000);}
+function stopBreath(){if(breathTimer){clearInterval(breathTimer);breathTimer=null;}}
+
 /* ===== 执行工具：计时器 + 喝水 ===== */
 let timer={total:300,left:300,running:false,intv:null,label:'静蹲',endAt:0};
 function fmtMMSS(s){const m=Math.floor(s/60),ss=s%60;return String(m).padStart(2,'0')+':'+String(ss).padStart(2,'0');}
@@ -2371,6 +2425,8 @@ function switchTab(name,section){
     document.getElementById('wakeTime').value=DB.sleep.wake||'07:00';
     document.getElementById('wakeNotif').checked=!!DB.wakeNotif;
     document.getElementById('backupStatus').textContent=DB.lastBackup?('上次备份：'+DB.lastBackup):'未备份';
+    const sn=document.getElementById('sosName');if(sn)sn.value=DB.sosName||'';
+    const sp=document.getElementById('sosPhone');if(sp)sp.value=DB.sosPhone||'';
     const ph=getPhase(new Date());document.getElementById('phaseHint').innerHTML='当前处于 <b style="color:var(--accent-2)">'+ph.name+'</b>（第 '+ph._day+(ph._totalDays===Infinity?' 天 · 自由态':'/'+ph._totalDays+' 天）');}
   document.querySelectorAll('.drawer-item[data-drawer]').forEach(d=>{
     const isPlan=d.dataset.planSection;
@@ -2380,8 +2436,8 @@ function switchTab(name,section){
 }
 function openDrawer(){document.getElementById('drawer').classList.add('show');document.getElementById('drawerBack').classList.add('show');}
 function closeDrawer(){document.getElementById('drawer').classList.remove('show');document.getElementById('drawerBack').classList.remove('show');}
-document.getElementById('menuBtn').onclick=openDrawer;
-document.getElementById('drawerBack').onclick=closeDrawer;
+$on('menuBtn','click',openDrawer);
+$on('drawerBack','click',closeDrawer);
 document.querySelectorAll('.drawer-item[data-drawer]').forEach(d=>d.onclick=()=>{switchTab(d.dataset.drawer,d.dataset.planSection);closeDrawer();});
 document.querySelectorAll('.drawer-item[data-action]').forEach(d=>d.onclick=()=>{
   const a=d.dataset.action;closeDrawer();
@@ -2392,39 +2448,47 @@ document.querySelectorAll('.drawer-item[data-action]').forEach(d=>d.onclick=()=>
 });
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>switchTab(t.dataset.tab));
 document.querySelectorAll('#planTabs button').forEach(b=>b.onclick=()=>{currentPlanSection=b.dataset.section;renderPlan();window.scrollTo({top:0,behavior:'smooth'});});
-document.getElementById('editPlanRawBtn').onclick=openPlanRawEditor;
-document.getElementById('planRawCancel').onclick=()=>document.getElementById('mPlanRaw').classList.remove('show');
-document.getElementById('planRawSave').onclick=savePlanRaw;
-document.getElementById('ghToken').oninput=e=>{DB.ghToken=e.target.value.trim();save();};
-document.getElementById('ghRepo').oninput=e=>{DB.ghRepo=e.target.value.trim()||GH_DEFAULT_REPO;save();};
-document.getElementById('aiEndpoint').oninput=e=>{DB.aiEndpoint=e.target.value.trim()||AI_DEFAULT_ENDPOINT;save();};
-document.getElementById('aiKey').oninput=e=>{DB.aiKey=e.target.value.trim();save();refreshAiKeyTip();};
-document.getElementById('aiModel').oninput=e=>{DB.aiModel=e.target.value.trim()||AI_DEFAULT_MODEL;save();};
-document.getElementById('mealPhotoRemind').onchange=e=>{DB.mealPhotoRemind=e.target.checked;save();if(NOTIF&&notifGranted)enableNotifications();};
-document.getElementById('mealTarget').oninput=e=>{const v=parseInt(e.target.value,10);DB.mealTarget=(isFinite(v)&&v>=0)?v:1800;save();renderMeals();renderData();};
-document.getElementById('checkUpd').onclick=()=>checkUpdate(false);
-document.getElementById('targetW').onchange=e=>{DB.target=+e.target.value||72;save();renderData();};
-document.getElementById('startDate').onchange=e=>{const v=e.target.value;if(!v){return;}DB.startDate=v;save();renderPhase();renderOverview();renderPlan();
+$on('editPlanRawBtn','click',openPlanRawEditor);
+$on('planRawCancel','click',()=>document.getElementById('mPlanRaw').classList.remove('show'));
+$on('planRawSave','click',savePlanRaw);
+$on('ghToken','input',e=>{DB.ghToken=e.target.value.trim();save();});
+$on('ghRepo','input',e=>{DB.ghRepo=e.target.value.trim()||GH_DEFAULT_REPO;save();});
+$on('aiEndpoint','input',e=>{DB.aiEndpoint=e.target.value.trim()||AI_DEFAULT_ENDPOINT;save();});
+$on('aiKey','input',e=>{DB.aiKey=e.target.value.trim();save();refreshAiKeyTip();});
+$on('aiModel','input',e=>{DB.aiModel=e.target.value.trim()||AI_DEFAULT_MODEL;save();});
+$on('mealPhotoRemind','change',e=>{DB.mealPhotoRemind=e.target.checked;save();if(NOTIF&&notifGranted)enableNotifications();});
+$on('mealTarget','input',e=>{const v=parseInt(e.target.value,10);DB.mealTarget=(isFinite(v)&&v>=0)?v:1800;save();renderMeals();renderData();});
+$on('checkUpd','click',()=>checkUpdate(false));
+$on('targetW','change',e=>{DB.target=+e.target.value||72;save();renderData();});
+$on('startDate','change',e=>{const v=e.target.value;if(!v){return;}DB.startDate=v;save();renderPhase();renderOverview();renderPlan();
   const ph=getPhase(new Date());document.getElementById('phaseHint').innerHTML='已更新，当前处于 <b style="color:var(--accent-2)">'+ph.name+'</b>（第 '+ph._day+(ph._totalDays===Infinity?' 天 · 自由态':'/'+ph._totalDays+' 天）');
-  if(NOTIF&&notifGranted)enableNotifications();};
-document.getElementById('resetSched').onclick=()=>{
+  if(NOTIF&&notifGranted)enableNotifications();});
+$on('resetSched','click',()=>{
   if(DB.hiddenSchedule.length||Object.keys(DB.scheduleOverride).length){DB.hiddenSchedule=[];DB.scheduleOverride={};save();renderTasks();toast('已恢复默认作息');}
-  else toast('本来就是默认作息');};
+  else toast('本来就是默认作息');});
 
 /* ===== 新功能：饮水 / 睡眠 / 备份 / 锁屏 / 周报 ===== */
-document.getElementById('backupPass').oninput=e=>{DB.backupPass=e.target.value;save();};
-document.getElementById('autoBackup').onchange=e=>{DB.autoBackup=e.target.checked;save();if(DB.autoBackup)doBackup();};
-document.getElementById('backupNow').onclick=doBackup;
-document.getElementById('restoreBtn').onclick=doRestore;
-document.getElementById('lockNotif').onchange=e=>{DB.lockNotif=e.target.checked;save();if(DB.lockNotif)updateLockNotif();else if(NOTIF)NOTIF.cancel({notifications:[50,51]}).catch(()=>{});};
-document.getElementById('wakeTime').onchange=e=>{DB.sleep.wake=e.target.value;save();if(NOTIF&&notifGranted)enableNotifications();};
-document.getElementById('wakeNotif').onchange=e=>{DB.wakeNotif=e.target.checked;save();if(NOTIF&&notifGranted)enableNotifications();};
-document.getElementById('reportBtn').onclick=genReport;
-document.getElementById('waterAddBtn').onclick=()=>{const v=+document.getElementById('waterCust').value||0;if(v>0){addWater(v);document.getElementById('waterCust').value='';}};
+$on('backupPass','input',e=>{DB.backupPass=e.target.value;save();});
+$on('autoBackup','change',e=>{DB.autoBackup=e.target.checked;save();if(DB.autoBackup)doBackup();});
+$on('backupNow','click',doBackup);
+$on('restoreBtn','click',doRestore);
+$on('lockNotif','change',e=>{DB.lockNotif=e.target.checked;save();if(DB.lockNotif)updateLockNotif();else if(NOTIF)NOTIF.cancel({notifications:[50,51]}).catch(()=>{});});
+$on('wakeTime','change',e=>{DB.sleep.wake=e.target.value;save();if(NOTIF&&notifGranted)enableNotifications();});
+$on('wakeNotif','change',e=>{DB.wakeNotif=e.target.checked;save();if(NOTIF&&notifGranted)enableNotifications();});
+$on('reportBtn','click',genReport);
+$on('waterAddBtn','click',()=>{const v=+document.getElementById('waterCust').value||0;if(v>0){addWater(v);document.getElementById('waterCust').value='';}});
 document.querySelectorAll('#waterCard .water-btns button').forEach(b=>b.onclick=()=>{const v=b.dataset.val;if(v==='undo')addWater(-200);else addWater(+v);});
-document.getElementById('sleepSave').onclick=saveSleep;
-document.getElementById('sleepBed').onchange=()=>{const b=document.getElementById('sleepBed').value,w=document.getElementById('sleepWake').value;document.getElementById('sleepDur').textContent=sleepDur(b,w)+' h';};
-document.getElementById('sleepWake').onchange=()=>{const b=document.getElementById('sleepBed').value,w=document.getElementById('sleepWake').value;document.getElementById('sleepDur').textContent=sleepDur(b,w)+' h';};
+$on('sleepSave','click',saveSleep);
+$on('sleepBed','change',()=>{const b=document.getElementById('sleepBed').value,w=document.getElementById('sleepWake').value;document.getElementById('sleepDur').textContent=sleepDur(b,w)+' h';});
+$on('sleepWake','change',()=>{const b=document.getElementById('sleepBed').value,w=document.getElementById('sleepWake').value;document.getElementById('sleepDur').textContent=sleepDur(b,w)+' h';});
+/* 紧急求助 + 呼吸锚定 绑定 */
+$on('sosCall','click',callSOS);
+$on('sosSms','click',smsSOS);
+$on('sosBreath','click',openBreath);
+$on('breathStop','click',closeBreath);
+$on('cravBreath','click',openBreath);
+$on('sosName','input',e=>{DB.sosName=e.target.value.trim();save();renderSOS();});
+$on('sosPhone','input',e=>{DB.sosPhone=e.target.value.trim();save();renderSOS();});
 
 /* 折叠面板 */
 document.querySelectorAll('.fold-head').forEach(h=>h.addEventListener('click',()=>{
@@ -2444,7 +2508,7 @@ document.getElementById('phaseList').innerHTML=PHASES.map((p,i)=>{
     <div style="font-size:12px;color:var(--txt-2);margin-top:6px;line-height:1.6">无酒日：${p.noAlcohol.length?p.noAlcohol.map(x=>WD_CN[WD.indexOf(x)]).join('、'):'无'} · 酒≤${p.alc}ml · 烟≤${p.cig}支</div>
     <div style="font-size:12px;color:var(--accent-2);margin-top:3px">${p.tip}</div></div>`;}).join('');
 
-function renderAll(){['renderPhase','renderToday','renderTasks','renderOverview','renderAI','renderMeals','renderStreak','renderWater','renderSleep','renderReminders','refreshVersionLabels','refreshAiKeyTip'].forEach(fn=>{try{window[fn]();}catch(e){console.error('render '+fn,e);}});}
+function renderAll(){['renderPhase','renderToday','renderTasks','renderOverview','renderAI','renderMeals','renderStreak','renderWater','renderSleep','renderReminders','renderSOS','refreshVersionLabels','refreshAiKeyTip'].forEach(fn=>{try{window[fn]();}catch(e){console.error('render '+fn,e);}});}
 function refreshVersionLabels(){const v='v'+APP_VERSION;const b=document.getElementById('aboutVer');if(b)b.textContent=v;const d=document.getElementById('drawerVer');if(d)d.textContent=v;}
 /* 国产安卓适配：复制设置步骤 + 首次启动引导 */
 function closeFirstRun(){document.getElementById('mFirstRun').classList.remove('show');}
