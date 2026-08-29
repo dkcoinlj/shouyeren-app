@@ -537,6 +537,7 @@
 
   <div class="wrap">
     <section id="tab-today">
+      <div class="card" id="phaseBanner"></div>
       <div class="hero" id="heroCard"></div>
       <div class="card ai-card" id="aiCard">
         <div class="ai-head">
@@ -789,6 +790,7 @@
         </div>
         <div class="note" style="margin-top:8px">记录餐食后，若累计超过此目标，App 会在餐食卡片与数据页标注超标；达标进度也实时显示。</div>
         <div class="note" style="margin-top:10px">系统弹窗通知在部分国产机型（如 OPPO/ColorOS）上会导致启动崩溃，已停用。如需在关机、后台也收到提醒，可在系统「时钟 / 日历」里手动设闹钟，或告诉我，我再换更稳的原生方案。</div>
+        <label class="switch-row" style="margin-top:12px"><span>记录餐食后提醒拍照</span><input type="checkbox" id="mealPhotoRemind"><span class="switch"></span></label>
       </div>
       <div class="card">
         <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></span>数据备份</h3>
@@ -1237,7 +1239,7 @@ const DEFAULT_TASKS=SCHEDULE.map(s=>({
   time:`${String(s.h).padStart(2,'0')}:${String(s.m).padStart(2,'0')}`
 }));
 
-const APP_VERSION='1.3.12';
+const APP_VERSION='1.3.13';
 const GH_DEFAULT_REPO='dkcoinlj/shouyeren-app';
 const AI_DEFAULT_ENDPOINT='https://tokenhub.tencentmaas.com/v1/chat/completions';
 const AI_DEFAULT_KEY='sk-WzI92BSrRAC3RvPbsihLsWH7QWepZfgnQthdPRCbkIhKkISg';
@@ -2355,7 +2357,6 @@ function switchTab(name,section){
   if(name==='plan')renderPlan();
   if(name==='data')renderData();
   if(name==='settings'){document.getElementById('targetW').value=DB.target;refreshNotifState();
-    document.getElementById('curVer').textContent='v'+APP_VERSION;
     document.getElementById('ghToken').value=DB.ghToken||'';
     document.getElementById('ghRepo').value=DB.ghRepo||GH_DEFAULT_REPO;
     document.getElementById('aiEndpoint').value=DB.aiEndpoint||AI_DEFAULT_ENDPOINT;
@@ -2444,7 +2445,7 @@ document.getElementById('phaseList').innerHTML=PHASES.map((p,i)=>{
     <div style="font-size:12px;color:var(--accent-2);margin-top:3px">${p.tip}</div></div>`;}).join('');
 
 function renderAll(){['renderPhase','renderToday','renderTasks','renderOverview','renderAI','renderMeals','renderStreak','renderWater','renderSleep','renderReminders','refreshVersionLabels','refreshAiKeyTip'].forEach(fn=>{try{window[fn]();}catch(e){console.error('render '+fn,e);}});}
-function refreshVersionLabels(){const v='v'+APP_VERSION;const a=document.getElementById('curVer');if(a)a.textContent=v;const b=document.getElementById('aboutVer');if(b)b.textContent=v;const d=document.getElementById('drawerVer');if(d)d.textContent=v;}
+function refreshVersionLabels(){const v='v'+APP_VERSION;const b=document.getElementById('aboutVer');if(b)b.textContent=v;const d=document.getElementById('drawerVer');if(d)d.textContent=v;}
 /* 国产安卓适配：复制设置步骤 + 首次启动引导 */
 function closeFirstRun(){document.getElementById('mFirstRun').classList.remove('show');}
 document.getElementById('frGot').onclick=()=>{DB.firstRun=false;save();closeFirstRun();};
