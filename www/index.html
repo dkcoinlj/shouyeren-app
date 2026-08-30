@@ -319,6 +319,8 @@
   .plan-card .fold-head{display:none;}
   .plan-card .fold-body{display:block;}
   .plan-card .card-title{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .edit-sec-btn{flex:0 0 auto;width:30px;height:30px;border-radius:9px;border:1px solid var(--line);background:var(--surface-2);color:var(--accent);font-size:14px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:.2s;}
+  .edit-sec-btn:active{transform:scale(.92);}
   .mini-edit{flex:none;font-size:12px;font-weight:600;padding:5px 12px;border-radius:9px;border:1px solid var(--line);background:var(--card);color:var(--txt-2);}
   .mini-edit:active{background:var(--accent-bg);color:var(--accent);border-color:var(--accent-line);}
   .plan-raw{white-space:pre-wrap;font-size:13.5px;line-height:1.8;color:var(--txt);}
@@ -675,6 +677,17 @@
       <div class="row" style="display:flex;gap:10px">
         <button class="btn btn-secondary" id="planRawCancel" style="flex:1">取消</button>
         <button class="btn btn-accent" id="planRawSave" style="flex:1">保存</button>
+      </div>
+    </div></div>
+
+    <div class="modal" id="mPlanSection"><div class="sheet">
+      <h3><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></span><span id="planSecTitle">编辑方案</span></h3>
+      <div class="note" id="planSecHint" style="margin-bottom:12px"></div>
+      <div class="field"><textarea id="planSecInput" style="min-height:42vh;line-height:1.7;font-size:14px"></textarea></div>
+      <div class="row" style="display:flex;gap:10px">
+        <button class="btn btn-ghost" id="planSecReset" style="flex:1">恢复默认</button>
+        <button class="btn btn-secondary" id="planSecCancel" style="flex:1">取消</button>
+        <button class="btn btn-accent" id="planSecSave" style="flex:1">保存</button>
       </div>
     </div></div>
 
@@ -1277,7 +1290,7 @@ const DEFAULT_TASKS=SCHEDULE.map(s=>({
   time:`${String(s.h).padStart(2,'0')}:${String(s.m).padStart(2,'0')}`
 }));
 
-const APP_VERSION='1.4.1';
+const APP_VERSION='1.4.2';
 const GH_DEFAULT_REPO='dkcoinlj/shouyeren-app';
 const AI_DEFAULT_ENDPOINT='https://tokenhub.tencentmaas.com/v1/chat/completions';
 const AI_DEFAULT_KEY='sk-WzI92BSrRAC3RvPbsihLsWH7QWepZfgnQthdPRCbkIhKkISg';
@@ -1301,6 +1314,7 @@ function load(){try{DB=JSON.parse(localStorage.getItem(KEY))||{};}catch(e){DB={}
   DB.cravings=DB.cravings||[];
   DB.backupPass=DB.backupPass||'';
   DB.planRaw=DB.planRaw||DEFAULT_PLAN_RAW;
+  DB.planEdit=DB.planEdit||{};
   DB.autoBackup=DB.autoBackup||false;
   DB.lockNotif=DB.lockNotif!==false;
   DB.wakeNotif=DB.wakeNotif!==false;
@@ -2390,8 +2404,77 @@ function renderPlan(){
   document.getElementById('planRaw').textContent=DB.planRaw;
   /* 计划页改为整页可滑动：所有板块常显，不再靠切换标签隐藏 */
   document.querySelectorAll('#planTabs button').forEach(b=>b.classList.toggle('active',b.dataset.section===currentPlanSection));
+
+  /* 用户自定义覆盖：若某板块被编辑过，用文本渲染覆盖默认结构化展示 */
+  const _ov={goals:'planGoals',schedule:'planSchedule',alc:'planAlcohol',smoke:'planSmoke',skin:'planSkin',week:'planWeek',track:'planTrack',rules:'planRules',phasetime:'planPhaseTime'};
+  for(const _s in _ov){ if(DB.planEdit[_s]) document.getElementById(_ov[_s]).innerHTML=renderSectionFromText(_s,DB.planEdit[_s]); }
+  /* 每个板块标题注入“✎ 改这块”按钮 */
+  document.querySelectorAll('#tab-plan .plan-card').forEach(card=>{
+    const _sec=card.dataset.section; if(_sec==='raw')return;
+    let _b=card.querySelector('.edit-sec-btn');
+    if(!_b){ _b=document.createElement('button'); _b.className='edit-sec-btn'; _b.textContent='✎'; card.querySelector('.card-title').appendChild(_b); }
+    _b.onclick=()=>openSectionEditor(_sec);
+  });
 }
 
+/* ============ 方案各板块独立编辑 ============ */
+function defaultPlanText(sec){
+  switch(sec){
+    case 'goals': return ['-20斤 - 减重 190→170','+3度 - 美白提亮','≤3支 - 无感戒烟','≤50ml - 无感戒酒','保肌 - 增肌保肌','本能 - 形成自律'].join('\n');
+    case 'schedule': return SCHEDULE.map(s=>`${String(s.h).padStart(2,'0')}:${String(s.m).padStart(2,'0')} ${s.title} · ${s.sub}`).join('\n');
+    case 'alc': return ['第1-2周 | 250ml（半斤） | 周二、四 | 刻度杯倒，喝完即止','第3-4周 | 200ml（四两） | 周二、四 | 掺20%白水','第5-6周 | 150ml（三两） | 周二、四、六 | 无酒日晚餐加1个鸡腿','第7-8周 | 100ml（二两） | 周二、四、六、日 | 无酒日用无糖苏打水替代','第9周+ | ≤50ml或全戒 | — | 只在社交/情绪极差时喝，热茶替代仪式感'].join('\n');
+    case 'smoke': return ['第1-2周 | ≤18支 | 拆包先扔2支，晨起第一根延迟20分钟','第3-4周 | ≤15支 | 每根只抽2/3就掐灭，16-18点禁烟令严格','第5-6周 | ≤10支 | 薄荷糖/口香糖替代4个抽烟时刻','第7-8周 | ≤6支 | 只保留饭后3支+睡前1支+早起1支+运动后1支','第9周+ | ≤3支或全戒 | 瘾上来深呼吸10次，"等半小时再抽"'].join('\n');
+    case 'skin': return ['每天随餐：维C片早晚各1粒 + 维E软胶囊1粒（早上）','15:00加餐：猕猴桃或圣女果（维C之王）','每周二四六洗澡：搓澡巾轻搓手臂、脖子、胸口去角质，洗后涂烟酰胺身体乳（或橄榄油+维E混合）','晨起柠檬水必须在抽烟前喝','烟酒不同频（间隔半小时以上）','白天拉严窗帘不出门，拿外卖穿长袖'].join('\n');
+    case 'week': return ['周一 | 阶段上限 | 阶段上限 | 标准日（米饭150g） | 标准组','周二 | 无酒日 | 阶段上限 | 晚餐加回150g米饭+酸奶 | 标准组','周三 | 阶段上限 | 阶段上限 | 标准日 | 标准组','周四 | 无酒日 | 阶段上限 | 晚餐加回150g米饭+酸奶 | 标准组','周五 | 阶段上限 | 阶段上限 | 标准日 | 标准组','周六 | 无酒日（第5周起） | 阶段上限 | 晚餐加回米饭+酸奶 | 多做1组静蹲','周日 | 允许到上限 | 阶段上限+2支 | 午餐米饭加到300g（吃爽） | 标准组'].join('\n');
+    case 'track': return ['减脂：190→170斤（减20斤），每周0.8-1.2斤纯脂肪，预计4-5个月','变白：第1个月皮肤透亮度提升，第2个月手臂内侧肤色接近天生最白色号，白≥3度','每周日10:00：唯一称重日，记录体重，对比上周，忽略日波动'].join('\n');
+    case 'rules': return ['21:30护胃餐是死命令：不饿也必须闭眼灌下去，牛奶+蛋清是第二天不胃疼、不掉肌肉的防火墙','16:00-18:00运动禁烟令：违者当日增肌效果打七折','每周日只对比周体重：喝酒后体重虚低是水分，别被骗，别额外加餐补偿'].join('\n');
+    case 'phasetime': return PHASES.map((p,i)=>{const s=addDays(parseD(DB.startDate||'2026-08-26'),phaseStartDay(i)-1);const e=p.len===Infinity?null:addDays(parseD(DB.startDate||'2026-08-26'),phaseStartDay(i)+p.len-2);return `${p.name} | ${fmt(s).slice(5)}${e?' ~ '+fmt(e).slice(5):' 起'} | ${p.alc}ml | ${p.cig}支 | ${p.noAlcohol.length?p.noAlcohol.map(x=>WD_CN[WD.indexOf(x)]).join('、'):'无'}`;}).join('\n');
+    default: return '';
+  }
+}
+function renderSectionFromText(sec,text){
+  const lines=(text||'').split(/\r?\n/).map(s=>s.trim()).filter(s=>s);
+  if(!lines.length) return '<div class="note">（空，可在编辑里写内容）</div>';
+  if(sec==='goals'){
+    return lines.map(l=>{const m=l.split(/\s*[-–—|]\s*/);const v=m[0]||'';const k=m.slice(1).join(' ')||v;return `<div class="goal"><div class="gv">${esc(v)}</div><div class="gk">${esc(k)}</div><div class="gb">${esc(k[0]||v[0]||'·')}</div></div>`;}).join('');
+  }
+  if(sec==='schedule'){
+    return lines.map(l=>{const m=l.match(/^(\d{1,2}:\d{2})\s+(.*)$/);const time=m?m[1]:'';const rest=m?m[2]:l;const mm=rest.split(/\s*[·•]\s*/);const title=mm[0]||rest;const sub=mm.slice(1).join(' · ');return `<div class="tl-item"><div class="tl-time">${esc(time)}</div><div class="tl-title">${esc(title)}</div>${sub?`<div class="tl-sub">${esc(sub)}</div>`:''}</div>`;}).join('');
+  }
+  if(sec==='alc'||sec==='smoke'){
+    return lines.map((l,i)=>{const p=l.split(/\s*\|\s*/);const c=p[0]||'';const lv=p[1]||'';const no=p[2]||'';const tip=p.slice(3).join(' | ')||'';return `<div class="stair${i===1?' cur':''}"><div class="sn">${i+1}</div><div class="smain"><div class="sname">${esc(c)}</div><div class="sdesc">${esc(lv)}${no?' · 无酒日：'+esc(no):''}${tip?'<br>'+esc(tip):''}</div></div></div>`;}).join('');
+  }
+  if(sec==='week'||sec==='phasetime'){
+    const heads=sec==='week'?['星期','饮酒','吸烟','饮食差异','运动差异']:['阶段','日期','饮酒','吸烟','无酒日'];
+    return `<table class="plan-table"><thead><tr>${heads.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${lines.map(l=>`<tr>${l.split(/\s*\|\s*/).map(c=>`<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+  }
+  if(sec==='rules'){
+    return lines.map(s=>`<div class="rule"><span>${icon('alert',18)}</span><div>${esc(s)}</div></div>`).join('');
+  }
+  return lines.map(s=>`<div class="plan-item"><span class="dot"></span><div>${esc(s)}</div></div>`).join('');
+}
+function openSectionEditor(sec){
+  const titles={goals:'核心目标',schedule:'每日固定作息',alc:'无感戒酒·周阶梯',smoke:'无感戒烟·周阶梯',skin:'美白执行指令',week:'一周差异化执行',track:'进度追踪',rules:'三条保命军规',phasetime:'阶段切换时间表'};
+  document.getElementById('planSecTitle').textContent='改 · '+titles[sec];
+  document.getElementById('planSecHint').textContent='按行编辑，每行一条。表格类用 “|” 分隔各列。保存后立刻生效并存在本机。';
+  document.getElementById('planSecInput').value=(DB.planEdit[sec]!==undefined)?DB.planEdit[sec]:defaultPlanText(sec);
+  document.getElementById('planSecInput').dataset.sec=sec;
+  document.getElementById('mPlanSection').classList.add('show');
+}
+function saveSectionEdit(){
+  const sec=document.getElementById('planSecInput').dataset.sec;
+  const v=document.getElementById('planSecInput').value.trim();
+  if(!v) delete DB.planEdit[sec]; else DB.planEdit[sec]=v;
+  save();
+  document.getElementById('mPlanSection').classList.remove('show');
+  renderPlan(); toast('该板块已更新');
+}
+function resetSection(){
+  const sec=document.getElementById('planSecInput').dataset.sec;
+  delete DB.planEdit[sec]; save();
+  document.getElementById('planSecInput').value=defaultPlanText(sec);
+  renderPlan(); toast('已恢复默认内容');
+}
 function openPlanRawEditor(){
   document.getElementById('planRawInput').value=DB.planRaw||'';
   document.getElementById('mPlanRaw').classList.add('show');
@@ -2490,6 +2573,9 @@ document.querySelectorAll('.drawer-item[data-action]').forEach(d=>d.onclick=()=>
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>switchTab(t.dataset.tab));
 document.querySelectorAll('#planTabs button').forEach(b=>b.onclick=()=>{currentPlanSection=b.dataset.section;renderPlan();const c=document.getElementById('card-'+b.dataset.section);if(c)c.scrollIntoView({behavior:'smooth',block:'start'});else window.scrollTo({top:0,behavior:'smooth'});});
 $on('editPlanRawBtn','click',openPlanRawEditor);
+$on('planSecSave','click',saveSectionEdit);
+$on('planSecCancel','click',()=>document.getElementById('mPlanSection').classList.remove('show'));
+$on('planSecReset','click',resetSection);
 $on('planToTasks','click',importPlanToTasks);
 $on('planRawCancel','click',()=>document.getElementById('mPlanRaw').classList.remove('show'));
 $on('planRawSave','click',savePlanRaw);
