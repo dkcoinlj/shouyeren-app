@@ -319,8 +319,9 @@
   .plan-card .fold-head{display:none;}
   .plan-card .fold-body{display:block;}
   .plan-card .card-title{display:flex;align-items:center;justify-content:space-between;gap:10px;}
-  .edit-sec-btn{flex:0 0 auto;width:30px;height:30px;border-radius:9px;border:1px solid var(--line);background:var(--surface-2);color:var(--accent);font-size:14px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:.2s;}
-  .edit-sec-btn:active{transform:scale(.92);}
+  .edit-sec-btn{flex:0 0 auto;height:30px;border-radius:9px;border:1px solid var(--gold);background:rgba(255,193,7,.12);color:var(--gold);font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:0 11px;transition:.2s;box-shadow:0 0 0 1px rgba(255,193,7,.08);}
+  .edit-sec-btn::before{content:'✎';font-size:12px;}
+  .edit-sec-btn:active{transform:scale(.92);background:rgba(255,193,7,.22);}
   .mini-edit{flex:none;font-size:12px;font-weight:600;padding:5px 12px;border-radius:9px;border:1px solid var(--line);background:var(--card);color:var(--txt-2);}
   .mini-edit:active{background:var(--accent-bg);color:var(--accent);border-color:var(--accent-line);}
   .plan-raw{white-space:pre-wrap;font-size:13.5px;line-height:1.8;color:var(--txt);}
@@ -1290,7 +1291,7 @@ const DEFAULT_TASKS=SCHEDULE.map(s=>({
   time:`${String(s.h).padStart(2,'0')}:${String(s.m).padStart(2,'0')}`
 }));
 
-const APP_VERSION='1.4.2';
+const APP_VERSION='1.4.3';
 const GH_DEFAULT_REPO='dkcoinlj/shouyeren-app';
 const AI_DEFAULT_ENDPOINT='https://tokenhub.tencentmaas.com/v1/chat/completions';
 const AI_DEFAULT_KEY='sk-WzI92BSrRAC3RvPbsihLsWH7QWepZfgnQthdPRCbkIhKkISg';
@@ -2412,7 +2413,7 @@ function renderPlan(){
   document.querySelectorAll('#tab-plan .plan-card').forEach(card=>{
     const _sec=card.dataset.section; if(_sec==='raw')return;
     let _b=card.querySelector('.edit-sec-btn');
-    if(!_b){ _b=document.createElement('button'); _b.className='edit-sec-btn'; _b.textContent='✎'; card.querySelector('.card-title').appendChild(_b); }
+    if(!_b){ _b=document.createElement('button'); _b.className='edit-sec-btn'; _b.title='改这块内容'; card.querySelector('.card-title').appendChild(_b); }
     _b.onclick=()=>openSectionEditor(_sec);
   });
 }
