@@ -626,39 +626,39 @@
         <button data-section="raw">全案</button>
       </div>
       <div class="card plan-card active" data-section="goals" id="card-goals">
-        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m9 12 2 2 4-4"/></svg></span>核心目标（2个月）</h3>
+        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m9 12 2 2 4-4"/></svg></span>核心目标（2个月）<button class="edit-sec-btn" title="改这块内容" onclick="openSectionEditor('goals')"></button></h3>
         <div class="fold-body"><div class="goal-grid" id="planGoals"></div></div>
       </div>
       <div class="card plan-card" data-section="schedule" id="card-schedule">
-        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>每日固定作息</h3>
+        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>每日固定作息<button class="edit-sec-btn" title="改这块内容" onclick="openSectionEditor('schedule')"></button></h3>
         <div class="fold-body"><div class="timeline" id="planSchedule"></div></div>
       </div>
       <div class="card plan-card" data-section="alc" id="card-alc">
-        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10l-1 9H8z"/></svg></span>无感戒酒 · 周阶梯</h3>
+        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10l-1 9H8z"/></svg></span>无感戒酒 · 周阶梯<button class="edit-sec-btn" title="改这块内容" onclick="openSectionEditor('alc')"></button></h3>
         <div class="fold-body"><div class="stairs" id="planAlcohol"></div></div>
       </div>
       <div class="card plan-card" data-section="smoke" id="card-smoke">
-        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2-5 4 10 2-5h6"/></svg></span>无感戒烟 · 周阶梯</h3>
+        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2-5 4 10 2-5h6"/></svg></span>无感戒烟 · 周阶梯<button class="edit-sec-btn" title="改这块内容" onclick="openSectionEditor('smoke')"></button></h3>
         <div class="fold-body"><div class="stairs" id="planSmoke"></div></div>
       </div>
       <div class="card plan-card" data-section="skin" id="card-skin">
-        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5S5 9 5 14a7 7 0 0 0 14 0c0-5-7-11.5-7-11.5Z"/></svg></span>美白执行指令</h3>
+        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5S5 9 5 14a7 7 0 0 0 14 0c0-5-7-11.5-7-11.5Z"/></svg></span>美白执行指令<button class="edit-sec-btn" title="改这块内容" onclick="openSectionEditor('skin')"></button></h3>
         <div class="fold-body"><div class="plan-list" id="planSkin"></div></div>
       </div>
       <div class="card plan-card" data-section="week" id="card-week">
-        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg></span>一周差异化执行</h3>
+        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg></span>一周差异化执行<button class="edit-sec-btn" title="改这块内容" onclick="openSectionEditor('week')"></button></h3>
         <div class="fold-body"><div class="plan-table" id="planWeek"></div></div>
       </div>
       <div class="card plan-card" data-section="track" id="card-track">
-        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 14 4-4 3 3 5-6"/></svg></span>进度追踪</h3>
+        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 14 4-4 3 3 5-6"/></svg></span>进度追踪<button class="edit-sec-btn" title="改这块内容" onclick="openSectionEditor('track')"></button></h3>
         <div class="fold-body"><div class="plan-list" id="planTrack"></div></div>
       </div>
       <div class="card plan-card" data-section="rules" id="card-rules">
-        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></span>三条保命军规</h3>
+        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></span>三条保命军规<button class="edit-sec-btn" title="改这块内容" onclick="openSectionEditor('rules')"></button></h3>
         <div class="fold-body"><div id="planRules"></div></div>
       </div>
       <div class="card plan-card" data-section="phasetime" id="card-phasetime">
-        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg></span>阶段切换时间表</h3>
+        <h3 class="card-title"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg></span>阶段切换时间表<button class="edit-sec-btn" title="改这块内容" onclick="openSectionEditor('phasetime')"></button></h3>
         <div class="fold-body"><div class="plan-table" id="planPhaseTime"></div></div>
       </div>
       <div class="card plan-card gold" data-section="raw" id="card-raw">
@@ -1291,7 +1291,7 @@ const DEFAULT_TASKS=SCHEDULE.map(s=>({
   time:`${String(s.h).padStart(2,'0')}:${String(s.m).padStart(2,'0')}`
 }));
 
-const APP_VERSION='1.4.3';
+const APP_VERSION='1.4.4';
 const GH_DEFAULT_REPO='dkcoinlj/shouyeren-app';
 const AI_DEFAULT_ENDPOINT='https://tokenhub.tencentmaas.com/v1/chat/completions';
 const AI_DEFAULT_KEY='sk-WzI92BSrRAC3RvPbsihLsWH7QWepZfgnQthdPRCbkIhKkISg';
