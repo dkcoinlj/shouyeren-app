@@ -314,7 +314,7 @@
   .drawer-sub{font-size:12px;color:var(--txt-2);padding:10px 14px 6px;font-weight:600;}
   .drawer-foot{padding:12px 18px 0;border-top:1px solid var(--line);margin:0 18px;font-size:12px;color:var(--txt-3);line-height:1.5;}
   /* 方案页侧列表选中态 */
-  .plan-card{display:none;}
+  .plan-card{display:block;margin-bottom:14px;}
   .plan-card.active{display:block;animation:float-in .35s cubic-bezier(.16,1,.3,1) both;}
   .plan-card .fold-head{display:none;}
   .plan-card .fold-body{display:block;}
@@ -663,6 +663,7 @@
         <div class="fold-body">
           <div class="plan-raw" id="planRaw"></div>
           <button class="btn btn-secondary btn-full" id="editPlanRawBtn" style="margin-top:14px">✎ 在 App 端调整全案</button>
+        <button class="btn btn-accent btn-full" id="planToTasks" style="margin-top:10px">📋 把全案拆成今日任务</button>
         </div>
       </div>
     </section>
@@ -1276,7 +1277,7 @@ const DEFAULT_TASKS=SCHEDULE.map(s=>({
   time:`${String(s.h).padStart(2,'0')}:${String(s.m).padStart(2,'0')}`
 }));
 
-const APP_VERSION='1.4.0';
+const APP_VERSION='1.4.1';
 const GH_DEFAULT_REPO='dkcoinlj/shouyeren-app';
 const AI_DEFAULT_ENDPOINT='https://tokenhub.tencentmaas.com/v1/chat/completions';
 const AI_DEFAULT_KEY='sk-WzI92BSrRAC3RvPbsihLsWH7QWepZfgnQthdPRCbkIhKkISg';
@@ -2387,7 +2388,7 @@ function renderPlan(){
   document.getElementById('planPhaseTime').innerHTML=`<table class="plan-table"><thead><tr><th>阶段</th><th>日期</th><th>饮酒</th><th>吸烟</th><th>无酒日</th></tr></thead><tbody>${phaseRows}</tbody></table>`;
 
   document.getElementById('planRaw').textContent=DB.planRaw;
-  document.querySelectorAll('.plan-card').forEach(c=>c.classList.toggle('active',c.dataset.section===currentPlanSection));
+  /* 计划页改为整页可滑动：所有板块常显，不再靠切换标签隐藏 */
   document.querySelectorAll('#planTabs button').forEach(b=>b.classList.toggle('active',b.dataset.section===currentPlanSection));
 }
 
@@ -2401,6 +2402,46 @@ function savePlanRaw(){
   document.getElementById('mPlanRaw').classList.remove('show');
   renderPlan();toast('全案已更新，已存本机');
 }
+function importPlanToTasks(){
+  const raw=DB.planRaw||'';
+  if(!raw.trim()){toast('全案是空的，先点「调整全案」写点啥');return;}
+  const lines=raw.split(/\r?\n/);
+  const have=new Set((DB.tasks||[]).map(t=>(t.title||t.text||'').trim().toLowerCase()));
+  const out=[];let n=1;
+  for(const ln of lines){
+    const t=ln.trim();
+    if(!t)continue;
+    if(/^(#{1,6}\s|>|---|\|)/.test(t))continue;            // 跳过标题/引用/分隔线/表格
+    let title=null;
+    if(/^\*\*.+\*\*$/.test(t)){                              // 整行加粗：先判，避免被当成 * 列表项
+      title=t.slice(2,-2).trim();
+      const lc=title.charCodeAt(title.length-1);
+      if(lc===65306||lc===58)continue;                      // “标题：”这类表头跳过
+    } else {
+      const m=t.match(/^([-*•·▪]|(?:\d+)[.、)）])\s*(.*)$/); // 列表项：bullet 或 编号
+      if(!m)continue;
+      title=m[2];
+    }
+    title=title.replace(/\*\*/g,'').replace(/[`*]/g,'').replace(/\s+/g,' ').trim();
+    if(title.length<2)continue;
+    if(/[：:]$/.test(title))continue;                       // 以冒号结尾的像“美白红线：”这类表头，跳过
+    if(have.has(title.toLowerCase()))continue;               // 已存在则跳过（可重复点）
+    have.add(title.toLowerCase());
+    let time='';const tm=title.match(/\b(\d{1,2}:\d{2})\b/);if(tm)time=tm[1];
+    let icon='star';
+    if(/酒/.test(title))icon='ban';
+    else if(/烟|抽/.test(title))icon='ban';
+    else if(/水|喝|柠檬|牛奶|蛋清|温水/.test(title))icon='cup';
+    else if(/睡|关机|起床|早睡/.test(title))icon='moon';
+    else if(/蹲|运动|静蹲|抬腿|健身/.test(title))icon='dumbbell';
+    else if(/维|补|美白|护肤|去角质|身体乳|称|体重|斤|减重|减脂/.test(title))icon='pill';
+    out.push({id:'t'+Date.now()+'_'+(n++),type:'custom',icon,title,text:title,sub:'来自邪修全案',status:'todo',created:todayStr,time:time||null});
+  }
+  if(!out.length){toast('没有可导入的清单条目（或都已存在）');return;}
+  DB.tasks=(DB.tasks||[]).concat(out);save();renderTasks();
+  switchTab('today');
+  toast('已把全案拆成 '+out.length+' 条任务 → 看「今日」未完成');
+}
 
 let currentPlanSection='goals';
 function switchTab(name,section){
@@ -2408,7 +2449,7 @@ function switchTab(name,section){
   document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===name));
   ['today','plan','data','settings'].forEach(n=>{const sec=document.getElementById('tab-'+n);sec.classList.toggle('hide',n!==name);
     if(n===name){sec.classList.remove('float-in');void sec.offsetWidth;sec.classList.add('float-in');}});
-  if(name==='plan')renderPlan();
+  if(name==='plan'){renderPlan();if(section){setTimeout(()=>{const c=document.getElementById('card-'+section);if(c)c.scrollIntoView({behavior:'smooth',block:'start'});},60);}}
   if(name==='data')renderData();
   if(name==='settings'){document.getElementById('targetW').value=DB.target;refreshNotifState();
     document.getElementById('ghToken').value=DB.ghToken||'';
@@ -2447,8 +2488,9 @@ document.querySelectorAll('.drawer-item[data-action]').forEach(d=>d.onclick=()=>
   if(a==='notif'){switchTab('settings');setTimeout(()=>document.getElementById('notifBtn').click(),180);}
 });
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>switchTab(t.dataset.tab));
-document.querySelectorAll('#planTabs button').forEach(b=>b.onclick=()=>{currentPlanSection=b.dataset.section;renderPlan();window.scrollTo({top:0,behavior:'smooth'});});
+document.querySelectorAll('#planTabs button').forEach(b=>b.onclick=()=>{currentPlanSection=b.dataset.section;renderPlan();const c=document.getElementById('card-'+b.dataset.section);if(c)c.scrollIntoView({behavior:'smooth',block:'start'});else window.scrollTo({top:0,behavior:'smooth'});});
 $on('editPlanRawBtn','click',openPlanRawEditor);
+$on('planToTasks','click',importPlanToTasks);
 $on('planRawCancel','click',()=>document.getElementById('mPlanRaw').classList.remove('show'));
 $on('planRawSave','click',savePlanRaw);
 $on('ghToken','input',e=>{DB.ghToken=e.target.value.trim();save();});
